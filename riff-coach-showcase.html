@@ -11,896 +11,635 @@
     <style>
         :root {
             --color-primary: #B89CD4;
+            --color-primary-light: rgba(184,156,212,0.15);
+            --color-primary-subtle: rgba(184,156,212,0.25);
             --color-mint: #7EBCA6;
             --color-amber: #E8C87A;
-            --color-lavender: #A895C4;
+            --color-amber-soft: #F0D8A8;
+            --color-lavender: #C4A4D7;
             --gradient-primary: linear-gradient(135deg, #C4A4D7 0%, #8BA4C7 100%);
-            --gradient-mint: linear-gradient(135deg, #B8D8C8 0%, #7EBCA6 100%);
-            --gradient-amber: linear-gradient(135deg, #F0D8A8 0%, #E8C87A 100%);
-            --gradient-electric: linear-gradient(135deg, #FFF5E6 0%, #F0D8A8 100%);
-            --gradient-acoustic: linear-gradient(135deg, #F0FAF5 0%, #B8D8C8 100%);
-            --gradient-ukulele: linear-gradient(135deg, #F5F0FF 0%, #D4C4E8 100%);
             --bg-base: #F0EEF5;
             --bg-surface: rgba(255, 255, 255, 0.55);
             --bg-surface-elevated: rgba(255, 255, 255, 0.72);
             --text-primary: #4A3F5C;
             --text-secondary: #7B6E94;
             --text-tertiary: #A99BBF;
-            --font-sans: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
-            --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+            --font-sans: 'Nunito', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: var(--font-sans);
-            background: var(--bg-base);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        .glass {
-            background: var(--bg-surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(184, 156, 212, 0.20);
-            border-radius: 20px;
-        }
-        .glass-elevated {
-            background: var(--bg-surface-elevated);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(184, 156, 212, 0.25);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(74, 63, 92, 0.08);
-        }
-        .gradient-text {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-bg {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-            z-index: 0;
-        }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: float 12s ease-in-out infinite;
-        }
+        body { margin: 0; font-family: var(--font-sans); background: var(--bg-base); color: var(--text-primary); line-height: 1.6; }
+        .glass { background: var(--bg-surface); backdrop-filter: blur(20px); border: 1px solid rgba(184,156,212,0.2); border-radius: 20px; }
+        .glass-elevated { background: var(--bg-surface-elevated); backdrop-filter: blur(24px); border: 1px solid rgba(184,156,212,0.25); border-radius: 24px; box-shadow: 0 8px 32px rgba(74,63,92,0.08); }
+        .gradient-text { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 12s ease-in-out infinite; }
         .blob-1 { width: 400px; height: 400px; background: #C4A4D7; top: -100px; left: -100px; }
         .blob-2 { width: 350px; height: 350px; background: #B8D8C8; top: 200px; right: -80px; animation-delay: -4s; }
         .blob-3 { width: 300px; height: 300px; background: #F0D8A8; bottom: -50px; left: 30%; animation-delay: -8s; }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
-        }
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(184, 156, 212, 0.25);
-        }
-        .code-block {
-            font-family: var(--font-mono);
-            background: rgba(74, 63, 92, 0.06);
-            border: 1px solid rgba(184, 156, 212, 0.15);
-            border-radius: 12px;
-            padding: 16px 20px;
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            overflow-x: auto;
-            line-height: 1.8;
-        }
-        .stat-number {
-            font-family: var(--font-mono);
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .section-fade {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .section-fade.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .pulse-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--color-mint);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.3); }
-        }
-        .step-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            color: white;
-            font-size: 0.875rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .nav-dot {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(184, 156, 212, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            transition: all 0.3s ease;
-        }
-        .nav-dot.active {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 16px rgba(184, 156, 212, 0.4);
-        }
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: var(--font-mono);
-        }
-        .tag-react { background: rgba(97, 218, 251, 0.15); color: #61DAFB; }
-        .tag-ts { background: rgba(49, 120, 198, 0.15); color: #3178C6; }
-        .tag-vite { background: rgba(255, 109, 0, 0.15); color: #FF6D00; }
-        .tag-tailwind { background: rgba(56, 189, 248, 0.15); color: #38BDF8; }
-        .tag-zustand { background: rgba(184, 156, 212, 0.15); color: #B89CD4; }
-        .file-tree {
-            font-family: var(--font-mono);
-            font-size: 0.8125rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-        }
-        .file-tree .dir { color: var(--color-primary); font-weight: 600; }
-        .file-tree .file { color: var(--text-secondary); }
-        .file-tree .comment { color: var(--text-tertiary); font-style: italic; }
-        .mockup {
-            background: var(--bg-base);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid rgba(184, 156, 212, 0.15);
-        }
-        .mockup-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(184, 156, 212, 0.15);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-        .mockup-btn {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: white;
-            background: var(--gradient-primary);
-        }
-        .mockup-chip {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            background: rgba(184, 156, 212, 0.12);
-            color: var(--color-primary);
-            margin-right: 4px;
-        }
-        .mockup-chip.active {
-            background: var(--gradient-primary);
-            color: white;
-        }
-        .progress-bar {
-            height: 6px;
-            background: rgba(184, 156, 212, 0.15);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-primary);
-            border-radius: 3px;
-        }
+        @keyframes float { 0%,100%{transform:translate(0,0);} 33%{transform:translate(30px,-30px);} 66%{transform:translate(-20px,20px);} }
+        .stat-number { font-family: var(--font-mono); font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono); }
+        .tag-react { background: rgba(97,218,251,0.15); color: #61DAFB; }
+        .tag-ts { background: rgba(49,120,198,0.15); color: #3178C6; }
+        .tag-vite { background: rgba(255,109,0,0.15); color: #FF6D00; }
+        .tag-tailwind { background: rgba(56,189,248,0.15); color: #38BDF8; }
+        .tag-zustand { background: rgba(184,156,212,0.15); color: #B89CD4; }
+        .nav-dot { width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(184,156,212,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: all 0.3s; }
+        .nav-dot.active { background: var(--gradient-primary); color: white; box-shadow: 0 4px 16px rgba(184,156,212,0.4); }
+        .progress-bar { height: 6px; background: rgba(184,156,212,0.15); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-primary); border-radius: 3px; }
+        .chip { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.6875rem; font-weight: 600; }
+        .chip-primary { background: rgba(184,156,212,0.15); color: var(--color-primary); }
+        .chip-success { background: rgba(126,188,166,0.15); color: var(--color-mint); }
+        .chip-warning { background: rgba(232,200,122,0.15); color: var(--color-amber); }
+        .btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 12px; background: var(--gradient-primary); color: white; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(184,156,212,0.3); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,156,212,0.4); }
+        .btn-secondary { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 12px; background: rgba(255,255,255,0.6); color: var(--text-primary); font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(184,156,212,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.8); }
+        .shadow-glow { box-shadow: 0 0 20px rgba(184,156,212,0.4); }
+
+        .knob-container { position: relative; width: 128px; height: 128px; border-radius: 50%; background: linear-gradient(145deg, #ffffff, #e6e6e6); box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff; cursor: pointer; user-select: none; }
+        .knob-container.dragging { box-shadow: 4px 4px 8px #d1d1d1, -4px -4px 8px #ffffff; }
+        .knob-pointer { position: absolute; top: 8px; left: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); transform: translateX(-50%) rotate(60deg) translateY(-40px); transition: transform 0.1s ease-out; }
+        .knob-container.dragging .knob-pointer { transition: none; }
+        .knob-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .knob-value { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--color-primary); text-align: center; width: 3.5rem; border: none; background: transparent; outline: none; }
+        .knob-value.error { color: #EF4444; }
+
+        .knowledge-nav { transition: width 0.3s ease-in-out; overflow: hidden; }
+        .knowledge-nav.collapsed { width: 56px; }
+        .knowledge-nav.expanded { width: 256px; }
+        .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .nav-item:hover { background: var(--color-primary-light); }
+        .nav-item.active { background: var(--gradient-primary); color: white; }
     </style>
 </head>
 <body>
 
-<!-- Hero -->
 <section style="position: relative; padding: 80px 24px 60px; overflow: hidden;">
-    <div class="hero-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+    <div style="position: absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; z-index:0;">
+        <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
     </div>
-    <div style="position: relative; z-index: 1; max-width: 800px; margin: 0 auto; text-align: center;">
-        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(184,156,212,0.2); margin-bottom: 24px;">
-            <span class="pulse-dot"></span>
-            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary);">Vite + React + TypeScript 重构版</span>
+    <div style="position: relative; z-index:1; max-width:800px; margin:0 auto; text-align:center;">
+        <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:999px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border:1px solid rgba(184,156,212,0.2); margin-bottom:24px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#7EBCA6;animation:pulse 2s infinite;"></span>
+            <span style="font-size:0.8125rem;font-weight:600;color:var(--text-secondary);">Vite + React + TypeScript 重构版</span>
         </div>
-        <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;">
-            <span class="gradient-text">RiffCoach</span>
-        </h1>
-        <p style="font-size: 1.25rem; color: var(--text-secondary); font-weight: 500; max-width: 560px; margin: 0 auto 16px;">
-            把喜欢的歌，拆成每天能练的任务。
-        </p>
-        <p style="font-size: 1rem; color: var(--text-tertiary); max-width: 480px; margin: 0 auto 32px;">
-            面向业余吉他学习者的 AI 高效练习教练。每天只有 20 分钟，也能离你的 cover 目标更近一步。
-        </p>
-        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-            <a href="./index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 14px; background: var(--gradient-primary); color: white; font-weight: 700; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 8px 24px rgba(184, 156, 212, 0.35);">
-                在线体验
-            </a>
-            <a href="https://github.com/asandstar/RiffCoach" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 14px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); color: var(--text-primary); font-weight: 600; text-decoration: none; font-size: 0.9375rem; border: 1px solid rgba(184,156,212,0.2);">
-                GitHub 仓库
-            </a>
+        <h1 style="font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;"><span class="gradient-text">RiffCoach</span></h1>
+        <p style="font-size:1.25rem;color:var(--text-secondary);font-weight:500;max-width:560px;margin:0 auto 16px;">把喜欢的歌，拆成每天能练的任务。</p>
+        <p style="font-size:1rem;color:var(--text-tertiary);max-width:480px;margin:0 auto 32px;">面向业余吉他学习者的 AI 高效练习教练。每天只有 20 分钟，也能离你的 cover 目标更近一步。</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <a href="./dist/index.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:14px;background:var(--gradient-primary);color:white;font-weight:700;text-decoration:none;font-size:0.9375rem;box-shadow:0 8px 24px rgba(184,156,212,0.35);">在线体验</a>
+            <a href="https://github.com/asandstar/RiffCoach" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:14px;background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);color:var(--text-primary);font-weight:600;text-decoration:none;font-size:0.9375rem;border:1px solid rgba(184,156,212,0.2);">GitHub 仓库</a>
         </div>
-        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 24px;">
-            <span class="tag tag-react">React 18</span>
-            <span class="tag tag-ts">TypeScript</span>
-            <span class="tag tag-vite">Vite 5</span>
-            <span class="tag tag-tailwind">Tailwind CSS 3</span>
-            <span class="tag tag-zustand">Zustand</span>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+            <span class="tag tag-react">React 18</span><span class="tag tag-ts">TypeScript</span><span class="tag tag-vite">Vite 5</span><span class="tag tag-tailwind">Tailwind CSS 3</span><span class="tag tag-zustand">Zustand</span>
         </div>
     </div>
 </section>
 
-<!-- 核心价值 -->
-<section style="max-width: 760px; margin: 0 auto; padding: 20px 24px 40px;">
-    <div class="glass-elevated section-fade" style="padding: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px;">为什么做这个？</h2>
-        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.8; margin: 0 0 16px;">
-            作为一个自学吉他和 ukulele 的人，我发现最大的问题不是没有教程——B站上有无数好视频——
-            而是<strong style="color: var(--text-primary);">没有结构化的练习追踪和智能计划</strong>。
-        </p>
-        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.8; margin: 0;">
-            看了很多教程，但不知道自己练了什么、练了多久、哪里卡住了。
-            RiffCoach 就是为了填补这个空白：<strong style="color: var(--text-primary);">AI 帮你把视频教程和 cover 目标拆成每天能练的任务</strong>，
-            根据你的可用时间、练习历史、BPM 和卡点，生成最小有效练习计划。
-        </p>
+<section style="max-width:760px;margin:0 auto;padding:20px 24px 40px;">
+    <div class="glass-elevated" style="padding:40px;">
+        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:16px;">为什么做这个？</h2>
+        <p style="color:var(--text-secondary);font-size:1.0625rem;line-height:1.8;margin:0 0 16px;">作为一个自学吉他和 ukulele 的人，我发现最大的问题不是没有教程——B站上有无数好视频——而是<strong style="color:var(--text-primary);">没有结构化的练习追踪和智能计划</strong>。</p>
+        <p style="color:var(--text-secondary);font-size:1.0625rem;line-height:1.8;margin:0;">RiffCoach 填补了这个空白：<strong style="color:var(--text-primary);">AI 帮你把视频教程和 cover 目标拆成每天能练的任务</strong>，根据你的可用时间、练习历史、BPM 和卡点，生成最小有效练习计划。</p>
     </div>
 </section>
 
-<!-- 统计数据 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 20px 24px 60px;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">9</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">页面组件</div>
-        </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">6</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">基础组件</div>
-        </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">8</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">视频教程</div>
-        </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">12+</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">知识库条目</div>
-        </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">3</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">支持乐器</div>
-        </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">100%</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">本地存储</div>
-        </div>
+<section style="max-width:800px;margin:0 auto;padding:20px 24px 60px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;">
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">9</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">页面组件</div></div>
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">6</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">基础组件</div></div>
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">8</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">视频教程</div></div>
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">12+</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">知识库条目</div></div>
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">3</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">支持乐器</div></div>
+        <div class="glass" style="padding:28px 20px;text-align:center;"><div class="stat-number" style="font-size:2.5rem;">100%</div><div style="font-size:0.8125rem;color:var(--text-tertiary);margin-top:8px;font-weight:600;">本地存储</div></div>
     </div>
 </section>
 
-<!-- 底部导航预览 -->
-<section style="max-width: 760px; margin: 0 auto; padding: 20px 24px 40px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 12px;">核心导航</h2>
-    <p style="text-align: center; color: var(--text-tertiary); margin-bottom: 24px;">5 个入口，职责清晰</p>
-    <div class="glass-elevated section-fade" style="padding: 32px;">
-        <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px;">
-            <div class="nav-dot active">🏠</div>
-            <div class="nav-dot">🎸</div>
-            <div class="nav-dot">📚</div>
-            <div class="nav-dot">📊</div>
-            <div class="nav-dot">👤</div>
+<section style="max-width:760px;margin:0 auto;padding:20px 24px 40px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:12px;">核心导航</h2>
+    <p style="text-align:center;color:var(--text-tertiary);margin-bottom:24px;">5 个底部入口，职责清晰</p>
+    <div class="glass-elevated" style="padding:32px;">
+        <div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:20px;">
+            <div class="nav-dot active">🏠</div><div class="nav-dot">🎸</div><div class="nav-dot">📚</div><div class="nav-dot">📊</div><div class="nav-dot">👤</div>
         </div>
-        <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 24px;">
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">今日</span>
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">Cover</span>
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">资料</span>
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">复盘</span>
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">我的</span>
+        <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:24px;">
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">今日</span>
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">Cover</span>
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">资料</span>
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">复盘</span>
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">我的</span>
         </div>
-        <div style="display: grid; gap: 8px; font-size: 0.8125rem; color: var(--text-secondary);">
+        <div style="display:grid;gap:8px;font-size:0.8125rem;color:var(--text-secondary);">
             <div><strong>今日</strong> — AI 高效练习计划，每天打开就知道今天练什么</div>
             <div><strong>Cover</strong> — 管理想 cover 的歌曲目标和段落进度</div>
-            <div><strong>资料</strong> — 视频教程、素材篮、已整理练习、知识库搜索</div>
+            <div><strong>资料</strong> — 视频教程、素材篮、已整理练习</div>
             <div><strong>复盘</strong> — 本周练习、BPM、卡点、Cover 进度</div>
-            <div><strong>我的</strong> — 日历、知识库入口、设置、导入导出、演示数据</div>
+            <div><strong>我的</strong> — 日历、<strong>知识库入口</strong>、设置、导入导出、演示数据</div>
         </div>
     </div>
 </section>
 
-<!-- 功能详解 -->
-<section id="features" style="max-width: 900px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 12px;">核心功能详解</h2>
-    <p style="text-align: center; color: var(--text-tertiary); margin-bottom: 40px;">AI 驱动的完整练习工作流</p>
+<section style="max-width:900px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:2rem;font-weight:800;text-align:center;margin-bottom:12px;">核心功能详解</h2>
+    <p style="text-align:center;color:var(--text-tertiary);margin-bottom:40px;">AI 驱动的完整练习工作流</p>
 
-    <!-- AI 高效练习计划 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">✨</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">AI 高效练习计划</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">根据今日可用时间、精力状态、Cover 目标和最近卡点，生成最小有效练习计划</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">✨</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">AI 高效练习计划</h3><p style="font-size:0.875rem;color:var(--text-secondary);">根据今日可用时间、精力状态、Cover 目标和最近卡点，生成最小有效练习计划</p></div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div>
-                <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">智能规则</h4>
-                <ul style="font-size: 0.8125rem; color: var(--text-secondary); padding-left: 16px; margin: 0; line-height: 1.8;">
-                    <li>少于 15 分钟：只安排一个最重要卡点</li>
-                    <li>20-30 分钟：热身 + 卡点专项 + 串联 + 复盘</li>
-                    <li>超过 40 分钟：完整训练 + 录音 + 复盘</li>
-                    <li>状态很累/手指酸：不建议冲 BPM</li>
-                    <li>有 Cover 项目：优先选择最高进度未完成段落</li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">输出内容</h4>
-                <ul style="font-size: 0.8125rem; color: var(--text-secondary); padding-left: 16px; margin: 0; line-height: 1.8;">
-                    <li>今日最小有效目标</li>
-                    <li>为什么今天练这个</li>
-                    <li>分步骤计划（时长 + BPM + 说明）</li>
-                    <li>今天不建议做什么</li>
-                    <li>完成标准</li>
-                </ul>
-            </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+            <div><h4 style="font-size:0.9375rem;font-weight:700;margin-bottom:8px;">智能规则</h4><ul style="font-size:0.8125rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;"><li>少于 15 分钟：只安排一个最重要卡点</li><li>20-30 分钟：热身 + 卡点专项 + 串联 + 复盘</li><li>超过 40 分钟：完整训练 + 录音 + 复盘</li><li>状态很累/手指酸：不建议冲 BPM</li><li>有 Cover 项目：优先选择最高进度未完成段落</li></ul></div>
+            <div><h4 style="font-size:0.9375rem;font-weight:700;margin-bottom:8px;">输出内容</h4><ul style="font-size:0.8125rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;"><li>今日最小有效目标</li><li>为什么今天练这个</li><li>分步骤计划（时长 + BPM + 说明）</li><li>今天不建议做什么</li><li>完成标准</li></ul></div>
         </div>
-        <div class="mockup" style="margin-top: 16px;">
-            <div class="mockup-card">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 4px;">今日最小有效目标</div>
-                <div style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">Intro Riff 第 2 小节在 70 BPM 连续 3 遍不卡顿</div>
-            </div>
-            <div class="mockup-card">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 8px;">练习步骤</div>
-                <div style="display: grid; gap: 6px; font-size: 0.75rem;">
-                    <div>3 分钟 — 空弦交替拨弦 60 BPM</div>
-                    <div>8 分钟 — 第 2 小节换弦循环 65 BPM</div>
-                    <div>6 分钟 — Intro 第 1 到 2 小节串联 70 BPM</div>
-                    <div>3 分钟 — 复盘并记录最高干净 BPM</div>
-                </div>
-            </div>
-            <span class="mockup-btn">一键开始练习</span>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:8px;"><div style="font-size:0.75rem;color:var(--text-tertiary);margin-bottom:4px;">今日最小有效目标</div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">Intro Riff 第 2 小节在 70 BPM 连续 3 遍不卡顿</div></div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:8px;"><div style="font-size:0.75rem;color:var(--text-tertiary);margin-bottom:8px;">练习步骤</div><div style="display:grid;gap:6px;font-size:0.75rem;"><div>3 分钟 — 空弦交替拨弦 60 BPM</div><div>8 分钟 — 第 2 小节换弦循环 65 BPM</div><div>6 分钟 — Intro 第 1 到 2 小节串联 70 BPM</div><div>3 分钟 — 复盘并记录最高干净 BPM</div></div></div>
+            <div style="display:inline-block;padding:6px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;color:white;background:var(--gradient-primary);">一键开始练习</div>
         </div>
     </div>
 
-    <!-- Cover 目标管理 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--gradient-amber); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">🎸</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">Cover 目标管理</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">把喜欢的歌拆成可追踪的段落进度</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#F0D8A8,#E8C87A);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">🎸</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">Cover 目标管理</h3><p style="font-size:0.875rem;color:var(--text-secondary);">把喜欢的歌拆成可追踪的段落进度</p></div>
         </div>
-        <div class="mockup">
-            <div class="mockup-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-size: 0.875rem; font-weight: 700;">Demo Song Intro Riff</div>
-                    <span class="mockup-chip active">电吉他</span>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-size:0.875rem;font-weight:700;">Demo Song Intro Riff</div><span style="padding:4px 10px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:var(--gradient-primary);color:white;">电吉他</span></div>
+                <div style="font-size:0.75rem;color:var(--text-tertiary);margin-bottom:8px;">总进度 53%</div>
+                <div class="progress-bar" style="margin-bottom:12px;"><div class="progress-fill" style="width:53%;"></div></div>
+                <div style="display:grid;gap:6px;font-size:0.75rem;">
+                    <div style="display:flex;justify-content:space-between;"><span>Intro Riff</span><span style="color:var(--color-mint);">65% · 75 BPM</span></div>
+                    <div style="display:flex;justify-content:space-between;"><span>Verse Rhythm</span><span style="color:var(--color-amber);">35% · 60 BPM</span></div>
+                    <div style="display:flex;justify-content:space-between;"><span>Full Run</span><span style="color:var(--text-tertiary);">10% · 0 BPM</span></div>
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 8px;">总进度 53%</div>
-                <div class="progress-bar" style="margin-bottom: 12px;">
-                    <div class="progress-fill" style="width: 53%;"></div>
-                </div>
-                <div style="display: grid; gap: 6px; font-size: 0.75rem;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Intro Riff</span>
-                        <span style="color: var(--color-mint);">65% · 75 BPM</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Verse Rhythm</span>
-                        <span style="color: var(--color-amber);">35% · 60 BPM</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Full Run</span>
-                        <span style="color: var(--text-tertiary);">10% · 0 BPM</span>
-                    </div>
-                </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;color:white;background:var(--gradient-primary);">✨ AI 拆解练习路径</div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;color:var(--text-primary);background:rgba(255,255,255,0.6);">▶ 继续练习</div>
             </div>
         </div>
     </div>
 
-    <!-- 资料中心 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--gradient-mint); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">📚</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">资料中心</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">视频教程、素材篮、已整理练习一站式管理</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#B8D8C8,#7EBCA6);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">📚</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">资料中心</h3><p style="font-size:0.875rem;color:var(--text-secondary);">4 个标签页：最近使用、素材篮、视频教程、已整理练习</p></div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
-            <div style="padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">最近使用</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">最近打开的视频和知识点</div>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="display:flex;gap:2;margin-bottom:12px;overflow-x:auto;">
+                <div style="flex-shrink:0;padding:8px 16px;border-radius:999px;font-size:0.8125rem;font-weight:600;background:var(--gradient-primary);color:white;">🕐 最近使用</div>
+                <div style="flex-shrink:0;padding:8px 16px;border-radius:999px;font-size:0.8125rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);">📁 素材篮</div>
+                <div style="flex-shrink:0;padding:8px 16px;border-radius:999px;font-size:0.8125rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);">▶ 视频教程</div>
+                <div style="flex-shrink:0;padding:8px 16px;border-radius:999px;font-size:0.8125rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);">📖 已整理练习</div>
             </div>
-            <div style="padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">素材篮</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">未整理 / 已整理 / 已转为练习</div>
-            </div>
-            <div style="padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">视频教程</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">8 个内置视频，AI 摘要 + 技能标签</div>
-            </div>
-            <div style="padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">已整理练习</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">已转成练习任务的课程</div>
-            </div>
-        </div>
-        <div class="mockup">
-            <div class="mockup-card">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 8px;">快速添加</div>
-                <div style="background: rgba(255,255,255,0.6); border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 8px;">
-                    粘贴 B站 / YouTube 链接，或搜索：爬格子、交替拨弦、五声音阶
-                </div>
-                <div style="display: flex; gap: 8px;">
-                    <span class="mockup-btn">快速添加</span>
-                    <span class="mockup-chip">AI 整理成练习任务</span>
-                </div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:8px;padding:8px 12px;font-size:0.75rem;color:var(--text-tertiary);margin-bottom:12px;">粘贴 B站 / YouTube 链接，或搜索：爬格子、交替拨弦、五声音阶</div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;">
+                <div style="display:flex;gap:8px;"><div style="width:64px;height:36px;border-radius:8px;background:#333;display:flex;align-items:center;justify-content:center;color:white;">▶</div><div style="flex:1;"><div style="font-size:0.8125rem;font-weight:600;color:var(--text-primary);">电吉他入门：交替拨弦基础练习</div><div style="display:flex;gap:4;margin-top:4px;"><span style="font-size:0.625rem;padding:2px 8px;border-radius:999px;background:rgba(184,156,212,0.12);color:var(--color-primary);">拨弦</span><span style="font-size:0.625rem;padding:2px 8px;border-radius:999px;background:rgba(184,156,212,0.12);color:var(--color-primary);">基本功</span></div></div></div>
             </div>
         </div>
     </div>
 
-    <!-- 视频学习页 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--gradient-ukulele); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">🎬</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">视频学习页</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">B站嵌入 + AI 摘要 + 选集切换 + 建议练习</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#FFF5E6,#F0D8A8);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">⚡</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">练习工具 + BPM 旋钮</h3><p style="font-size:0.875rem;color:var(--text-secondary);">完整练习工具面板：计时器、节拍器、<strong>BPM 旋转调节</strong>、自评、卡点标签</p></div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div>
-                <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">视频关键信息卡</h4>
-                <ul style="font-size: 0.8125rem; color: var(--text-secondary); padding-left: 16px; margin: 0; line-height: 1.8;">
-                    <li>AI 摘要</li>
-                    <li>适合阶段 + 难度</li>
-                    <li>关键技能标签</li>
-                    <li>建议练习方式 + 推荐 BPM</li>
-                    <li>建议拆分任务</li>
-                    <li>所属 Cover 项目 + 段落</li>
-                </ul>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+            <div style="background:#F0EEF5;border-radius:16px;padding:20px;border:1px solid rgba(184,156,212,0.15);">
+                <div style="text-align:center;margin-bottom:16px;"><div id="practice-timer" style="font-size:3rem;font-weight:700;font-family:var(--font-mono);color:var(--color-primary);">00:25</div></div>
+                <div style="display:flex;justify-content:center;gap:16px;margin-bottom:16px;">
+                    <button onclick="skipBackward()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;cursor:pointer;">⏪</button>
+                    <button onclick="toggleTimer()" id="play-btn" style="width:64px;height:64px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 8px 24px rgba(184,156,212,0.35);cursor:pointer;">▶</button>
+                    <button onclick="skipForward()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;cursor:pointer;">⏩</button>
+                </div>
+                <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+                    <button onclick="setTimePoint(5)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">5分</button>
+                    <button onclick="setTimePoint(10)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">10分</button>
+                    <button onclick="setTimePoint(15)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">15分</button>
+                    <button onclick="setTimePoint(20)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">20分</button>
+                    <button onclick="setTimePoint(30)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">30分</button>
+                    <button onclick="setTimePoint(45)" style="padding:6px 12px;border-radius:999px;font-size:0.6875rem;font-weight:600;background:rgba(255,255,255,0.6);color:var(--text-secondary);cursor:pointer;">45分</button>
+                </div>
             </div>
-            <div>
-                <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">选集切换</h4>
-                <ul style="font-size: 0.8125rem; color: var(--text-secondary); padding-left: 16px; margin: 0; line-height: 1.8;">
-                    <li>自动获取 B站选集</li>
-                    <li>获取失败可手动输入 P 数</li>
-                    <li>切换后 iframe 自动更新</li>
-                    <li>当前选集高亮</li>
-                    <li>保存 page 到 localStorage</li>
-                    <li>多代理 CORS 兜底</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- 目录式知识库 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #F0F4FF, #8BA4C7); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">📖</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">目录式知识库</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">适合高频查阅的目录式结构</p>
-            </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div class="mockup">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 8px;">桌面端</div>
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 8px;">
-                    <div style="font-size: 0.6875rem;">
-                        <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 4px;">电吉他</div>
-                        <div style="padding-left: 8px; color: var(--text-secondary);">入门</div>
-                        <div style="padding-left: 8px; color: var(--text-secondary);">基本功</div>
-                        <div style="padding-left: 8px; color: var(--text-primary); font-weight: 600;">技巧</div>
-                        <div style="padding-left: 8px; color: var(--text-secondary);">乐理</div>
+            <div style="background:#F0EEF5;border-radius:16px;padding:20px;border:1px solid rgba(184,156,212,0.15);">
+                <div style="text-align:center;margin-bottom:16px;"><div style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">BPM 调节 — 拖拽旋转调节</div></div>
+                <div style="display:flex;justify-content:center;margin-bottom:16px;">
+                    <div id="bpm-knob" class="knob-container">
+                        <svg viewBox="0 0 100 100" style="position:absolute;inset:8px;width:112px;height:112px;">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" stroke-dasharray="283" transform="rotate(-135 50 50)" />
+                            <circle id="knob-progress" cx="50" cy="50" r="45" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round" stroke-dasharray="180 283" transform="rotate(-135 50 50)" />
+                        </svg>
+                        <div id="knob-pointer" class="knob-pointer"></div>
+                        <div class="knob-center">
+                            <input id="knob-input" type="number" class="knob-value" value="100" min="40" max="200" />
+                            <span style="font-size:0.75rem;color:var(--text-tertiary);">BPM</span>
+                        </div>
                     </div>
-                    <div style="font-size: 0.6875rem;">
-                        <div style="font-weight: 700; margin-bottom: 4px;">推弦</div>
-                        <div style="color: var(--text-tertiary);">一句话解释</div>
-                        <div style="color: var(--text-tertiary);">适合阶段</div>
-                        <div style="color: var(--text-tertiary);">常见错误</div>
+                </div>
+                <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;">
+                    <button onclick="adjustBpm(-1)" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;cursor:pointer;">-</button>
+                    <button onclick="adjustBpm(1)" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;cursor:pointer;">+</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-tertiary);">40 <span>BPM</span> 200</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);">12</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">重复次数</div></div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-amber);">★★★☆☆</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">自评</div></div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-mint);">♪</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">节拍器</div></div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-primary);">2</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">卡点标签</div></div>
+        </div>
+    </div>
+
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#F0F4FF,#8BA4C7);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">📖</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">目录式知识库</h3><p style="font-size:0.875rem;color:var(--text-secondary);">左侧可折叠导航栏（状态记忆），双层分类（乐器 + 知识），条目详情完整展示</p></div>
+        </div>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="display:flex;gap:16px;">
+                <div id="knowledge-nav" class="knowledge-nav expanded" style="flex-shrink:0;">
+                    <div class="glass" style="padding:12px;">
+                        <div style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">乐器分类</div>
+                        <div class="space-y-2">
+                            <div class="nav-item active" onclick="selectInstrument('all')">
+                                <span style="font-size:1rem;">🎸</span><span style="font-size:0.75rem;">全部</span>
+                            </div>
+                            <div class="nav-item" onclick="selectInstrument('electric')">
+                                <span style="font-size:1rem;">⚡</span><span style="font-size:0.75rem;">电吉他</span>
+                            </div>
+                            <div class="nav-item" onclick="selectInstrument('acoustic')">
+                                <span style="font-size:1rem;">🌲</span><span style="font-size:0.75rem;">木吉他</span>
+                            </div>
+                            <div class="nav-item" onclick="selectInstrument('ukulele')">
+                                <span style="font-size:1rem;">🌺</span><span style="font-size:0.75rem;">尤克里里</span>
+                            </div>
+                        </div>
+                        <div style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-top:12px;margin-bottom:8px;">知识分类</div>
+                        <div class="space-y-2">
+                            <div class="nav-item" onclick="selectCategory('basics')">
+                                <span style="font-size:1rem;">📚</span><span style="font-size:0.75rem;">入门</span>
+                            </div>
+                            <div class="nav-item" onclick="selectCategory('practice')">
+                                <span style="font-size:1rem;">💪</span><span style="font-size:0.75rem;">基本功</span>
+                            </div>
+                            <div class="nav-item active" onclick="selectCategory('technique')">
+                                <span style="font-size:1rem;">🎯</span><span style="font-size:0.75rem;">技巧</span>
+                            </div>
+                            <div class="nav-item" onclick="selectCategory('theory')">
+                                <span style="font-size:1rem;">🎼</span><span style="font-size:0.75rem;">乐理</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                        <div><span style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">全部 · 技巧</span></div>
+                        <button onclick="toggleKnowledgeNav()" style="padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.6);cursor:pointer;font-size:0.75rem;">
+                            <span id="nav-toggle-icon">◀ 收起</span>
+                        </button>
+                    </div>
+                    <div id="knowledge-content" style="background:rgba(255,255,255,0.6);border-radius:12px;padding:16px;">
+                        <div style="font-size:1.25rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">推弦</div>
+                        <div style="font-size:0.8125rem;color:var(--text-secondary);margin-bottom:12px;">推弦是电吉他最具表现力的技巧之一，通过弯曲琴弦改变音高。</div>
+                        <div style="display:flex;gap:8px;margin-bottom:12px;">
+                            <span class="chip chip-success">进阶</span>
+                            <span style="font-size:0.75rem;color:var(--text-tertiary);">难度 ★★★☆☆</span>
+                            <span class="chip chip-primary">电吉他</span>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <div style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">常见错误</div>
+                            <div style="display:flex;flex-wrap:gap:4px;">
+                                <span class="chip chip-warning">推弦不够准</span>
+                                <span class="chip chip-warning">手腕僵硬</span>
+                                <span class="chip chip-warning">手指发力不对</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">练习建议</div>
+                            <div style="font-size:0.75rem;color:var(--text-tertiary);">从半音推弦开始，慢慢练习全音推弦，配合节拍器</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div>
-                <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">知识点详情</h4>
-                <ul style="font-size: 0.8125rem; color: var(--text-secondary); padding-left: 16px; margin: 0; line-height: 1.8;">
-                    <li>标题 + 一句话解释</li>
-                    <li>适合阶段 + 关联技能</li>
-                    <li>常见错误 + 练习建议</li>
-                    <li>可加入练习按钮</li>
-                    <li>相关视频按钮</li>
-                    <li>相关 Cover 段落按钮</li>
-                </ul>
+        </div>
+    </div>
+
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#FFF0F5,#E8B8C4);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">🤖</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">AI 练后反馈</h3><p style="font-size:0.875rem;color:var(--text-secondary);">练习完成后 AI 给出总结和建议，区分尝试 BPM 和最高干净 BPM</p></div>
+        </div>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:8px;">
+                <div style="font-size:0.75rem;color:var(--text-tertiary);margin-bottom:4px;">今日总结</div>
+                <div style="font-size:0.8125rem;color:var(--text-primary);">你今天在 75 BPM 已经能完成 Intro Riff，但节奏不稳仍然集中在换弦处。</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:0.6875rem;color:var(--text-tertiary);">尝试 BPM</div><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);">75</div></div>
+                <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:0.6875rem;color:var(--text-tertiary);">最高干净 BPM</div><div style="font-size:1.5rem;font-weight:700;color:var(--color-primary);">70</div></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;">
+                <div style="font-size:0.75rem;color:var(--text-tertiary);margin-bottom:4px;">下次练习计划</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);">先回到 70 BPM，循环练第 2 小节 5 分钟</div>
             </div>
         </div>
     </div>
 
-    <!-- AI 练后反馈 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #FFF0F5, #E8B8C4); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">🤖</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">AI 练后反馈</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">练习完成后 AI 给出总结和建议</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#F5F0FF,#D4C4E8);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">🎬</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">视频学习页</h3><p style="font-size:0.875rem;color:var(--text-secondary);">B站嵌入 + AI 摘要 + 选集切换 + 建议练习方式</p></div>
         </div>
-        <div class="mockup">
-            <div class="mockup-card">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 4px;">今日总结</div>
-                <div style="font-size: 0.8125rem; color: var(--text-primary);">你今天在 75 BPM 已经能完成 Intro Riff，但节奏不稳仍然集中在换弦处。</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                <div class="mockup-card" style="margin: 0;">
-                    <div style="font-size: 0.6875rem; color: var(--text-tertiary);">尝试 BPM</div>
-                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">75</div>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="background:#333;border-radius:12px;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><div style="color:white;font-size:2rem;">▶</div></div>
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;">
+                <div style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">AI 摘要</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:8px;">本视频讲解了电吉他交替拨弦的基本技巧，包括拨片持法、手腕放松和节拍器配合练习。</div>
+                <div style="display:flex;flex-wrap:gap:4px;">
+                    <span class="chip chip-primary">拨弦</span>
+                    <span class="chip chip-primary">基本功</span>
+                    <span class="chip chip-primary">右手</span>
                 </div>
-                <div class="mockup-card" style="margin: 0;">
-                    <div style="font-size: 0.6875rem; color: var(--text-tertiary);">最高干净 BPM</div>
-                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">70</div>
-                </div>
-            </div>
-            <div class="mockup-card">
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 4px;">下次练习计划</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">先回到 70 BPM，循环练第 2 小节 5 分钟</div>
             </div>
         </div>
     </div>
 
-    <!-- 周复盘 -->
-    <div class="glass-elevated feature-card section-fade" style="padding: 32px;">
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #F5FFF0, #C8E8B8); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;">📅</div>
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">周复盘</h3>
-                <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">本周练习数据一目了然</p>
-            </div>
+    <div class="glass-elevated" style="padding:32px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#F5FFF0,#C8E8B8);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">📅</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">周复盘</h3><p style="font-size:0.875rem;color:var(--text-secondary);">本周练习数据一目了然</p></div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);">125</div>
-                <div style="font-size: 0.6875rem; color: var(--text-tertiary);">总练习分钟</div>
-            </div>
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);">5</div>
-                <div style="font-size: 0.6875rem; color: var(--text-tertiary);">练习天数</div>
-            </div>
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-amber);">68</div>
-                <div style="font-size: 0.6875rem; color: var(--text-tertiary);">平均 BPM</div>
-            </div>
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.4); border-radius: 12px;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-mint);">53%</div>
-                <div style="font-size: 0.6875rem; color: var(--text-tertiary);">Cover 进度</div>
-            </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">
+            <div style="text-align:center;padding:16px;background:rgba(255,255,255,0.4);border-radius:12px;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-primary);">125</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">总练习分钟</div></div>
+            <div style="text-align:center;padding:16px;background:rgba(255,255,255,0.4);border-radius:12px;"><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);">5</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">练习天数</div></div>
+            <div style="text-align:center;padding:16px;background:rgba(255,255,255,0.4);border-radius:12px;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-amber);">68</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">平均 BPM</div></div>
+            <div style="text-align:center;padding:16px;background:rgba(255,255,255,0.4);border-radius:12px;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-mint);">53%</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">Cover 进度</div></div>
         </div>
     </div>
 </section>
 
-<!-- 使用流程 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">完整使用流程</h2>
-    <div class="glass-elevated section-fade" style="padding: 32px;">
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">1</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">添加资料</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">粘贴 B站链接或标题，选择用途（关联 Cover / 收藏 / 基础练习），快速加入素材篮。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">2</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">AI 整理</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">AI 根据标题自动分析，生成 2-4 个建议练习任务，确认后进入已整理练习。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">3</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">生成计划</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">今日页选择可用时间（10/20/30/45分钟）和精力状态，AI 生成最小有效练习计划。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">4</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">开始练习</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">进入练习页，计时器 + 节拍器 + BPM + 卡点记录 + 备注，沉浸式练习。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">5</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">AI 反馈</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">完成练习后，AI 给出今日总结、尝试 BPM、最高干净 BPM、下次计划和 Cover 进度更新。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <div class="step-number">6</div>
-                <div>
-                    <strong style="font-size: 0.9375rem;">周复盘</strong>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">查看本周练习数据，追踪 Cover 进度，分析反复卡点，调整下周计划。</p>
-                </div>
-            </div>
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">完整使用流程</h2>
+    <div class="glass-elevated" style="padding:32px;">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div><div><strong style="font-size:0.9375rem;">添加资料</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">粘贴 B站链接或标题，选择用途（关联 Cover / 收藏 / 基础练习），快速加入素材篮。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div><div><strong style="font-size:0.9375rem;">AI 整理</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">AI 根据标题自动分析，生成 2-4 个建议练习任务，确认后进入已整理练习。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">3</div><div><strong style="font-size:0.9375rem;">生成计划</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">今日页选择可用时间（10/20/30/45分钟）和精力状态，AI 生成最小有效练习计划。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">4</div><div><strong style="font-size:0.9375rem;">开始练习</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">进入练习页，计时器 + 节拍器 + <strong>BPM 旋转旋钮</strong> + 卡点记录 + 备注，沉浸式练习。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">5</div><div><strong style="font-size:0.9375rem;">AI 反馈</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">完成练习后，AI 给出今日总结、尝试 BPM、最高干净 BPM、下次计划和 Cover 进度更新。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:white;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;">6</div><div><strong style="font-size:0.9375rem;">周复盘</strong><p style="font-size:0.875rem;color:var(--text-secondary);margin:4px 0 0;">查看本周练习数据，追踪 Cover 进度，分析反复卡点，调整下周计划。</p></div></div>
         </div>
     </div>
 </section>
 
-<!-- 项目结构 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">项目结构</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <div class="file-tree">
-<span class="dir">src/</span>
-├── <span class="dir">components/</span>          <span class="comment"># UI 组件</span>
-│   ├── <span class="file">GlassCard.tsx</span>    <span class="comment"># 玻璃拟态卡片</span>
-│   ├── <span class="file">BottomNav.tsx</span>    <span class="comment"># 底部导航</span>
-│   ├── <span class="file">PageShell.tsx</span>    <span class="comment"># 页面壳组件</span>
-│   ├── <span class="file">QuickAddMaterialSheet.tsx</span>  <span class="comment"># 快速添加资料弹窗</span>
-│   ├── <span class="file">VideoPlayerCard.tsx</span>        <span class="comment"># 视频播放器卡片</span>
-│   └── <span class="file">BpmKnob.tsx</span>      <span class="comment"># BPM 旋钮</span>
-├── <span class="dir">pages/</span>               <span class="comment"># 页面组件</span>
-│   ├── <span class="file">TodayPage.tsx</span>    <span class="comment"># 今日页（AI 高效练习计划）</span>
-│   ├── <span class="file">CoverPage.tsx</span>    <span class="comment"># Cover 目标管理</span>
-│   ├── <span class="file">ResourcePage.tsx</span> <span class="comment"># 资料中心</span>
-│   ├── <span class="file">VideoStudyPage.tsx</span> <span class="comment"># 视频学习页</span>
-│   ├── <span class="file">KnowledgePage.tsx</span> <span class="comment"># 目录式知识库</span>
-│   ├── <span class="file">PracticePage.tsx</span> <span class="comment"># 练习页</span>
-│   ├── <span class="file">AIFeedbackPage.tsx</span> <span class="comment"># AI 练后反馈</span>
-│   ├── <span class="file">ReviewPage.tsx</span>   <span class="comment"># 周复盘</span>
-│   └── <span class="file">MePage.tsx</span>       <span class="comment"># 我的页</span>
-├── <span class="dir">store/</span>
-│   └── <span class="file">useAppStore.ts</span>   <span class="comment"># Zustand 状态管理</span>
-├── <span class="dir">data/</span>
-│   ├── <span class="file">defaultData.ts</span>   <span class="comment"># 默认数据</span>
-│   └── <span class="file">demoData.ts</span>      <span class="comment"># 演示数据生成器</span>
-├── <span class="dir">utils/</span>
-│   ├── <span class="file">bilibili.ts</span>      <span class="comment"># B站工具函数</span>
-│   ├── <span class="file">date.ts</span>          <span class="comment"># 日期工具</span>
-│   └── <span class="file">aiMock.ts</span>        <span class="comment"># AI Mock 逻辑</span>
-├── <span class="dir">types/</span>
-│   └── <span class="file">index.ts</span>         <span class="comment"># TypeScript 类型定义</span>
-├── <span class="file">App.tsx</span>              <span class="comment"># 主应用组件</span>
-├── <span class="file">main.tsx</span>             <span class="comment"># 入口文件</span>
-└── <span class="file">index.css</span>            <span class="comment"># 全局样式</span>
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">项目结构</h2>
+    <div class="glass" style="padding:32px;font-family:var(--font-mono);font-size:0.8125rem;line-height:1.8;color:var(--text-secondary);">
+        <div><span style="color:var(--color-primary);font-weight:600;">src/</span></div>
+        <div>├── <span style="color:var(--color-primary);font-weight:600;">components/</span> <span style="color:var(--text-tertiary);font-style:italic;"># UI 组件</span></div>
+        <div>│   ├── GlassCard.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 玻璃拟态卡片</span></div>
+        <div>│   ├── BottomNav.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 底部导航</span></div>
+        <div>│   ├── PageShell.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 页面壳组件</span></div>
+        <div>│   ├── QuickAddMaterialSheet.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 快速添加资料弹窗</span></div>
+        <div>│   ├── VideoPlayerCard.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 视频播放器卡片</span></div>
+        <div>│   └── BpmKnob.tsx <span style="color:var(--text-tertiary);font-style:italic;"># BPM 旋转旋钮（270°拖拽）</span></div>
+        <div>├── <span style="color:var(--color-primary);font-weight:600;">pages/</span> <span style="color:var(--text-tertiary);font-style:italic;"># 页面组件</span></div>
+        <div>│   ├── TodayPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 今日页（AI 高效练习计划）</span></div>
+        <div>│   ├── CoverPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># Cover 目标管理</span></div>
+        <div>│   ├── ResourcePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 资料中心</span></div>
+        <div>│   ├── VideoStudyPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 视频学习页</span></div>
+        <div>│   ├── KnowledgePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 目录式知识库（可折叠导航）</span></div>
+        <div>│   ├── PracticePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 练习页（计时器+节拍器+BPM旋钮）</span></div>
+        <div>│   ├── AIFeedbackPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># AI 练后反馈</span></div>
+        <div>│   ├── ReviewPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 周复盘</span></div>
+        <div>│   └── MePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 我的页（含知识库入口）</span></div>
+        <div>├── <span style="color:var(--color-primary);font-weight:600;">store/</span></div>
+        <div>│   └── useAppStore.ts <span style="color:var(--text-tertiary);font-style:italic;"># Zustand 状态管理 + LocalStorage 持久化</span></div>
+        <div>├── <span style="color:var(--color-primary);font-weight:600;">utils/</span></div>
+        <div>│   ├── bilibili.ts <span style="color:var(--text-tertiary);font-style:italic;"># B站工具函数（BVID解析、选集获取）</span></div>
+        <div>│   ├── date.ts <span style="color:var(--text-tertiary);font-style:italic;"># 日期工具</span></div>
+        <div>│   └── aiMock.ts <span style="color:var(--text-tertiary);font-style:italic;"># AI Mock 逻辑（生成计划/反馈）</span></div>
+        <div>├── <span style="color:var(--color-primary);font-weight:600;">types/</span></div>
+        <div>│   └── index.ts <span style="color:var(--text-tertiary);font-style:italic;"># TypeScript 类型定义</span></div>
+        <div>├── App.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 主应用组件</span></div>
+        <div>├── main.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 入口文件</span></div>
+        <div>└── index.css <span style="color:var(--text-tertiary);font-style:italic;"># 全局样式（玻璃拟态设计系统）</span></div>
+    </div>
+</section>
+
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">技术架构</h2>
+    <div class="glass" style="padding:32px;">
+        <div style="display:grid;gap:16px;">
+            <div style="display:flex;align-items:flex-start;gap:16px;"><span class="tag tag-vite">Vite 5</span><div><strong style="font-size:0.9375rem;">Vite + React 18 + TypeScript</strong><p style="font-size:0.8125rem;color:var(--text-tertiary);margin:4px 0 0;">现代化前端工程化，极速 HMR，类型安全，ES Modules。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><span class="tag tag-zustand">Zustand</span><div><strong style="font-size:0.9375rem;">Zustand 状态管理</strong><p style="font-size:0.8125rem;color:var(--text-tertiary);margin:4px 0 0;">轻量级状态管理 + LocalStorage 持久化，支持旧数据迁移。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><span class="tag tag-tailwind">Tailwind</span><div><strong style="font-size:0.9375rem;">Tailwind CSS 3</strong><p style="font-size:0.8125rem;color:var(--text-tertiary);margin:4px 0 0;">原子化 CSS，自定义主题变量（浅紫/奶油/薄荷绿），玻璃拟态设计系统。</p></div></div>
+            <div style="display:flex;align-items:flex-start;gap:16px;"><span style="padding:4px 10px;border-radius:8px;font-size:0.75rem;font-weight:600;font-family:var(--font-mono);background:rgba(126,188,166,0.15);color:#7EBCA6;">Audio</span><div><strong style="font-size:0.9375rem;">Web Audio API</strong><p style="font-size:0.8125rem;color:var(--text-tertiary);margin:4px 0 0;">OscillatorNode 生成节拍器声音，零音频文件依赖。</p></div></div>
         </div>
     </div>
 </section>
 
-<!-- 技术架构 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">技术架构</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <div style="display: grid; gap: 16px;">
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span class="tag tag-vite">Vite 5</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">Vite + React 18 + TypeScript</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">现代化前端工程化，极速 HMR，类型安全，ES Modules。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span class="tag tag-zustand">Zustand</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">Zustand 状态管理</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">轻量级状态管理 + LocalStorage 持久化，支持旧数据迁移。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span class="tag tag-tailwind">Tailwind</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">Tailwind CSS 3</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">原子化 CSS，自定义主题变量（浅紫/奶油/薄荷绿），玻璃拟态设计系统。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span class="tag tag-react">Audio</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">Web Audio API</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">OscillatorNode 生成节拍器声音，零音频文件依赖。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span class="tag tag-ts">API</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">B站 API 集成</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">BVID 解析、播放器 URL 构建、选集获取（多代理 CORS 兜底）。</p>
-                </div>
-            </div>
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">功能路线图</h2>
+    <div class="glass" style="padding:32px;">
+        <div style="display:grid;gap:14px;">
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);">AI 高效练习计划</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);">Cover 目标管理 + 段落进度追踪</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);">资料中心（视频教程 + 素材篮 + 已整理练习）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);"><strong>BPM 旋转旋钮</strong>（270° 拖拽调节 + 手动输入）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);"><strong>目录式知识库</strong>（可折叠导航 + 双层分类）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);">AI 练后反馈（尝试 BPM / 最高干净 BPM）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">练习录音 + 波形可视化</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">社交分享（练习打卡 / Cover 成果）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">PWA 支持（离线使用 / 推送提醒）</span></div>
         </div>
     </div>
 </section>
 
-<!-- AI Mock 引擎 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">AI Mock 引擎</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0 0 16px;">
-            所有 AI 功能使用本地规则 Mock，代码结构支持后续替换为真实模型 API。
-        </p>
-        <div class="code-block">
-<span style="color: var(--color-primary);">// AI Mock 函数</span>
-generateEfficientPracticePlan(state, availableMinutes, energyState)
-generateCoverPracticePlan(project)
-generateAIFeedback(session, lesson, recentSessions, project)
-diagnosePainPoint(painPoint, detail)
-updateCoverProgressFromSession(session, lesson, state)
-analyzeMaterial(material, state)
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
-            <div style="padding: 12px; background: rgba(255,255,255,0.4); border-radius: 8px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">练习计划生成</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">基于时间、精力、Cover、卡点</div>
-            </div>
-            <div style="padding: 12px; background: rgba(255,255,255,0.4); border-radius: 8px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">练后反馈</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">区分尝试 BPM 和干净 BPM</div>
-            </div>
-            <div style="padding: 12px; background: rgba(255,255,255,0.4); border-radius: 8px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">资料分析</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">关键词匹配生成练习任务</div>
-            </div>
-            <div style="padding: 12px; background: rgba(255,255,255,0.4); border-radius: 8px;">
-                <div style="font-size: 0.8125rem; font-weight: 700; margin-bottom: 4px;">卡点诊断</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">追问细节 + 微练习建议</div>
-            </div>
+<section style="max-width:760px;margin:0 auto;padding:20px 24px 80px;">
+    <div class="glass-elevated" style="padding:40px;text-align:center;">
+        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:16px;">开始你的练习之旅</h2>
+        <p style="color:var(--text-secondary);font-size:1.0625rem;line-height:1.8;margin:0 0 24px;">每天 20 分钟，AI 陪你从新手到 cover 达人。</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <a href="./dist/index.html" class="btn-primary">在线体验</a>
+            <a href="https://github.com/asandstar/RiffCoach" class="btn-secondary">GitHub 仓库</a>
         </div>
     </div>
 </section>
-
-<!-- 数据结构 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">核心数据结构</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <div class="code-block">
-<span style="color: var(--color-primary);">// 核心类型</span>
-Lesson { id, title, targetBPM, instrument, bvid, projectId, sectionId }
-Session { id, lessonId, bpm, cleanBPM, painPoints, painPointDetails, aiFeedback }
-CoverProject { id, title, sections: [{ targetBPM, currentCleanBPM, progress }] }
-MaterialInboxItem { id, title, type, status, extracted: { suggestedTasks } }
-VideoResource { id, title, bvid, skills, summary, suggestedPractice, episodes }
-EfficientPracticePlan { target, reason, steps, avoid, completion }
-        </div>
-        <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 16px 0 0;">
-            所有数据存储在 localStorage，支持旧版本数据自动迁移。
-        </p>
-    </div>
-</section>
-
-<!-- 快速开始 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">快速开始</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <div class="code-block" style="margin-bottom: 16px;">
-# 克隆仓库<br>
-git clone https://github.com/asandstar/RiffCoach.git<br>
-cd RiffCoach
-        </div>
-        <div class="code-block" style="margin-bottom: 16px;">
-# 安装依赖<br>
-npm install
-        </div>
-        <div class="code-block" style="margin-bottom: 16px;">
-# 启动开发服务器<br>
-npm run dev
-        </div>
-        <div class="code-block">
-# 构建生产版本<br>
-npm run build
-        </div>
-        <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 16px 0 0;">
-            数据存储在浏览器 LocalStorage，无需后端服务，隐私安全。
-        </p>
-    </div>
-</section>
-
-<!-- 路线图 -->
-<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px 80px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">功能路线图</h2>
-    <div class="glass section-fade" style="padding: 32px;">
-        <div style="display: grid; gap: 14px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">AI 高效练习计划</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">Cover 目标管理 + 段落进度追踪</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">资料中心 + 素材篮 + AI 整理</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">视频学习页 + 选集切换 + AI 摘要</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">目录式知识库 + 练习工具</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">AI 练后反馈 + 周复盘</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">真实 AI API 接入</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">练习数据分析 + 可视化趋势</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">PWA 离线支持 + 移动端优化</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer style="padding: 40px 24px; text-align: center; border-top: 1px solid rgba(184, 156, 212, 0.15);">
-    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 0 0 8px;">
-        RiffCoach · AI 高效练习教练
-    </p>
-    <p style="font-size: 0.75rem; color: var(--text-tertiary); margin: 0;">
-        面向业余吉他学习者 · Vite + React + TypeScript · 本地优先 · 隐私安全
-    </p>
-</footer>
 
 <script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+    const MIN_BPM = 40;
+    const MAX_BPM = 200;
+    const ROTATION_RANGE = 270;
+    const START_ANGLE = -135;
+
+    let bpmValue = 100;
+    let isDragging = false;
+    let startAngle = 0;
+    let startValue = 0;
+
+    const knob = document.getElementById('bpm-knob');
+    const knobPointer = document.getElementById('knob-pointer');
+    const knobProgress = document.getElementById('knob-progress');
+    const knobInput = document.getElementById('knob-input');
+
+    function updateKnob(value) {
+        bpmValue = Math.max(MIN_BPM, Math.min(MAX_BPM, Math.round(value)));
+        const percentage = ((bpmValue - MIN_BPM) / (MAX_BPM - MIN_BPM)) * 100;
+        const rotation = START_ANGLE + (percentage / 100) * ROTATION_RANGE;
+        const progressLength = (percentage / 100) * 283;
+
+        knobPointer.style.transform = `translateX(-50%) rotate(${rotation}deg) translateY(-40px)`;
+        knobProgress.setAttribute('stroke-dasharray', `${progressLength} 283`);
+        knobInput.value = bpmValue;
+        knobInput.classList.remove('error');
+    }
+
+    function getAngle(clientX, clientY) {
+        if (!knob) return 0;
+        const rect = knob.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        return Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI);
+    }
+
+    function handleStart(clientX, clientY) {
+        isDragging = true;
+        startAngle = getAngle(clientX, clientY);
+        startValue = bpmValue;
+        knob.classList.add('dragging');
+    }
+
+    function handleMove(clientX, clientY) {
+        if (!isDragging) return;
+        
+        const currentAngle = getAngle(clientX, clientY);
+        let deltaAngle = currentAngle - startAngle;
+        
+        if (deltaAngle > 180) deltaAngle -= 360;
+        if (deltaAngle < -180) deltaAngle += 360;
+        
+        const valueDelta = (deltaAngle / ROTATION_RANGE) * (MAX_BPM - MIN_BPM);
+        updateKnob(startValue + valueDelta);
+    }
+
+    function handleEnd() {
+        isDragging = false;
+        knob.classList.remove('dragging');
+    }
+
+    if (knob) {
+        knob.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+        knob.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                handleStart(e.touches[0].clientX, e.touches[0].clientY);
             }
         });
-    }, { threshold: 0.1 });
+    }
 
-    document.querySelectorAll('.section-fade').forEach(el => observer.observe(el));
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+            handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    });
+    window.addEventListener('touchend', handleEnd);
+
+    window.adjustBpm = function(delta) {
+        updateKnob(bpmValue + delta);
+    };
+
+    if (knobInput) {
+        knobInput.addEventListener('change', () => {
+            const newValue = parseInt(knobInput.value, 10);
+            if (isNaN(newValue) || newValue < MIN_BPM || newValue > MAX_BPM) {
+                knobInput.classList.add('error');
+                setTimeout(() => {
+                    knobInput.classList.remove('error');
+                    knobInput.value = bpmValue;
+                }, 2000);
+            } else {
+                updateKnob(newValue);
+            }
+        });
+    }
+
+    updateKnob(100);
+
+    let isNavCollapsed = false;
+    const knowledgeNav = document.getElementById('knowledge-nav');
+    const navToggleIcon = document.getElementById('nav-toggle-icon');
+
+    window.toggleKnowledgeNav = function() {
+        isNavCollapsed = !isNavCollapsed;
+        if (isNavCollapsed) {
+            knowledgeNav.classList.remove('expanded');
+            knowledgeNav.classList.add('collapsed');
+            navToggleIcon.textContent = '展开 ▶';
+        } else {
+            knowledgeNav.classList.remove('collapsed');
+            knowledgeNav.classList.add('expanded');
+            navToggleIcon.textContent = '◀ 收起';
+        }
+    };
+
+    window.selectInstrument = function(id) {
+        const items = document.querySelectorAll('#knowledge-nav .nav-item');
+        items.forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    };
+
+    window.selectCategory = function(id) {
+        const items = document.querySelectorAll('#knowledge-nav .nav-item');
+        items.forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    };
+
+    let timerSeconds = 25;
+    let isTimerRunning = false;
+    let timerInterval = null;
+    const practiceTimer = document.getElementById('practice-timer');
+    const playBtn = document.getElementById('play-btn');
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    window.toggleTimer = function() {
+        isTimerRunning = !isTimerRunning;
+        playBtn.textContent = isTimerRunning ? '⏸' : '▶';
+        
+        if (isTimerRunning) {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                practiceTimer.textContent = formatTime(timerSeconds);
+            }, 1000);
+        } else {
+            clearInterval(timerInterval);
+        }
+    };
+
+    window.skipBackward = function() {
+        timerSeconds = Math.max(0, timerSeconds - 60);
+        practiceTimer.textContent = formatTime(timerSeconds);
+    };
+
+    window.skipForward = function() {
+        timerSeconds += 60;
+        practiceTimer.textContent = formatTime(timerSeconds);
+    };
+
+    window.setTimePoint = function(minutes) {
+        timerSeconds = minutes * 60;
+        practiceTimer.textContent = formatTime(timerSeconds);
+    };
 </script>
-
 </body>
 </html>
