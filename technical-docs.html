@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Practice Compass - 技术文档</title>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+        
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 60px;
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-links {
+            list-style: none;
+        }
+        
+        .sidebar-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-links a:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--primary);
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            max-width: 900px;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        code {
+            background: rgba(139, 92, 246, 0.1);
+            color: #c4b5fd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 0.875rem;
+        }
+        
+        pre {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: rgba(139, 92, 246, 0.1);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        td {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .file-link {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .file-link:hover {
+            text-decoration: underline;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .feature-item {
+            background: rgba(139, 92, 246, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .feature-item strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .feature-item p {
+            margin: 0;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1>String Practice Compass</h1>
+            <div class="nav-links">
+                <a href="#overview">概述</a>
+                <a href="#architecture">架构</a>
+                <a href="#features">功能</a>
+                <a href="#models">数据模型</a>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="sidebar-title">目录</div>
+        <ul class="sidebar-links">
+            <li><a href="#overview">1. 项目概述</a></li>
+            <li><a href="#architecture">2. 技术架构</a></li>
+            <li><a href="#features">3. 核心功能</a></li>
+            <li><a href="#models">4. 数据模型</a></li>
+            <li><a href="#store">5. 状态管理</a></li>
+            <li><a href="#optimization">6. 性能优化</a></li>
+            <li><a href="#responsive">7. 响应式设计</a></li>
+            <li><a href="#browser">8. 浏览器兼容性</a></li>
+            <li><a href="#build">9. 构建与部署</a></li>
+            <li><a href="#future">10. 未来方向</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <section id="overview" class="section">
+            <h2>1. 项目概述</h2>
+            
+            <h3>1.1 项目名称</h3>
+            <p>String Practice Compass（琴弦练习指南针）</p>
+            
+            <h3>1.2 项目定位</h3>
+            <p>一款智能乐器练习辅助工具，专为吉他、尤克里里学习者设计，提供精准计时、BPM控制、知识管理、视频学习等一体化练习解决方案。</p>
+            
+            <h3>1.3 核心价值</h3>
+            <ul>
+                <li>帮助乐器学习者高效管理练习时间</li>
+                <li>提供精准的速度控制和节奏训练</li>
+                <li>整合专业知识和教学资源</li>
+                <li>通过数据记录追踪学习进度</li>
+            </ul>
+        </section>
+
+        <section id="architecture" class="section">
+            <h2>2. 技术架构</h2>
+            
+            <h3>2.1 技术栈</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>层级</th>
+                        <th>技术</th>
+                        <th>版本</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>前端框架</td>
+                        <td>React</td>
+                        <td>18+</td>
+                        <td>UI组件开发</td>
+                    </tr>
+                    <tr>
+                        <td>语言</td>
+                        <td>TypeScript</td>
+                        <td>5+</td>
+                        <td>类型安全</td>
+                    </tr>
+                    <tr>
+                        <td>构建工具</td>
+                        <td>Vite</td>
+                        <td>5+</td>
+                        <td>快速构建</td>
+                    </tr>
+                    <tr>
+                        <td>样式</td>
+                        <td>Tailwind CSS</td>
+                        <td>3+</td>
+                        <td>原子化CSS</td>
+                    </tr>
+                    <tr>
+                        <td>状态管理</td>
+                        <td>Zustand</td>
+                        <td>4+</td>
+                        <td>轻量级状态管理</td>
+                    </tr>
+                    <tr>
+                        <td>图标</td>
+                        <td>Lucide React</td>
+                        <td>0.312+</td>
+                        <td>矢量图标库</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.2 项目结构</h3>
+            <pre><code>src/
+├── components/           # 通用组件
+│   ├── BpmKnob.tsx       # BPM旋钮控件
+│   ├── BottomNav.tsx     # 底部导航
+│   ├── GlassCard.tsx     # 玻璃拟态卡片
+│   └── VideoPlayerCard.tsx # 视频播放器卡片
+├── pages/                # 页面组件
+│   ├── PracticePage.tsx  # 练习页面
+│   ├── KnowledgePage.tsx # 知识库页面
+│   ├── ReviewPage.tsx    # 练习记录页面
+│   ├── CoverPage.tsx     # Cover目标页面
+│   └── TodayPage.tsx     # 今日首页
+├── store/                # 状态管理
+│   └── useAppStore.ts    # 全局状态
+├── data/                 # 默认数据
+│   └── defaultData.ts    # 默认知识库、视频等数据
+├── utils/                # 工具函数
+│   ├── bilibili.ts       # B站API封装
+│   ├── aiMock.ts         # AI反馈模拟
+│   └── date.ts           # 日期时间工具
+├── types/                # TypeScript类型定义
+│   └── index.ts          # 全局类型
+├── App.tsx               # 主应用组件
+├── main.tsx              # 入口文件
+└── index.css             # 全局样式</code></pre>
+        </section>
+
+        <section id="features" class="section">
+            <h2>3. 核心功能实现</h2>
+            
+            <h3>3.1 智能计时器</h3>
+            <p><strong>文件</strong>: <a href="src/pages/PracticePage.tsx" class="file-link">PracticePage.tsx</a></p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>精确计时</strong>
+                    <p>秒级精度，准确记录练习时长</p>
+                </div>
+                <div class="feature-item">
+                    <strong>暂停/继续</strong>
+                    <p>灵活控制练习节奏</p>
+                </div>
+                <div class="feature-item">
+                    <strong>前进/后退</strong>
+                    <p>快速调整时间，每次60秒</p>
+                </div>
+                <div class="feature-item">
+                    <strong>时间点选择</strong>
+                    <p>5/10/15/20/30/45/60分钟快捷跳转</p>
+                </div>
+            </div>
+
+            <h3>3.2 BPM旋钮控件</h3>
+            <p><strong>文件</strong>: <a href="src/components/BpmKnob.tsx" class="file-link">BpmKnob.tsx</a></p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>旋钮旋转调节</strong>
+                    <p>270°旋转范围，线性映射40-200 BPM</p>
+                </div>
+                <div class="feature-item">
+                    <strong>手动输入</strong>
+                    <p>支持直接输入数值</p>
+                </div>
+                <div class="feature-item">
+                    <strong>输入验证</strong>
+                    <p>超出范围自动提示错误</p>
+                </div>
+                <div class="feature-item">
+                    <strong>触控支持</strong>
+                    <p>支持鼠标拖动和触摸滑动</p>
+                </div>
+            </div>
+
+            <pre><code>const ROTATION_RANGE = 270;
+const START_ANGLE = -135;
+
+const percentage = ((value - min) / (max - min)) * 100;
+const rotation = START_ANGLE + (percentage / 100) * ROTATION_RANGE;</code></pre>
+
+            <h3>3.3 节拍器功能</h3>
+            <p><strong>文件</strong>: <a href="src/pages/PracticePage.tsx" class="file-link">PracticePage.tsx</a></p>
+            
+            <p>基于Web Audio API实现，800Hz点击声，自动适应BPM变化。</p>
+            
+            <h3>3.4 知识库导航</h3>
+            <p><strong>文件</strong>: <a href="src/pages/KnowledgePage.tsx" class="file-link">KnowledgePage.tsx</a></p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>按需收起/展开</strong>
+                    <p>节省空间，提升阅读体验</p>
+                </div>
+                <div class="feature-item">
+                    <strong>平滑动画</strong>
+                    <p>300ms过渡效果</p>
+                </div>
+                <div class="feature-item">
+                    <strong>状态记忆</strong>
+                    <p>localStorage保存用户偏好</p>
+                </div>
+                <div class="feature-item">
+                    <strong>图标导航</strong>
+                    <p>收起状态仍可导航</p>
+                </div>
+            </div>
+
+            <h3>3.5 B站视频集成</h3>
+            <p><strong>文件</strong>: <a href="src/utils/bilibili.ts" class="file-link">bilibili.ts</a></p>
+            
+            <p>支持视频链接解析、选集信息获取、5秒超时控制和重试机制。</p>
+        </section>
+
+        <section id="models" class="section">
+            <h2>4. 数据模型</h2>
+            
+            <h3>4.1 练习记录 (Session)</h3>
+            <pre><code>interface Session {
+  id: string;
+  lessonId: string | null;
+  instrument: InstrumentType;
+  date: number;
+  durationSeconds: number;
+  bpm: number;
+  currentBPM: number;
+  repetitions: number;
+  selfRating: number;
+  painPoints: PainPoint[];
+  painPointDetails: { painPoint: string; detail: string }[];
+  notes: string;
+  cleanBPM: number;
+  feedback?: AIFeedback;
+}</code></pre>
+
+            <h3>4.2 知识库条目 (KnowledgeBaseItem)</h3>
+            <pre><code>interface KnowledgeBaseItem {
+  id: string;
+  category: string;
+  instrument: InstrumentType;
+  title: string;
+  difficulty: 1 | 2 | 3 | 4 | 5;
+  tags: string[];
+  summary: string;
+  stage: '零基础' | '入门' | '进阶' | '曲目';
+  relatedSkills: string[];
+  commonMistakes: string[];
+  practiceSuggestions: string[];
+  content: ContentItem[];
+}</code></pre>
+
+            <h3>4.3 视频资源 (VideoResource)</h3>
+            <pre><code>interface VideoResource {
+  id: string;
+  title: string;
+  source: 'bilibili';
+  bvid: string;
+  instrument: InstrumentType;
+  stage: '零基础' | '入门' | '进阶' | '曲目';
+  difficulty: 1 | 2 | 3;
+  skills: string[];
+  summary: string;
+  keyPoints: string[];
+  commonMistakes: string[];
+  suggestedPractice: {
+    durationMinutes: number;
+    startBPM: number;
+    targetBPM: number;
+    steps: string[];
+  };
+  episodes?: {
+    page: number;
+    title: string;
+    skills: string[];
+    summary: string;
+    suggestedTaskTitle: string;
+  }[];
+}</code></pre>
+        </section>
+
+        <section id="store" class="section">
+            <h2>5. 状态管理</h2>
+            
+            <p><strong>文件</strong>: <a href="src/store/useAppStore.ts" class="file-link">useAppStore.ts</a></p>
+            
+            <h3>5.1 核心状态</h3>
+            <pre><code>interface AppState {
+  instruments: Instrument[];
+  sources: Source[];
+  sessions: Session[];
+  coverProjects: CoverProject[];
+  knowledgeBase: KnowledgeBase;
+  videoResources: VideoResource[];
+  currentEfficientPlan: EfficientPlan | null;
+  videoSize: 'compact' | 'expanded';
+}</code></pre>
+
+            <h3>5.2 核心Actions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>功能</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>addSession</code></td>
+                        <td>添加练习记录</td>
+                    </tr>
+                    <tr>
+                        <td><code>updateSession</code></td>
+                        <td>更新练习记录</td>
+                    </tr>
+                    <tr>
+                        <td><code>setSessionFeedback</code></td>
+                        <td>设置AI反馈</td>
+                    </tr>
+                    <tr>
+                        <td><code>updateCoverProject</code></td>
+                        <td>更新Cover项目</td>
+                    </tr>
+                    <tr>
+                        <td><code>toggleVideoSize</code></td>
+                        <td>切换视频尺寸</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="optimization" class="section">
+            <h2>6. 性能优化</h2>
+            
+            <h3>6.1 懒加载</h3>
+            <ul>
+                <li>使用React Suspense和lazy加载非关键页面</li>
+                <li>视频资源按需加载</li>
+            </ul>
+            
+            <h3>6.2 缓存策略</h3>
+            <ul>
+                <li>练习记录本地存储</li>
+                <li>B站选集数据缓存</li>
+                <li>知识库导航状态记忆</li>
+            </ul>
+            
+            <h3>6.3 渲染优化</h3>
+            <ul>
+                <li>使用React.memo避免不必要的重渲染</li>
+                <li>列表渲染使用稳定的key</li>
+            </ul>
+        </section>
+
+        <section id="responsive" class="section">
+            <h2>7. 响应式设计</h2>
+            
+            <h3>7.1 断点策略</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>断点</th>
+                        <th>宽度</th>
+                        <th>布局</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>移动端</td>
+                        <td>&lt; 640px</td>
+                        <td>单列堆叠</td>
+                    </tr>
+                    <tr>
+                        <td>平板</td>
+                        <td>640px - 1024px</td>
+                        <td>双列布局</td>
+                    </tr>
+                    <tr>
+                        <td>桌面</td>
+                        <td>&gt; 1024px</td>
+                        <td>完整布局</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>7.2 适配方案</h3>
+            <ul>
+                <li>底部导航仅在移动端显示</li>
+                <li>知识库侧边栏在移动端可收起</li>
+                <li>视频播放器自适应容器尺寸</li>
+            </ul>
+        </section>
+
+        <section id="browser" class="section">
+            <h2>8. 浏览器兼容性</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>浏览器</th>
+                        <th>版本要求</th>
+                        <th>支持特性</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chrome</td>
+                        <td>≥ 90</td>
+                        <td>完整支持</td>
+                    </tr>
+                    <tr>
+                        <td>Firefox</td>
+                        <td>≥ 88</td>
+                        <td>完整支持</td>
+                    </tr>
+                    <tr>
+                        <td>Safari</td>
+                        <td>≥ 14</td>
+                        <td>完整支持</td>
+                    </tr>
+                    <tr>
+                        <td>Edge</td>
+                        <td>≥ 90</td>
+                        <td>完整支持</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="build" class="section">
+            <h2>9. 构建与部署</h2>
+            
+            <h3>9.1 构建命令</h3>
+            <pre><code># 开发模式
+npm run dev
+
+# 生产构建
+npm run build
+
+# 预览生产版本
+npm run preview</code></pre>
+
+            <h3>9.2 部署配置</h3>
+            <ul>
+                <li>Vercel部署：自动检测项目配置</li>
+                <li>静态文件部署：将dist目录上传至静态托管服务</li>
+            </ul>
+        </section>
+
+        <section id="future" class="section">
+            <h2>10. 未来优化方向</h2>
+            
+            <h3>10.1 功能增强</h3>
+            <ul>
+                <li>社交分享功能</li>
+                <li>练习计划定制</li>
+                <li>社区互动模块</li>
+            </ul>
+            
+            <h3>10.2 技术优化</h3>
+            <ul>
+                <li>PWA支持（离线使用）</li>
+                <li>数据同步（云端备份）</li>
+                <li>性能监控</li>
+            </ul>
+            
+            <h3>10.3 内容扩展</h3>
+            <ul>
+                <li>更多乐器支持</li>
+                <li>第三方课程接入</li>
+                <li>用户贡献内容</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
