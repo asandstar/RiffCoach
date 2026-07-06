@@ -1,0 +1,146 @@
+<!-- App Frame -->
+<div class="min-h-screen bg-[var(--bg-base)] pb-[72px]">
+
+  <!-- SLOT: pageContent -->
+  <div class="page-content">
+    <!-- Page-specific content injected here -->
+  </div>
+
+</div>
+
+<!-- Bottom Tab Navigation — Dream Pop Glass Style -->
+<nav
+  class="fixed bottom-0 left-0 right-0 z-50"
+  style="
+    background: var(--bg-surface-elevated);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-top: var(--glass-border);
+    box-shadow: var(--shadow-elevated);
+    padding-bottom: env(safe-area-inset-bottom);
+  "
+>
+  <div class="flex items-center justify-around max-w-[375px] mx-auto relative" style="height: 56px;">
+
+    <!-- 工作台 (Dashboard) -->
+    <button
+      class="nav-tab flex flex-col items-center justify-center gap-[3px] flex-1 h-full relative transition-all duration-300"
+      data-nav-key="dashboard"
+      data-active="true"
+    >
+      <svg class="nav-tab-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="2" />
+        <rect x="14" y="3" width="7" height="7" rx="2" />
+        <rect x="3" y="14" width="7" height="7" rx="2" />
+        <rect x="14" y="14" width="7" height="7" rx="2" />
+      </svg>
+      <span class="nav-tab-label transition-all duration-300" style="font-size: 11px; font-family: var(--font-sans); font-weight: 600;">工作台</span>
+      <!-- Active pill indicator -->
+      <span class="nav-tab-pill absolute -bottom-[1px] transition-all duration-300"></span>
+    </button>
+
+    <!-- 素材库 (Source Library) -->
+    <button
+      class="nav-tab flex flex-col items-center justify-center gap-[3px] flex-1 h-full relative transition-all duration-300"
+      data-nav-key="source-library"
+      data-active="false"
+    >
+      <svg class="nav-tab-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+      </svg>
+      <span class="nav-tab-label transition-all duration-300" style="font-size: 11px; font-family: var(--font-sans); font-weight: 600;">素材库</span>
+      <span class="nav-tab-pill absolute -bottom-[1px] transition-all duration-300"></span>
+    </button>
+
+    <!-- 周复盘 (Weekly Review) -->
+    <button
+      class="nav-tab flex flex-col items-center justify-center gap-[3px] flex-1 h-full relative transition-all duration-300"
+      data-nav-key="weekly-review"
+      data-active="false"
+    >
+      <svg class="nav-tab-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 3v18h18" />
+        <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+      </svg>
+      <span class="nav-tab-label transition-all duration-300" style="font-size: 11px; font-family: var(--font-sans); font-weight: 600;">周复盘</span>
+      <span class="nav-tab-pill absolute -bottom-[1px] transition-all duration-300"></span>
+    </button>
+
+  </div>
+</nav>
+
+<!-- Tab State & Pill Indicator Styles -->
+<style>
+  /* ── Default (inactive) tab styles ── */
+  .nav-tab svg.nav-tab-icon {
+    color: var(--text-tertiary);
+    opacity: 0.7;
+  }
+
+  .nav-tab span.nav-tab-label {
+    color: var(--text-tertiary);
+    opacity: 0.7;
+  }
+
+  /* Inactive pill: hidden */
+  .nav-tab .nav-tab-pill {
+    width: 0;
+    height: 3px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    opacity: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ── Active tab styles ── */
+  .nav-tab[data-active="true"] svg.nav-tab-icon {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(184, 156, 212, 0.35));
+  }
+
+  .nav-tab[data-active="true"] span.nav-tab-label {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 1;
+  }
+
+  /* Active pill: visible, gradient, softly glowing */
+  .nav-tab[data-active="true"] .nav-tab-pill {
+    width: 20px;
+    height: 3px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    opacity: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 8px rgba(184, 156, 212, 0.4);
+  }
+
+  /* ── Smooth pill slide transition (300ms ease-out) ── */
+  .nav-tab .nav-tab-pill {
+    transition:
+      width 300ms ease-out,
+      opacity 300ms ease-out,
+      background 300ms ease-out,
+      box-shadow 300ms ease-out,
+      transform 300ms ease-out;
+  }
+
+  .nav-tab svg.nav-tab-icon,
+  .nav-tab span.nav-tab-label {
+    transition:
+      color 300ms ease-out,
+      opacity 300ms ease-out,
+      filter 300ms ease-out,
+      background 300ms ease-out,
+      -webkit-text-fill-color 300ms ease-out;
+  }
+</style>

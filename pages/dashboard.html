@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日工作台 — String Practice Compass</title>
+    <style id="theme-vars">
+:root {
+  --color-primary: #B89CD4;
+  --color-primary-hover: #A488C0;
+  --color-primary-light: rgba(184, 156, 212, 0.20);
+  --color-primary-subtle: rgba(184, 156, 212, 0.08);
+  --gradient-primary: linear-gradient(135deg, #C4A4D7 0%, #8BA4C7 100%);
+  --color-warm-cream: #F5E6D0;
+  --color-warm-cream-light: rgba(245, 230, 208, 0.25);
+  --color-mint: #B8D8C8;
+  --color-mint-light: rgba(184, 216, 200, 0.25);
+  --color-lavender: #D4C4E8;
+  --color-lavender-light: rgba(212, 196, 232, 0.30);
+  --color-amber-soft: #F0D8A8;
+  --color-amber-soft-light: rgba(240, 216, 168, 0.30);
+  --color-rose-soft: #E8B8C4;
+  --color-rose-soft-light: rgba(232, 184, 196, 0.30);
+  --gradient-electric: linear-gradient(135deg, #FFF5E6 0%, #F0D8A8 100%);
+  --gradient-acoustic: linear-gradient(135deg, #F0FAF5 0%, #B8D8C8 100%);
+  --gradient-ukulele: linear-gradient(135deg, #F5F0FF 0%, #D4C4E8 100%);
+  --state-error: #D4788A;
+  --state-error-light: rgba(212, 120, 138, 0.18);
+  --state-success: #7EBCA6;
+  --state-success-light: rgba(126, 188, 166, 0.18);
+  --state-warning: #E8C87A;
+  --state-info: #8BA4C7;
+  --bg-base: #F0EEF5;
+  --bg-surface: rgba(255, 255, 255, 0.55);
+  --bg-surface-elevated: rgba(255, 255, 255, 0.72);
+  --bg-input: rgba(255, 255, 255, 0.60);
+  --border-default: rgba(184, 156, 212, 0.20);
+  --border-subtle: rgba(184, 156, 212, 0.10);
+  --text-primary: #4A3F5C;
+  --text-secondary: #7B6E94;
+  --text-tertiary: #A99BBF;
+  --text-on-primary: #FFFFFF;
+  --font-sans: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-display: 4rem;
+  --leading-tight: 1.3;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.03em;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(16px);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.35);
+  --shadow-static: 0 2px 8px rgba(74, 63, 92, 0.06);
+  --shadow-elevated: 0 8px 24px rgba(74, 63, 92, 0.10);
+  --shadow-float: 0 12px 32px rgba(74, 63, 92, 0.14);
+  --shadow-glow: 0 4px 20px rgba(184, 156, 212, 0.20);
+  --transition-fast: 200ms ease-out;
+  --transition-base: 300ms ease-out;
+  --transition-slow: 500ms ease-out;
+}
+
+@theme inline {
+  --color-primary: #B89CD4;
+  --color-primary-hover: #A488C0;
+  --color-background: #F0EEF5;
+  --color-foreground: #4A3F5C;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  
+  @layer base {
+    body { background: #ffffff; color: #0f172a; }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen" style="background-color: var(--bg-base); color: var(--text-primary); font-family: var(--font-sans);">
+
+<!-- App Frame -->
+<div class="min-h-screen pb-[80px]">
+
+  <!-- Dashboard Page Content -->
+  <main class="px-4 pt-6 pb-6 max-w-[480px] mx-auto">
+
+    <!-- 1. Top Greeting -->
+    <header class="flex items-start justify-between mb-6">
+      <div>
+        <h1 class="spc-title" style="font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--text-primary); text-wrap: balance;">早上好 &#x2601;&#xFE0F;</h1>
+      </div>
+      <span class="shrink-0 ml-2 mt-1" style="font-size: 10px; color: var(--text-tertiary); font-weight: var(--weight-medium); letter-spacing: var(--tracking-wide);">String Practice Compass</span>
+    </header>
+
+    <!-- 2. Three Instrument Cards (3-column grid, NO scroll) -->
+    <section class="mb-6" aria-label="乐器列表">
+      <div class="grid grid-cols-3 gap-2.5">
+
+        <!-- Electric Guitar (Active) -->
+        <a href="#card-to-source"
+           class="instrument-card-active glass-card flex flex-col items-center p-3 pt-4 pb-3 text-center no-underline"
+           data-dom-id="card-to-source"
+           aria-label="电吉他 - 85 分钟">
+          <!-- Cute electric guitar icon -->
+          <svg class="w-8 h-8 mb-2" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <ellipse cx="14" cy="22" rx="8" ry="10" fill="#F0D8A8" opacity="0.6"/>
+            <ellipse cx="14" cy="22" rx="6.5" ry="8" stroke="#D4B87A" stroke-width="1.5" fill="none"/>
+            <circle cx="11" cy="19" r="1" fill="#D4B87A"/>
+            <circle cx="14" cy="19" r="1" fill="#D4B87A"/>
+            <circle cx="17" cy="19" r="1" fill="#D4B87A"/>
+            <circle cx="11" cy="24" r="1" fill="#D4B87A"/>
+            <circle cx="14" cy="24" r="1" fill="#D4B87A"/>
+            <circle cx="17" cy="24" r="1" fill="#D4B87A"/>
+            <line x1="14" y1="12" x2="14" y2="5" stroke="#D4B87A" stroke-width="2" stroke-linecap="round"/>
+            <line x1="14" y1="6" x2="24" y2="3" stroke="#D4B87A" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="25" cy="2.8" r="1.5" fill="#D4B87A"/>
+            <line x1="14" y1="7" x2="22" y2="5.5" stroke="#D4B87A" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="23" cy="5.3" r="1.2" fill="#D4B87A"/>
+          </svg>
+          <span class="block mb-0.5" style="font-size: var(--text-xs); font-weight: var(--weight-bold); color: var(--text-primary);">电吉他</span>
+          <span class="block spc-mono" style="font-size: var(--text-sm);">85 min</span>
+          <span class="block mt-0.5" style="font-size: 9px; color: var(--text-tertiary);">今天</span>
+        </a>
+
+        <!-- Acoustic Guitar -->
+        <a href="#card-to-source"
+           class="glass-card flex flex-col items-center p-3 pt-4 pb-3 text-center no-underline"
+           aria-label="木吉他 - 62 分钟">
+          <!-- Cute acoustic guitar icon -->
+          <svg class="w-8 h-8 mb-2" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <ellipse cx="14" cy="22" rx="8" ry="10" fill="#B8D8C8" opacity="0.6"/>
+            <ellipse cx="14" cy="22" rx="6.5" ry="8" stroke="#8BB8A4" stroke-width="1.5" fill="none"/>
+            <circle cx="11" cy="19" r="1" fill="#8BB8A4"/>
+            <circle cx="14" cy="19" r="1" fill="#8BB8A4"/>
+            <circle cx="17" cy="19" r="1" fill="#8BB8A4"/>
+            <circle cx="11" cy="24" r="1" fill="#8BB8A4"/>
+            <circle cx="14" cy="24" r="1" fill="#8BB8A4"/>
+            <circle cx="17" cy="24" r="1" fill="#8BB8A4"/>
+            <line x1="14" y1="12" x2="14" y2="4" stroke="#8BB8A4" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="12.5" y="3.5" rx="1.5" width="3" height="2" fill="#8BB8A4"/>
+          </svg>
+          <span class="block mb-0.5" style="font-size: var(--text-xs); font-weight: var(--weight-bold); color: var(--text-primary);">木吉他</span>
+          <span class="block spc-mono" style="font-size: var(--text-sm);">62 min</span>
+          <span class="block mt-0.5" style="font-size: 9px; color: var(--text-tertiary);">昨天</span>
+        </a>
+
+        <!-- Ukulele -->
+        <a href="#card-to-source"
+           class="glass-card flex flex-col items-center p-3 pt-4 pb-3 text-center no-underline"
+           aria-label="尤克里里 - 33 分钟">
+          <!-- Cute ukulele icon -->
+          <svg class="w-8 h-8 mb-2" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <ellipse cx="14" cy="23" rx="7" ry="8.5" fill="#D4C4E8" opacity="0.6"/>
+            <ellipse cx="14" cy="23" rx="5.5" ry="7" stroke="#B8A0D4" stroke-width="1.5" fill="none"/>
+            <circle cx="11.5" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="14" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="16.5" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="12" cy="25" r="0.9" fill="#B8A0D4"/>
+            <circle cx="14" cy="25" r="0.9" fill="#B8A0D4"/>
+            <circle cx="16" cy="25" r="0.9" fill="#B8A0D4"/>
+            <line x1="14" y1="15" x2="14" y2="7" stroke="#B8A0D4" stroke-width="2" stroke-linecap="round"/>
+            <rect x="12.2" y="6.5" rx="1.2" width="3.6" height="2.2" fill="#B8A0D4"/>
+          </svg>
+          <span class="block mb-0.5" style="font-size: var(--text-xs); font-weight: var(--weight-bold); color: var(--text-primary);">尤克里里</span>
+          <span class="block spc-mono" style="font-size: var(--text-sm);">33 min</span>
+          <span class="block mt-0.5" style="font-size: 9px; color: var(--text-tertiary);">3天前</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- 3. Knowledge Card -->
+    <section class="mb-6">
+      <div class="rounded-2xl p-4" style="background: var(--gradient-primary); box-shadow: var(--shadow-glow);">
+        <p style="font-size: 14px; line-height: var(--leading-normal); color: var(--text-on-primary); font-weight: var(--weight-medium);">
+          &#x1F3B8; 小知识：每天练习 15 分钟比一周练一次 2 小时更有效哦~
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Recommended Practice (3 items) -->
+    <section class="mb-6" aria-label="今日推荐练习">
+      <h3 class="spc-label mb-3" style="font-size: var(--text-xs);">今日推荐</h3>
+
+      <div class="flex flex-col gap-3">
+
+        <!-- Practice Card 1: Electric -->
+        <a href="#card-to-practice"
+           class="glass-card-solid flex items-stretch overflow-hidden no-underline p-3 pl-0"
+           data-dom-id="card-to-practice">
+          <div class="color-strip" style="background: #F0D8A8;"></div>
+          <div class="flex-1 flex items-center justify-between gap-3 pl-3">
+            <div class="min-w-0">
+              <h4 class="block mb-1" style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">基础和弦转换练习</h4>
+              <div class="flex items-baseline gap-1.5">
+                <span style="font-size: var(--text-xs); color: var(--text-tertiary);">目标</span>
+                <span class="spc-mono gradient-text" style="font-size: var(--text-sm);">80 BPM</span>
+              </div>
+            </div>
+            <span class="shrink-0 pill-tag" style="background: var(--color-amber-soft-light); color: #9B7E4A;">YouTube</span>
+          </div>
+        </a>
+
+        <!-- Practice Card 2: Acoustic -->
+        <a href="#card-to-practice"
+           class="glass-card-solid flex items-stretch overflow-hidden no-underline p-3 pl-0">
+          <div class="color-strip" style="background: #B8D8C8;"></div>
+          <div class="flex-1 flex items-center justify-between gap-3 pl-3">
+            <div class="min-w-0">
+              <h4 class="block mb-1" style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">C大调音阶跑动</h4>
+              <div class="flex items-baseline gap-1.5">
+                <span style="font-size: var(--text-xs); color: var(--text-tertiary);">目标</span>
+                <span class="spc-mono gradient-text" style="font-size: var(--text-sm);">100 BPM</span>
+              </div>
+            </div>
+            <span class="shrink-0 pill-tag" style="background: var(--color-mint-light); color: #5A9B7A;">教程书</span>
+          </div>
+        </a>
+
+        <!-- Practice Card 3: Mixed -->
+        <a href="#card-to-practice"
+           class="glass-card-solid flex items-stretch overflow-hidden no-underline p-3 pl-0">
+          <div class="color-strip" style="background: #D4C4E8;"></div>
+          <div class="flex-1 flex items-center justify-between gap-3 pl-3">
+            <div class="min-w-0">
+              <h4 class="block mb-1" style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">扫弦节奏型训练</h4>
+              <div class="flex items-baseline gap-1.5">
+                <span style="font-size: var(--text-xs); color: var(--text-tertiary);">目标</span>
+                <span class="spc-mono gradient-text" style="font-size: var(--text-sm);">90 BPM</span>
+              </div>
+            </div>
+            <span class="shrink-0 pill-tag" style="background: var(--color-lavender-light); color: #7B6AA0;">B站</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- 5. Pain Points -->
+    <section class="mb-6" aria-label="主要卡点">
+      <h3 class="spc-label mb-3" style="font-size: var(--text-xs);">主要卡点</h3>
+      <div class="flex flex-wrap gap-2">
+        <span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error);">大横按切换慢</span>
+        <span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error);">节奏不稳</span>
+        <span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error);">高把位音准偏差</span>
+        <span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error);">拨弦力度不均</span>
+      </div>
+    </section>
+
+    <!-- 6. Skill Progress (2x2 grid) -->
+    <section class="mb-4" aria-label="技能进步">
+      <h3 class="spc-label mb-3" style="font-size: var(--text-xs);">技能进步</h3>
+      <div class="grid grid-cols-2 gap-2.5">
+
+        <!-- Skill 1: 和弦转换 ↑ -->
+        <div class="skill-card glass-card flex items-center justify-between p-3">
+          <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: var(--weight-medium);">和弦转换</span>
+          <svg class="skill-arrow w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-label="上升">
+            <path d="M8 3v10M8 3l4 4M8 3L4 7" stroke="var(--state-success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Skill 2: 音阶跑动 ↑ -->
+        <div class="skill-card glass-card flex items-center justify-between p-3">
+          <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: var(--weight-medium);">音阶跑动</span>
+          <svg class="skill-arrow w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-label="上升">
+            <path d="M8 3v10M8 3l4 4M8 3L4 7" stroke="var(--state-success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Skill 3: 节奏感 → -->
+        <div class="skill-card glass-card flex items-center justify-between p-3">
+          <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: var(--weight-medium);">节奏感</span>
+          <svg class="skill-arrow w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-label="持平">
+            <path d="M3 8h10" stroke="var(--state-warning)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Skill 4: 拨弦控制 ↓ -->
+        <div class="skill-card glass-card flex items-center justify-between p-3">
+          <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: var(--weight-medium);">拨弦控制</span>
+          <svg class="skill-arrow w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-label="下降">
+            <path d="M8 13V3M8 13l4-4M8 13l-4-4" stroke="var(--state-error)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- Bottom Tab Navigation -->
+<nav class="nav-glass fixed bottom-0 left-0 right-0 z-50" style="padding-bottom: env(safe-area-inset-bottom);">
+  <div class="flex items-center justify-around h-[60px] max-w-[375px] mx-auto">
+
+    <!-- 工作台 (Dashboard) — Active -->
+    <button
+      class="flex flex-col items-center justify-center gap-[2px] w-full h-full"
+      data-nav-key="dashboard"
+      data-active="true"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+      </svg>
+      <span style="font-size: var(--text-xs);">工作台</span>
+    </button>
+
+    <!-- 素材库 (Source Library) -->
+    <button
+      class="flex flex-col items-center justify-center gap-[2px] w-full h-full"
+      data-nav-key="source-library"
+      data-active="false"
+      data-dom-id="nav-source"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+      </svg>
+      <span style="font-size: var(--text-xs);">素材库</span>
+    </button>
+
+    <!-- 周复盘 (Weekly Review) -->
+    <button
+      class="flex flex-col items-center justify-center gap-[2px] w-full h-full"
+      data-nav-key="weekly-review"
+      data-active="false"
+      data-dom-id="nav-review"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+      </svg>
+      <span style="font-size: var(--text-xs);">周复盘</span>
+    </button>
+
+  </div>
+</nav>
+
+
+    <style>
+      /* === Typography Classes === */
+      .spc-title {
+        font-family: var(--font-sans);
+        font-weight: var(--weight-bold);
+        letter-spacing: var(--tracking-tight);
+        color: var(--text-primary);
+      }
+      .spc-body {
+        font-family: var(--font-sans);
+        font-weight: var(--weight-normal);
+        color: var(--text-secondary);
+      }
+      .spc-mono {
+        font-family: var(--font-mono);
+        font-weight: var(--weight-semibold);
+        letter-spacing: var(--tracking-wide);
+        color: var(--text-primary);
+      }
+      .spc-label {
+        font-family: var(--font-sans);
+        font-weight: var(--weight-medium);
+        font-size: var(--text-sm);
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide);
+      }
+
+      /* === Dream Pop Glassmorphism System === */
+
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: var(--glass-border);
+        border-radius: var(--radius-lg);
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
+      }
+
+      .glass-card:hover {
+        transform: scale(0.97);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .glass-card:active {
+        transform: scale(0.96);
+      }
+
+      .glass-card-solid {
+        background: var(--bg-surface-elevated);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.50);
+        border-radius: var(--radius-lg);
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
+      }
+
+      .glass-card-solid:hover {
+        transform: scale(0.97);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .instrument-card-active {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-elevated), 0 4px 20px rgba(184, 156, 212, 0.22);
+      }
+
+      .instrument-card-active:hover {
+        transform: scale(0.98);
+      }
+
+      /* Gradient text for BPM */
+      .gradient-text {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Dreamy nav glassmorphism */
+      .nav-glass {
+        background: rgba(240, 238, 245, 0.72);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.45);
+      }
+
+      /* Soft pill tags */
+      .pill-tag {
+        border-radius: var(--radius-full);
+        padding: 6px 14px;
+        font-size: var(--text-xs);
+        font-weight: var(--weight-medium);
+        transition: transform var(--transition-fast), opacity var(--transition-fast);
+        white-space: nowrap;
+      }
+
+      .pill-tag:hover {
+        transform: scale(0.97);
+        opacity: 0.88;
+      }
+
+      /* Color strip for practice cards */
+      .color-strip {
+        width: 4px;
+        min-height: 100%;
+        border-radius: 9999px;
+        flex-shrink: 0;
+      }
+
+      /* Active / inactive nav states */
+      [data-nav-key] svg,
+      [data-nav-key] span {
+        color: var(--text-tertiary);
+        transition: color var(--transition-base);
+      }
+      [data-nav-key][data-active="true"] svg,
+      [data-nav-key][data-active="true"] span {
+        color: var(--color-primary);
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        a, button, .glass-card, .glass-card-solid, .pill-tag {
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Skill arrow animations */
+      .skill-arrow {
+        transition: transform var(--transition-base);
+      }
+      .skill-card:hover .skill-arrow {
+        transform: translateY(-1px);
+      }
+
+      /* Focus visible */
+      a:focus-visible, button:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+        border-radius: var(--radius-md);
+      }
+    </style>
+</body>
+</html>

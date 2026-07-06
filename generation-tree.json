@@ -1,0 +1,91 @@
+{
+  "root": {
+    "nodeId": "gen-project-shell",
+    "kind": "project-shell",
+    "pageIds": ["page-dashboard", "page-source-library", "page-practice-session", "page-weekly-review", "page-dashboard-empty", "page-source-library-empty", "page-weekly-review-empty"],
+    "output": "partials/project-shell.html",
+    "sharedRegions": ["app-frame", "bottom-nav"],
+    "privateRegions": [],
+    "mutableSlots": ["activeNavItem", "pageTitle", "hideBottomNav"],
+    "status": "planned",
+    "children": [
+      {
+        "nodeId": "gen-page-dashboard",
+        "kind": "page-leaf",
+        "pageIds": ["page-dashboard"],
+        "output": "pages/dashboard.html",
+        "sharedRegions": [],
+        "privateRegions": ["instrument cards", "recommended practice list", "pain points", "skill progress"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-source-library",
+        "kind": "page-leaf",
+        "pageIds": ["page-source-library"],
+        "output": "pages/source-library.html",
+        "sharedRegions": [],
+        "privateRegions": ["category tabs", "source cards", "FAB button"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-practice-session",
+        "kind": "page-leaf",
+        "pageIds": ["page-practice-session"],
+        "output": "pages/practice-session.html",
+        "sharedRegions": [],
+        "privateRegions": ["timer", "controls", "self-assessment", "complete button"],
+        "mutableSlots": ["hideBottomNav"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-weekly-review",
+        "kind": "page-leaf",
+        "pageIds": ["page-weekly-review"],
+        "output": "pages/weekly-review.html",
+        "sharedRegions": [],
+        "privateRegions": ["weekly stats", "practice log", "skill progress cards", "pain points cloud", "suggestions"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-dashboard-empty",
+        "kind": "page-leaf",
+        "pageIds": ["page-dashboard-empty"],
+        "output": "pages/dashboard-empty.html",
+        "sharedRegions": [],
+        "privateRegions": ["empty state illustration and CTA"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-source-library-empty",
+        "kind": "page-leaf",
+        "pageIds": ["page-source-library-empty"],
+        "output": "pages/source-library-empty.html",
+        "sharedRegions": [],
+        "privateRegions": ["empty state and quick-add buttons"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-weekly-review-empty",
+        "kind": "page-leaf",
+        "pageIds": ["page-weekly-review-empty"],
+        "output": "pages/weekly-review-empty.html",
+        "sharedRegions": [],
+        "privateRegions": ["empty state with example preview"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "planned",
+        "children": []
+      }
+    ]
+  }
+}
