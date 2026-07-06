@@ -5,3 +5,4115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RiffCoach · 弦乐练习指南针</title>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-primary: #B89CD4;
+            --color-primary-hover: #A488C0;
+            --color-primary-light: rgba(184, 156, 212, 0.20);
+            --color-primary-subtle: rgba(184, 156, 212, 0.08);
+            --gradient-primary: linear-gradient(135deg, #C4A4D7 0%, #8BA4C7 100%);
+            --color-warm-cream: #F5E6D0;
+            --color-warm-cream-light: rgba(245, 230, 208, 0.25);
+            --color-mint: #B8D8C8;
+            --color-mint-light: rgba(184, 216, 200, 0.25);
+            --color-lavender: #D4C4E8;
+            --color-lavender-light: rgba(212, 196, 232, 0.30);
+            --color-amber-soft: #F0D8A8;
+            --color-amber-soft-light: rgba(240, 216, 168, 0.30);
+            --color-rose-soft: #E8B8C4;
+            --color-rose-soft-light: rgba(232, 184, 196, 0.30);
+            --gradient-electric: linear-gradient(135deg, #FFF5E6 0%, #F0D8A8 100%);
+            --gradient-acoustic: linear-gradient(135deg, #F0FAF5 0%, #B8D8C8 100%);
+            --gradient-ukulele: linear-gradient(135deg, #F5F0FF 0%, #D4C4E8 100%);
+            --state-error: #D4788A;
+            --state-error-light: rgba(212, 120, 138, 0.18);
+            --state-success: #7EBCA6;
+            --state-success-light: rgba(126, 188, 166, 0.18);
+            --state-warning: #E8C87A;
+            --state-info: #8BA4C7;
+            --bg-base: #F0EEF5;
+            --bg-surface: rgba(255, 255, 255, 0.55);
+            --bg-surface-elevated: rgba(255, 255, 255, 0.72);
+            --bg-input: rgba(255, 255, 255, 0.60);
+            --border-default: rgba(184, 156, 212, 0.20);
+            --border-subtle: rgba(184, 156, 212, 0.10);
+            --text-primary: #4A3F5C;
+            --text-secondary: #7B6E94;
+            --text-tertiary: #A99BBF;
+            --text-on-primary: #FFFFFF;
+            --font-sans: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            --text-xs: 0.75rem;
+            --text-sm: 0.8125rem;
+            --text-base: 0.9375rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-display: 4rem;
+            --leading-tight: 1.3;
+            --leading-normal: 1.55;
+            --leading-relaxed: 1.7;
+            --weight-normal: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+            --weight-extrabold: 800;
+            --tracking-tight: -0.01em;
+            --tracking-normal: 0;
+            --tracking-wide: 0.03em;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-blur: blur(16px);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.35);
+            --shadow-static: 0 2px 8px rgba(74, 63, 92, 0.06);
+            --shadow-elevated: 0 8px 24px rgba(74, 63, 92, 0.10);
+            --shadow-float: 0 12px 32px rgba(74, 63, 92, 0.14);
+            --shadow-glow: 0 4px 20px rgba(184, 156, 212, 0.20);
+            --transition-fast: 200ms ease-out;
+            --transition-base: 300ms ease-out;
+            --transition-slow: 500ms ease-out;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: calc(60px + env(safe-area-inset-bottom, 20px));
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn var(--transition-base);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-content {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .spc-title {
+            font-family: var(--font-sans);
+            font-weight: var(--weight-bold);
+            letter-spacing: var(--tracking-tight);
+            color: var(--text-primary);
+        }
+
+        .spc-mono {
+            font-family: var(--font-mono);
+            font-weight: var(--weight-semibold);
+            letter-spacing: var(--tracking-wide);
+            color: var(--text-primary);
+        }
+
+        .spc-label {
+            font-family: var(--font-sans);
+            font-weight: var(--weight-medium);
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-static);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .glass-card:hover {
+            box-shadow: var(--shadow-float);
+        }
+
+        .glass-card:active {
+            transform: scale(0.98);
+        }
+
+        .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pill-tag {
+            border-radius: var(--radius-full);
+            padding: 6px 14px;
+            font-size: var(--text-xs);
+            font-weight: var(--weight-medium);
+            transition: transform var(--transition-fast), opacity var(--transition-fast);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 52px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            border: none;
+            color: var(--text-on-primary);
+            font-family: var(--font-sans);
+            font-size: var(--text-base);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: transform var(--transition-fast), box-shadow var(--transition-base);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 28px rgba(184, 156, 212, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            cursor: pointer;
+            transition: transform var(--transition-fast), background var(--transition-base);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        .btn-ghost:active {
+            transform: scale(0.93);
+        }
+
+        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 视频框尺寸控制 */
+        .video-wrap { transition: max-width var(--transition-base); margin: 0 auto; }
+        .video-size-compact { max-width: 60%; }
+        .video-size-standard { max-width: 80%; }
+        .video-size-wide { max-width: 100%; }
+        .video-size-toggle { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
+        .video-size-btn {
+            padding: 4px 10px; font-size: var(--text-xs); border-radius: var(--radius-md);
+            background: var(--bg-surface); color: var(--text-tertiary); border: none; cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .video-size-btn.active { background: var(--gradient-primary); color: var(--text-on-primary); font-weight: var(--weight-bold); }
+
+        /* 素材库图标按钮 */
+        .btn-icon { background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: var(--radius-sm); color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon:hover { background: var(--bg-surface); color: var(--text-secondary); }
+        .btn-icon-danger { background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: var(--radius-sm); color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon-danger:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: var(--bg-surface-elevated);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-top: 1px solid var(--border-subtle);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .bottom-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            height: 60px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            flex: 1;
+            height: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color var(--transition-base);
+        }
+
+        .nav-btn svg,
+        .nav-btn span {
+            color: var(--text-tertiary);
+            transition: color var(--transition-base);
+        }
+
+        .nav-btn.active svg,
+        .nav-btn.active span {
+            color: var(--color-primary);
+        }
+
+        .nav-btn span {
+            font-size: var(--text-xs);
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            padding: 4px 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            min-height: 48px;
+            background: var(--bg-surface);
+            border: 1px solid transparent;
+        }
+        .cal-day:hover {
+            background: var(--bg-surface-elevated);
+            border-color: var(--border-default);
+        }
+        .cal-day.other-month {
+            opacity: 0.3;
+        }
+        .cal-day.today {
+            border-color: var(--color-primary);
+            font-weight: var(--weight-bold);
+            color: var(--color-primary);
+        }
+        .cal-day.has-practice {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            font-weight: var(--weight-semibold);
+        }
+        .cal-day.has-practice:hover {
+            box-shadow: var(--shadow-glow);
+        }
+        .cal-day.selected {
+            box-shadow: 0 0 0 2px var(--color-primary);
+        }
+        .cal-day-num {
+            font-size: var(--text-sm);
+            line-height: 1;
+        }
+        .cal-day-mins {
+            font-size: 9px;
+            margin-top: 2px;
+            opacity: 0.85;
+            font-family: var(--font-mono);
+        }
+
+        .no-nav {
+            padding-bottom: 0 !important;
+        }
+
+        /* Practice Session Page */
+        .practice-page {
+            background: var(--gradient-electric);
+            background-attachment: fixed;
+        }
+
+        .timer-colon {
+            animation: colonPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes colonPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+
+        .play-btn-pulse {
+            animation: softPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes softPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(184, 156, 212, 0.20); }
+            50% { box-shadow: 0 6px 28px rgba(184, 156, 212, 0.35); }
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform var(--transition-fast);
+        }
+
+        .star-btn:active {
+            transform: scale(0.9);
+        }
+
+        .pain-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: var(--radius-full);
+            padding: 6px 14px;
+            font-size: var(--text-sm);
+            font-family: var(--font-sans);
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: transform var(--transition-fast), background-color var(--transition-base), color var(--transition-base);
+        }
+
+        .pain-tag.selected {
+            background: var(--state-error-light);
+            color: var(--state-error);
+        }
+
+        .pain-tag.unselected {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        .pain-tag:active {
+            transform: scale(0.95);
+        }
+
+        textarea, input, select {
+            font-family: var(--font-sans);
+            font-size: var(--text-base);
+            color: var(--text-primary);
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Source Library */
+        .category-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            padding: 10px 18px;
+            font-family: var(--font-sans);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: var(--glass-border);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        .category-tab.active {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border: none;
+            box-shadow: var(--shadow-glow);
+            font-weight: var(--weight-semibold);
+        }
+
+        .category-tab:active {
+            transform: scale(0.97);
+        }
+
+        .source-card {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-elevated);
+            overflow: hidden;
+            transition: box-shadow var(--transition-base);
+        }
+
+        .source-card:hover {
+            box-shadow: var(--shadow-float);
+        }
+
+        .source-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            gap: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition-base);
+        }
+
+        .source-header:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        .chevron {
+            transition: transform var(--transition-base);
+            flex-shrink: 0;
+        }
+
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+
+        .lessons-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-slow);
+            border-top: 1px solid transparent;
+        }
+
+        .lessons-list.open {
+            max-height: 1000px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .lesson-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 12px;
+            border-left: 3px solid var(--color-amber-soft);
+            text-decoration: none;
+            transition: background var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .lesson-row:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        .lesson-row:active {
+            opacity: 0.8;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: calc(72px + env(safe-area-inset-bottom, 16px));
+            right: 16px;
+            z-index: 40;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-glow);
+            border: none;
+            cursor: pointer;
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .fab:hover {
+            box-shadow: 0 6px 28px rgba(184, 156, 212, 0.35);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        .bottom-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(74, 63, 92, 0.3);
+            z-index: 60;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-base);
+        }
+
+        .bottom-sheet-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            max-width: 480px;
+            width: 100%;
+            z-index: 70;
+            background: var(--bg-base);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+            transform: translate(-50%, 100%);
+            transition: transform var(--transition-base);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .bottom-sheet.visible {
+            transform: translate(-50%, 0);
+        }
+
+        .bottom-sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--border-default);
+            border-radius: var(--radius-full);
+            margin: 0 auto 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+            font-size: var(--text-base);
+            transition: border-color var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--text-sm);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .chip-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            cursor: pointer;
+            border: var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            user-select: none;
+        }
+
+        .chip.selected {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border: none;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .chip:active {
+            transform: scale(0.95);
+        }
+
+        /* Dashboard instrument cards */
+        .instrument-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .instrument-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .instrument-card:active {
+            transform: scale(0.97);
+        }
+
+        .instrument-card.electric { background: var(--gradient-electric); }
+        .instrument-card.acoustic { background: var(--gradient-acoustic); }
+        .instrument-card.ukulele { background: var(--gradient-ukulele); }
+
+        .practice-card {
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: var(--radius-lg);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .practice-card:hover {
+            box-shadow: var(--shadow-float);
+        }
+
+        .practice-card:active {
+            transform: scale(0.98);
+        }
+
+        .color-strip {
+            width: 4px;
+            min-height: 100%;
+            border-radius: 9999px;
+            flex-shrink: 0;
+        }
+
+        .skill-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+        }
+
+        /* Weekly Review */
+        .stat-card {
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .suggestion-card {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            border-radius: var(--radius-lg);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        @media (hover: none) {
+            .glass-card:hover { transform: none; box-shadow: var(--shadow-static); }
+            .btn-primary:hover { box-shadow: var(--shadow-glow); }
+            .instrument-card:hover { transform: none; }
+        }
+
+        .kb-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-static);
+            padding: 14px;
+            cursor: pointer;
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .kb-card:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .kb-card:active {
+            transform: scale(0.98);
+        }
+
+        .kb-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .kb-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .kb-card-title {
+            font-size: var(--text-sm);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .kb-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .kb-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            cursor: pointer;
+            border: var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            user-select: none;
+        }
+
+        .kb-chip.selected {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border: none;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .kb-chip:active {
+            transform: scale(0.95);
+        }
+
+        .kb-category-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            font-family: var(--font-sans);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: var(--glass-border);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .kb-category-tab.active {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border: none;
+            box-shadow: var(--shadow-glow);
+            font-weight: var(--weight-semibold);
+        }
+
+        .kb-category-tab:active {
+            transform: scale(0.97);
+        }
+
+        .kb-category-tab svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .kb-difficulty {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .kb-difficulty .star {
+            width: 14px;
+            height: 14px;
+        }
+
+        .kb-difficulty .star.filled {
+            color: var(--color-amber-soft);
+            fill: var(--color-amber-soft);
+        }
+
+        .kb-difficulty .star.empty {
+            color: var(--text-tertiary);
+        }
+
+        .kb-video-cover {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--color-lavender-light) 0%, var(--color-primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .kb-video-cover svg {
+            width: 28px;
+            height: 28px;
+            color: var(--color-primary);
+        }
+
+        .kb-detail-content {
+            padding: 0 4px;
+        }
+
+        .kb-detail-title {
+            font-size: var(--text-xl);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: var(--leading-tight);
+        }
+
+        .kb-detail-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .kb-detail-tag {
+            font-size: var(--text-xs);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            background: var(--color-lavender-light);
+            color: #7B6E94;
+            font-weight: var(--weight-medium);
+        }
+
+        .kb-detail-body {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .kb-detail-paragraph {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+        }
+
+        .kb-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .kb-detail-list-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: var(--leading-normal);
+        }
+
+        .kb-detail-list-item::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+
+        .kb-tip-card {
+            background: var(--color-amber-soft-light);
+            border: 1px solid rgba(240, 216, 168, 0.4);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .kb-tip-card svg {
+            width: 18px;
+            height: 18px;
+            color: #C49A5C;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .kb-tip-card p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: var(--leading-normal);
+        }
+
+        .kb-fav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-lg);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            cursor: pointer;
+            transition: transform var(--transition-fast), background var(--transition-base);
+            flex-shrink: 0;
+        }
+
+        .kb-fav-btn:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        .kb-fav-btn:active {
+            transform: scale(0.93);
+        }
+
+        .kb-fav-btn svg {
+            width: 22px;
+            height: 22px;
+            color: var(--text-secondary);
+        }
+
+        .kb-fav-btn.active svg {
+            color: var(--color-rose-soft);
+            fill: var(--color-rose-soft);
+        }
+
+        .kb-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 52px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            border: none;
+            color: var(--text-on-primary);
+            font-family: var(--font-sans);
+            font-size: var(--text-base);
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: transform var(--transition-fast), box-shadow var(--transition-base);
+        }
+
+        .kb-action-btn:hover {
+            box-shadow: 0 6px 28px rgba(184, 156, 212, 0.35);
+        }
+
+        .kb-action-btn:active {
+            transform: scale(0.97);
+        }
+
+        .kb-action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="app">
+        <!-- ========== Dashboard Page ========== -->
+        <div class="page" id="page-dashboard">
+            <div class="page-content px-4 pt-6 pb-6">
+                <header class="flex items-start justify-between mb-6">
+                    <div>
+                        <h1 class="spc-title" style="font-size: var(--text-xl);" id="greeting-text">早上好 ☁️</h1>
+                    </div>
+                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: var(--weight-medium); letter-spacing: var(--tracking-wide); margin-top: 4px;">SPC</span>
+                </header>
+
+                <section class="mb-6" aria-label="乐器列表">
+                    <div class="grid grid-cols-3 gap-2.5" id="instrument-grid"></div>
+                </section>
+
+                <section class="mb-6">
+                    <div class="rounded-2xl p-4" style="background: var(--gradient-primary); box-shadow: var(--shadow-glow);">
+                        <p style="font-size: 14px; line-height: var(--leading-normal); color: var(--text-on-primary); font-weight: var(--weight-medium);" id="tip-text">
+                            🎸 小知识：每天练习 15 分钟比一周练一次 2 小时更有效哦~
+                        </p>
+                    </div>
+                </section>
+
+                <section class="mb-6" id="dashboard-empty-state" style="display: none;" aria-label="空状态引导">
+                    <div class="glass-card" style="padding: 32px 24px; text-align: center;">
+                        <div style="display: flex; justify-content: center; margin-bottom: 16px; color: var(--color-primary);">
+                            <i data-lucide="music" style="width: 64px; height: 64px;"></i>
+                        </div>
+                        <h3 class="spc-title" style="font-size: var(--text-lg); margin-bottom: 8px;">开始你的第一次练习</h3>
+                        <p style="font-size: var(--text-sm); color: var(--text-tertiary); line-height: var(--leading-normal);">从素材库选择一个课程，开始你的练习之旅吧</p>
+                    </div>
+                </section>
+
+                <section class="mb-6" aria-label="今日推荐练习" id="dashboard-recommended-section">
+                    <h3 class="spc-label mb-3">今日推荐</h3>
+                    <div class="flex flex-col gap-3" id="recommended-list"></div>
+                </section>
+
+                <section class="mb-6" aria-label="主要卡点" id="dashboard-pain-section">
+                    <h3 class="spc-label mb-3">主要卡点</h3>
+                    <div class="flex flex-wrap gap-2" id="pain-points-list"></div>
+                </section>
+
+                <section class="mb-4" aria-label="技能进步" id="dashboard-skill-section">
+                    <h3 class="spc-label mb-3">技能进步</h3>
+                    <div class="grid grid-cols-2 gap-2.5" id="skill-progress-grid"></div>
+                </section>
+
+                <section class="mt-6" style="display: flex; gap: 8px;">
+                    <button class="btn-ghost" id="btn-export" style="flex: 1; padding: 10px; font-size: var(--text-sm);">
+                        <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                        导出数据
+                    </button>
+                    <button class="btn-ghost" id="btn-import" style="flex: 1; padding: 10px; font-size: var(--text-sm);">
+                        <i data-lucide="upload" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                        导入数据
+                    </button>
+                    <input type="file" id="import-file" accept=".json" style="display: none;">
+                </section>
+            </div>
+        </div>
+
+        <!-- ========== Source Library Page ========== -->
+        <div class="page" id="page-source-library">
+            <div class="page-content">
+                <header class="px-4 pt-5 pb-2">
+                    <h1 class="spc-title" style="font-size: var(--text-2xl); line-height: var(--leading-tight);">素材库</h1>
+                    <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 4px;">管理你的练习来源</p>
+                </header>
+
+                <div id="instrument-filter-bar" class="px-4 pt-2"></div>
+
+                <nav class="px-4 pt-3 pb-4" aria-label="来源分类">
+                    <div class="flex flex-wrap gap-2" id="category-tabs"></div>
+                </nav>
+
+                <div class="px-4 flex flex-col gap-4 pb-6" id="source-cards-list"></div>
+            </div>
+
+            <button class="fab" id="fab-add" aria-label="添加来源">
+                <i data-lucide="plus" style="width: 24px; height: 24px;"></i>
+            </button>
+        </div>
+
+        <!-- ========== Practice Session Page ========== -->
+        <div class="page no-nav practice-page" id="page-practice">
+            <div style="min-height: 100vh; display: flex; flex-direction: column;">
+                <header style="display: flex; align-items: center; padding: 12px 16px; min-height: 56px; position: relative; z-index: 10;">
+                    <button class="btn-ghost" id="practice-back" aria-label="返回" style="width: 36px; height: 36px;">
+                        <i data-lucide="chevron-left" style="width: 22px; height: 22px; color: var(--text-secondary);"></i>
+                    </button>
+                    <div style="flex: 1; text-align: center; min-width: 0; padding: 0 8px;">
+                        <h1 style="font-weight: 700; font-size: var(--text-lg); color: var(--text-primary); letter-spacing: var(--tracking-tight); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="practice-title">基础和弦转换练习</h1>
+                        <p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="practice-source">JustinGuitar</p>
+                    </div>
+                    <div style="width: 36px;"></div>
+                </header>
+
+                <div class="no-scrollbar" style="flex: 1; overflow-y: auto; padding: 0 20px; padding-bottom: calc(24px + env(safe-area-inset-bottom, 16px));">
+                    <section id="video-section" style="display: none; margin-bottom: 24px;">
+                        <div class="video-size-toggle" id="practice-size-toggle">
+                            <button class="video-size-btn" data-size="compact" onclick="setVideoSize('compact')">紧凑</button>
+                            <button class="video-size-btn" data-size="standard" onclick="setVideoSize('standard')">标准</button>
+                            <button class="video-size-btn" data-size="wide" onclick="setVideoSize('wide')">宽屏</button>
+                        </div>
+                        <div id="practice-video-wrap" class="video-wrap video-size-compact">
+                            <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-elevated);">
+                                <iframe id="bili-player" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                            <span style="font-size: var(--text-xs); color: var(--text-tertiary);">
+                                <i data-lucide="info" style="width: 11px; height: 11px; display: inline; vertical-align: middle;"></i>
+                                登录B站看1080P
+                            </span>
+                            <a id="practice-open-bili" href="#" target="_blank" rel="noopener" style="font-size: var(--text-xs); color: var(--color-primary); text-decoration: none; display: flex; align-items: center; gap: 2px;">
+                                <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                                B站看高清
+                            </a>
+                        </div>
+                        <div id="practice-episodes" style="display: none; margin-top: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: var(--text-xs); font-weight: var(--weight-bold); color: var(--text-secondary);">选集</span>
+                                    <span id="practice-current-ep" style="font-size: var(--text-xs); color: var(--text-tertiary);"></span>
+                                </div>
+                            </div>
+                            <div id="practice-ep-list" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;" class="no-scrollbar"></div>
+                        </div>
+                    </section>
+
+                    <section style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 0 40px;">
+                        <div id="timer-display" style="font-family: var(--font-mono); font-weight: 700; font-size: 64px; line-height: 1; letter-spacing: 0.04em; color: var(--text-primary); text-align: center; transition: color var(--transition-base);">
+                            <span id="timer-minutes">05</span><span class="timer-colon">:</span><span id="timer-seconds">23</span>
+                        </div>
+                        <p class="spc-label" style="margin-top: 14px; text-transform: none; letter-spacing: 0; font-size: var(--text-sm); color: var(--text-tertiary);">练习时长</p>
+                        <p id="target-duration-hint" style="margin-top: 6px; font-size: var(--text-xs); color: var(--text-tertiary); font-family: var(--font-mono);">目标 10:00</p>
+                    </section>
+
+                    <section style="display: flex; align-items: center; justify-content: center; gap: 24px; padding-bottom: 36px;">
+                        <button class="btn-ghost" id="btn-pause" aria-label="暂停" style="width: 44px; height: 44px; box-shadow: var(--shadow-static);">
+                            <i data-lucide="pause" style="width: 18px; height: 18px; color: var(--text-secondary);"></i>
+                        </button>
+                        <button class="btn-primary play-btn-pulse" id="btn-play" aria-label="开始" style="width: 60px; height: 60px; border-radius: 50%; padding: 0;">
+                            <i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>
+                        </button>
+                        <button class="btn-ghost" id="btn-reset" aria-label="重置" style="width: 44px; height: 44px; box-shadow: var(--shadow-static);">
+                            <i data-lucide="rotate-ccw" style="width: 18px; height: 18px; color: var(--text-secondary);"></i>
+                        </button>
+                    </section>
+
+                    <section style="display: flex; flex-direction: column; align-items: center; padding-bottom: 32px;">
+                        <p style="font-weight: 500; font-size: var(--text-xs); color: var(--text-tertiary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px;">当前 BPM</p>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <button class="btn-ghost" id="bpm-minus" aria-label="减少 BPM" style="width: 32px; height: 32px; box-shadow: var(--shadow-static);">
+                                <i data-lucide="minus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                            </button>
+                            <span class="gradient-text" style="font-family: var(--font-mono); font-weight: 700; font-size: 28px; line-height: 1; min-width: 48px; text-align: center;" id="bpm-display">80</span>
+                            <button class="btn-ghost" id="bpm-plus" aria-label="增加 BPM" style="width: 32px; height: 32px; box-shadow: var(--shadow-static);">
+                                <i data-lucide="plus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                            </button>
+                        </div>
+                        <button class="btn-primary" id="btn-metronome" style="margin-top: 12px; padding: 8px 20px; font-size: var(--text-sm);">
+                            <i data-lucide="play" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                            <span>启动节拍器</span>
+                        </button>
+                    </section>
+
+                    <section style="display: flex; flex-direction: column; align-items: center; padding-bottom: 32px;">
+                        <p style="font-weight: 500; font-size: var(--text-xs); color: var(--text-tertiary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px;">重复次数</p>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <button class="btn-ghost" id="rep-minus" aria-label="减少次数" style="width: 32px; height: 32px; box-shadow: var(--shadow-static);">
+                                <i data-lucide="minus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                            </button>
+                            <span style="font-family: var(--font-mono); font-weight: 600; font-size: var(--text-xl); line-height: 1; min-width: 72px; text-align: center; color: var(--text-primary); white-space: nowrap;" id="rep-display">3 / 10</span>
+                            <button class="btn-ghost" id="rep-plus" aria-label="增加次数" style="width: 32px; height: 32px; box-shadow: var(--shadow-static);">
+                                <i data-lucide="plus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                            </button>
+                        </div>
+                        <div style="width: 100%; max-width: 200px; margin-top: 12px; height: 3px; border-radius: var(--radius-full); background: var(--border-default); overflow: hidden;">
+                            <div id="rep-progress" style="width: 30%; height: 100%; border-radius: var(--radius-full); background: var(--gradient-primary); transition: width var(--transition-base);"></div>
+                        </div>
+                    </section>
+
+                    <section style="background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-static);">
+                        <p style="font-weight: 500; font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: 12px;">自我评价</p>
+                        <div style="display: flex; align-items: center; gap: 10px;" id="stars-container"></div>
+                    </section>
+
+                    <section style="margin-bottom: 16px;">
+                        <p style="font-weight: 500; font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: 10px;">今天遇到的问题</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="pain-tags-container"></div>
+                    </section>
+
+                    <section style="margin-bottom: 20px;">
+                        <textarea rows="3" id="practice-notes" placeholder="写点什么吧~" style="width: 100%; resize: none; border-radius: var(--radius-xl); padding: 14px 16px; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); color: var(--text-primary); font-size: var(--text-base); line-height: var(--leading-normal); outline: none; box-shadow: var(--shadow-static); transition: border-color var(--transition-base), box-shadow var(--transition-base);"></textarea>
+                    </section>
+
+                    <section>
+                        <button class="btn-primary" id="btn-complete" style="width: 100%;">
+                            完成练习 ✨
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Weekly Review Page ========== -->
+        <div class="page" id="page-weekly-review">
+            <div class="page-content px-4 pt-6 pb-4">
+                <header class="mb-6">
+                    <h1 class="spc-title" style="font-size: var(--text-2xl);">周复盘</h1>
+                    <p style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--text-sm); letter-spacing: var(--tracking-wide); margin-top: 4px;" id="week-range">2025.06.30 - 2025.07.06</p>
+                </header>
+
+                <section class="stat-card mb-6" aria-label="本周统计">
+                    <div class="flex items-center justify-around">
+                        <div class="flex flex-col items-center">
+                            <span class="spc-mono" style="font-size: 48px; line-height: 1.1; color: #FFFFFF; font-weight: var(--weight-bold); font-variant-numeric: tabular-nums;" id="stat-minutes">0</span>
+                            <span style="color: rgba(255,255,255,0.80); font-size: var(--text-sm);">分钟</span>
+                        </div>
+                        <div style="width: 1px; height: 48px; background: rgba(255,255,255,0.35);"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="spc-mono" style="font-size: 32px; line-height: 1.1; color: #FFFFFF; font-weight: var(--weight-bold); font-variant-numeric: tabular-nums;" id="stat-days">0 天</span>
+                            <span style="color: rgba(255,255,255,0.80); font-size: var(--text-sm);">练习天数</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-6" aria-label="本周练了什么">
+                    <h2 class="spc-title mb-3" style="font-size: var(--text-lg);">本周练了什么</h2>
+                    <div class="flex flex-col gap-3" id="practice-log-list"></div>
+                </section>
+
+                <section class="mb-6" aria-label="技能进步">
+                    <h2 class="spc-title mb-3" style="font-size: var(--text-lg);">技能进步</h2>
+                    <div class="grid grid-cols-2 gap-3" id="review-skill-grid"></div>
+                </section>
+
+                <section class="mb-6" aria-label="反复卡点">
+                    <h2 class="spc-title mb-3" style="font-size: var(--text-lg);">反复卡点</h2>
+                    <div class="flex flex-wrap gap-2" id="review-pain-list"></div>
+                </section>
+
+                <section class="mb-6" aria-label="下周建议">
+                    <h2 class="spc-title mb-3" style="font-size: var(--text-lg);">下周建议</h2>
+                    <div class="flex flex-col gap-3" id="suggestions-list"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ========== Calendar Page ========== -->
+        <div class="page" id="page-calendar">
+            <div class="page-content px-4 pt-6 pb-6">
+                <!-- 月份导航 -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                    <button class="btn-ghost" id="cal-prev" aria-label="上个月" style="width: 40px; height: 40px;">
+                        <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
+                    </button>
+                    <div style="text-align: center;">
+                        <h1 class="spc-title" id="cal-month-title" style="font-size: var(--text-xl);">2026年7月</h1>
+                        <p id="cal-month-stats" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px;">本月练习 0 分钟</p>
+                    </div>
+                    <button class="btn-ghost" id="cal-next" aria-label="下个月" style="width: 40px; height: 40px;">
+                        <i data-lucide="chevron-right" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </div>
+
+                <!-- 星期标题行 -->
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px;">
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">日</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">一</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">二</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">三</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">四</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">五</div>
+                    <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); font-weight: var(--weight-semibold);">六</div>
+                </div>
+
+                <!-- 日历格子 -->
+                <div id="cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;"></div>
+
+                <!-- 选中日期的详情 -->
+                <div id="cal-day-detail" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- ========== Knowledge Base Page ========== -->
+        <div class="page" id="page-knowledge">
+            <div class="page-content px-4 pt-6 pb-6">
+                <header class="mb-5">
+                    <h1 class="spc-title" style="font-size: var(--text-2xl); line-height: var(--leading-tight);">知识库</h1>
+                    <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 4px;">学习 & 提升</p>
+                </header>
+
+                <section class="mb-4" aria-label="乐器筛选">
+                    <div class="flex flex-wrap gap-2" id="kb-instrument-chips">
+                        <button class="kb-chip selected" data-instrument="all">全部</button>
+                        <button class="kb-chip" data-instrument="electric">电吉他</button>
+                        <button class="kb-chip" data-instrument="acoustic">木吉他</button>
+                        <button class="kb-chip" data-instrument="ukulele">尤克里里</button>
+                    </div>
+                </section>
+
+                <nav class="mb-4" aria-label="知识分类">
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="kb-category-tabs"></div>
+                </nav>
+
+                <div class="flex flex-col gap-3" id="kb-list"></div>
+
+                <div id="kb-empty" class="empty-state" style="display: none;">
+                    <div class="empty-icon" style="color: var(--text-tertiary);">
+                        <i data-lucide="book-open" style="width: 64px; height: 64px;"></i>
+                    </div>
+                    <h3 style="font-size: var(--text-lg); font-weight: var(--weight-semibold); color: var(--text-primary); margin-bottom: 8px;">暂无内容</h3>
+                    <p style="font-size: var(--text-sm); color: var(--text-tertiary);">换个分类看看吧</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Knowledge Base Detail Sheet ========== -->
+        <div class="bottom-sheet-overlay" id="kb-detail-overlay"></div>
+        <div class="bottom-sheet" id="kb-detail-sheet">
+            <button id="kb-detail-close-btn" aria-label="关闭详情" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border: var(--glass-border); border-radius: var(--radius-full); cursor: pointer; z-index: 5; color: var(--text-secondary);">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="bottom-sheet-handle"></div>
+            <div id="kb-detail-content"></div>
+            <div id="kb-detail-actions" style="display: flex; gap: 10px; margin-top: 20px;"></div>
+        </div>
+
+        <!-- ========== KB Video Page ========== -->
+        <div class="page no-nav" id="page-kb-video">
+            <div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--bg-base);">
+                <header style="display: flex; align-items: center; padding: 12px 16px; min-height: 56px; position: relative; z-index: 10;">
+                    <button class="btn-ghost" id="kb-video-back" aria-label="返回" style="width: 36px; height: 36px;">
+                        <i data-lucide="chevron-left" style="width: 22px; height: 22px; color: var(--text-secondary);"></i>
+                    </button>
+                    <div style="flex: 1; text-align: center; min-width: 0; padding: 0 8px;">
+                        <h1 style="font-weight: 700; font-size: var(--text-lg); color: var(--text-primary); letter-spacing: var(--tracking-tight); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="kb-video-title">视频教程</h1>
+                    </div>
+                    <div style="width: 36px;"></div>
+                </header>
+
+                <div class="no-scrollbar" style="flex: 1; overflow-y: auto; padding-bottom: calc(24px + env(safe-area-inset-bottom, 16px));">
+                    <section style="padding: 0 16px; margin-bottom: 20px;">
+                        <div class="video-size-toggle" id="kb-size-toggle">
+                            <button class="video-size-btn" data-size="compact" onclick="setVideoSize('compact')">紧凑</button>
+                            <button class="video-size-btn" data-size="standard" onclick="setVideoSize('standard')">标准</button>
+                            <button class="video-size-btn" data-size="wide" onclick="setVideoSize('wide')">宽屏</button>
+                        </div>
+                        <div id="kb-video-wrap" class="video-wrap video-size-compact">
+                            <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-elevated);">
+                                <iframe id="kb-video-player" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                            </div>
+                        </div>
+                        <div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 6px; line-height: 1.4;">
+                            <i data-lucide="info" style="width: 11px; height: 11px; display: inline; vertical-align: middle;"></i>
+                            登录B站看1080P
+                        </div>
+                    </section>
+
+                    <section style="padding: 0 16px; margin-bottom: 20px;">
+                        <h2 id="kb-video-info-title" style="font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--text-primary); margin-bottom: 8px;">视频标题</h2>
+                        <p id="kb-video-summary" style="font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-normal); margin-bottom: 12px;">视频简介</p>
+                        <div class="flex flex-wrap gap-2" id="kb-video-tags"></div>
+                    </section>
+
+                    <section id="kb-video-episodes" style="display: none; padding: 0 16px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <h3 style="font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--text-primary);">选集</h3>
+                            <span id="kb-video-current-ep" style="font-size: var(--text-xs); color: var(--text-tertiary);"></span>
+                        </div>
+                        <div id="kb-video-ep-list" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div>
+                    </section>
+
+                    <section style="padding: 0 16px;">
+                        <div style="display: flex; gap: 10px;">
+                            <a id="kb-open-bili" href="#" target="_blank" rel="noopener" class="btn-ghost" style="flex: 1; text-align: center; text-decoration: none; padding: 10px; font-size: var(--text-sm); display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="external-link" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                                B站看高清
+                            </a>
+                            <button class="btn-primary" id="kb-add-to-library-btn" style="flex: 1;">
+                                <i data-lucide="plus" style="width: 18px; height: 18px; margin-right: 6px;"></i>
+                                加入练习
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Bottom Navigation ========== -->
+        <nav class="bottom-nav" id="bottom-nav">
+            <div class="bottom-nav-inner">
+                <button class="nav-btn active" data-page="dashboard" aria-label="工作台">
+                    <i data-lucide="layout-grid" style="width: 24px; height: 24px;"></i>
+                    <span>工作台</span>
+                </button>
+                <button class="nav-btn" data-page="source-library" aria-label="素材库">
+                    <i data-lucide="library" style="width: 24px; height: 24px;"></i>
+                    <span>素材库</span>
+                </button>
+                <button class="nav-btn" data-page="weekly-review" aria-label="周复盘">
+                    <i data-lucide="bar-chart-3" style="width: 24px; height: 24px;"></i>
+                    <span>周复盘</span>
+                </button>
+                <button class="nav-btn" data-page="calendar" aria-label="日历">
+                    <i data-lucide="calendar-days" style="width: 24px; height: 24px;"></i>
+                    <span>日历</span>
+                </button>
+                <button class="nav-btn" data-page="knowledge" aria-label="知识库">
+                    <i data-lucide="book-open" style="width: 24px; height: 24px;"></i>
+                    <span>知识库</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ========== Bottom Sheet: Add Lesson ========== -->
+        <div class="bottom-sheet-overlay" id="sheet-overlay"></div>
+        <div class="bottom-sheet" id="add-lesson-sheet">
+            <button id="sheet-close-btn" aria-label="关闭表单" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border: var(--glass-border); border-radius: var(--radius-full); cursor: pointer; z-index: 5; color: var(--text-secondary);">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="bottom-sheet-handle"></div>
+            <h2 class="spc-title mb-5" style="font-size: var(--text-xl);">添加练习</h2>
+            
+            <div class="mb-4">
+                <label class="form-label">标题</label>
+                <input type="text" class="form-input" id="lesson-title" placeholder="例如：基础和弦转换">
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">来源</label>
+                <select class="form-input" id="lesson-source">
+                    <option value="new">+ 新建来源...</option>
+                </select>
+            </div>
+
+            <div class="mb-4" id="new-source-field" style="display: none;">
+                <label class="form-label">新来源名称</label>
+                <input type="text" class="form-input" id="new-source-name" placeholder="例如：JustinGuitar 和弦课程">
+                <div class="mt-3">
+                    <label class="form-label" style="font-size: var(--text-xs);">来源类型</label>
+                    <div class="chip-selector mt-2" id="source-type-chips">
+                        <div class="chip" data-type="bilibili">B站</div>
+                        <div class="chip" data-type="youtube">YouTube</div>
+                        <div class="chip" data-type="book">教程书</div>
+                        <div class="chip" data-type="score">曲谱</div>
+                    </div>
+                </div>
+                <div class="mt-3" id="bili-link-field" style="display: none;">
+                    <label class="form-label" style="font-size: var(--text-xs);">B站视频链接</label>
+                    <input type="text" class="form-input mt-2" id="bili-url-input" placeholder="粘贴B站视频链接，如 https://www.bilibili.com/video/BV...">
+                    <div id="bili-loading" style="display: none; margin-top: 8px; font-size: var(--text-xs); color: var(--text-tertiary);">正在获取选集列表...</div>
+                    <div id="bili-episode-area" style="display: none; margin-top: 8px;">
+                        <label class="form-label" style="font-size: var(--text-xs);">选集</label>
+                        <select class="form-input mt-1" id="bili-episode-select" style="display: none;"></select>
+                        <input type="number" class="form-input mt-1" id="bili-episode-input" min="1" value="1" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">目标 BPM</label>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="btn-ghost" id="form-bpm-minus" style="width: 32px; height: 32px;">
+                        <i data-lucide="minus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                    </button>
+                    <span class="gradient-text" style="font-family: var(--font-mono); font-weight: 700; font-size: 24px; line-height: 1; min-width: 48px; text-align: center;" id="form-bpm-display">80</span>
+                    <button class="btn-ghost" id="form-bpm-plus" style="width: 32px; height: 32px;">
+                        <i data-lucide="plus" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">技能标签</label>
+                <div class="chip-selector" id="skill-tag-chips">
+                    <div class="chip" data-tag="和弦">和弦</div>
+                    <div class="chip" data-tag="转换">转换</div>
+                    <div class="chip" data-tag="节奏">节奏</div>
+                    <div class="chip" data-tag="大横按">大横按</div>
+                    <div class="chip" data-tag="音阶">音阶</div>
+                    <div class="chip" data-tag="拨弦">拨弦</div>
+                    <div class="chip" data-tag="扫弦">扫弦</div>
+                    <div class="chip" data-tag="指弹">指弹</div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">乐器</label>
+                <div class="chip-selector" id="form-instrument" role="radiogroup" aria-label="选择乐器">
+                    <div class="chip" data-instrument="electric" role="radio" aria-checked="false" aria-label="电吉他">电吉他</div>
+                    <div class="chip selected" data-instrument="acoustic" role="radio" aria-checked="true" aria-label="木吉他">木吉他</div>
+                    <div class="chip" data-instrument="ukulele" role="radio" aria-checked="false" aria-label="尤克里里">尤克里里</div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="form-label">目标时长</label>
+                <div class="chip-selector" id="duration-chips">
+                    <div class="chip" data-duration="5">5 分钟</div>
+                    <div class="chip selected" data-duration="10">10 分钟</div>
+                    <div class="chip" data-duration="15">15 分钟</div>
+                    <div class="chip" data-duration="20">20 分钟</div>
+                    <div class="chip" data-duration="30">30 分钟</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-lesson" style="width: 100%;">
+                保存
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // ==================== Data Layer ====================
+    const STORAGE_KEY = 'spc_data_v1';
+
+    const defaultData = {
+        instruments: [
+            { id: 'electric', name: '电吉他', gradient: 'electric' },
+            { id: 'acoustic', name: '木吉他', gradient: 'acoustic' },
+            { id: 'ukulele', name: '尤克里里', gradient: 'ukulele' }
+        ],
+        sources: [
+            {
+                id: 'src_1',
+                name: 'JustinGuitar 和弦课程',
+                type: 'youtube',
+                lessons: [
+                    { id: 'les_1', sourceId: 'src_1', title: 'Open Chord Practice', targetBPM: 80, tags: ['和弦'], instrument: 'acoustic', targetDuration: 600, lastPractice: Date.now() - 2 * 24 * 3600 * 1000 },
+                    { id: 'les_2', sourceId: 'src_1', title: 'Chord Transitions', targetBPM: 90, tags: ['转换', '节奏'], instrument: 'acoustic', targetDuration: 600, lastPractice: Date.now() - 1 * 24 * 3600 * 1000 },
+                    { id: 'les_3', sourceId: 'src_1', title: 'Barre Chord Basics', targetBPM: 60, tags: ['大横按'], instrument: 'acoustic', targetDuration: 600, lastPractice: Date.now() }
+                ]
+            },
+            {
+                id: 'src_2',
+                name: '小林信一 摇滚吉他',
+                type: 'book',
+                lessons: [
+                    { id: 'les_4', sourceId: 'src_2', title: '交替拨弦基础', targetBPM: 100, tags: ['拨弦'], instrument: 'electric', targetDuration: 600, lastPractice: null },
+                    { id: 'les_5', sourceId: 'src_2', title: '音阶跑动训练', targetBPM: 120, tags: ['音阶'], instrument: 'electric', targetDuration: 600, lastPractice: null }
+                ]
+            },
+            {
+                id: 'src_3',
+                name: '押尾コータロー 指弹合集',
+                type: 'bilibili',
+                lessons: [
+                    { id: 'les_6', sourceId: 'src_3', title: '风之诗 Wind Song', targetBPM: 70, tags: ['指弹'], instrument: 'acoustic', targetDuration: 600, lastPractice: null, bvid: 'BV1GJ411x7h7', page: 1 },
+                    { id: 'les_7', sourceId: 'src_3', title: '黄昏 Twilight', targetBPM: 65, tags: ['指弹', '节奏'], instrument: 'acoustic', targetDuration: 600, lastPractice: null, bvid: 'BV1GJ411x7h7', page: 1 }
+                ]
+            }
+        ],
+        sessions: [
+            { id: 'sess_1', lessonId: 'les_2', instrument: 'acoustic', date: Date.now() - 4 * 24 * 3600 * 1000, durationSeconds: 40 * 60, bpm: 85, repetitions: 8, selfRating: 4, painPoints: ['换和弦慢', '节奏不稳'], notes: '和弦转换还需要多练' },
+            { id: 'sess_2', lessonId: 'les_5', instrument: 'electric', date: Date.now() - 3 * 24 * 3600 * 1000, durationSeconds: 28 * 60, bpm: 95, repetitions: 6, selfRating: 3, painPoints: ['拨弦力度不均'], notes: '' },
+            { id: 'sess_3', lessonId: 'les_4', instrument: 'electric', date: Date.now() - 2 * 24 * 3600 * 1000, durationSeconds: 30 * 60, bpm: 90, repetitions: 10, selfRating: 4, painPoints: ['节奏不稳'], notes: '节奏还需要加强' },
+            { id: 'sess_4', lessonId: 'les_3', instrument: 'acoustic', date: Date.now() - 1 * 24 * 3600 * 1000, durationSeconds: 32 * 60, bpm: 55, repetitions: 5, selfRating: 2, painPoints: ['大横按切换慢', '手指僵硬'], notes: '大横按好难' },
+            { id: 'sess_5', lessonId: 'les_1', instrument: 'acoustic', date: Date.now(), durationSeconds: 25 * 60, bpm: 80, repetitions: 7, selfRating: 4, painPoints: ['大横按切换慢', '节奏不稳'], notes: '今天感觉不错' }
+        ],
+        painPointOptions: ['节奏不稳', '换和弦慢', '手指僵硬', '大横按切换慢', '高把位音准偏差', '拨弦力度不均', '其他'],
+        knowledgeBase: {
+            categories: [
+                { id: 'basics', name: '基础教程', icon: 'book-open' },
+                { id: 'practice', name: '基本功练习', icon: 'dumbbell' },
+                { id: 'video', name: '视频课程', icon: 'play-circle' },
+                { id: 'theory', name: '乐理知识', icon: 'music' }
+            ],
+            items: [
+                { id: 'kb_e1', category: 'basics', instrument: 'electric', title: '持琴姿势与坐姿', difficulty: 1, tags: ['入门', '姿势'], content: [
+                    { type: 'paragraph', text: '正确的持琴姿势是学习电吉他的第一步，它直接影响到你的演奏舒适度和技巧发展。坐姿演奏时，身体要保持自然放松，不要僵硬。' },
+                    { type: 'list', items: ['将吉他琴身凹陷处放在右腿上', '背部挺直，肩膀放松下沉', '左手肘部自然下垂，不要外展', '右手小臂轻靠琴身，手腕保持灵活'] },
+                    { type: 'tip', text: '小贴士：每次练习前花1分钟调整姿势，养成好习惯比事后纠正容易得多。' }
+                ]},
+                { id: 'kb_e2', category: 'basics', instrument: 'electric', title: '右手拨弦基础', difficulty: 1, tags: ['拨弦', '入门'], content: [
+                    { type: 'paragraph', text: '右手拨弦是电吉他最基础的技巧之一。掌握正确的拨弦方法，能让你的音色更加清晰有力。' },
+                    { type: 'list', items: ['拨片持法：用拇指和食指捏住拨片尖端', '拨片角度：与琴弦呈约30度角', '发力点：主要来自手腕，而非手臂', '交替拨弦：下拨和上拨交替进行'] },
+                    { type: 'tip', text: '小贴士：开始时放慢速度，确保每个音都清晰，再逐渐提速。' }
+                ]},
+                { id: 'kb_e3', category: 'basics', instrument: 'electric', title: '左手按弦要领', difficulty: 1, tags: ['左手', '入门'], content: [
+                    { type: 'paragraph', text: '左手按弦的质量直接决定了音准和音色。正确的按弦姿势可以让你的演奏更加轻松自如。' },
+                    { type: 'list', items: ['指尖垂直按弦，避免碰到相邻弦', '按在品丝靠近琴头一侧', '拇指在琴颈后方中部支撑', '手指保持弯曲，像握着一个球'] },
+                    { type: 'tip', text: '小贴士：按弦力度要适中，太轻会有杂音，太重会导致音高偏高。' }
+                ]},
+                { id: 'kb_e4', category: 'basics', instrument: 'electric', title: '调音方法', difficulty: 1, tags: ['调音', '基础'], content: [
+                    { type: 'paragraph', text: '吉他调音是每次练习前必须做的事情。标准调音从6弦到1弦分别是 E A D G B E。' },
+                    { type: 'list', items: ['使用调音器或手机APP辅助调音', '先调6弦（低音E），再依次调其他弦', '调完后再检查一遍，确保准确', '推弦技巧多的曲子可以稍微降一点音'] },
+                    { type: 'tip', text: '小贴士：新琴弦需要多次调音才能稳定，前几天每次练习前都要调。' }
+                ]},
+                { id: 'kb_e5', category: 'basics', instrument: 'electric', title: '换弦方法', difficulty: 2, tags: ['保养', '换弦'], content: [
+                    { type: 'paragraph', text: '定期更换琴弦可以保持良好的音色和手感。电吉他琴弦一般1-3个月更换一次，具体取决于使用频率。' },
+                    { type: 'list', items: ['一根一根换，保持琴颈拉力稳定', '旧弦拆下后清洁指板', '新弦留出足够长度绕琴柱3-4圈', '换完后拉伸琴弦，加速稳定'] },
+                    { type: 'tip', text: '小贴士：换弦时顺便清洁琴身和品丝，能延长乐器寿命。' }
+                ]},
+                { id: 'kb_a1', category: 'basics', instrument: 'acoustic', title: '持琴姿势与右手手指拨弦', difficulty: 1, tags: ['入门', '指弹'], content: [
+                    { type: 'paragraph', text: '木吉他的持琴姿势和右手手指拨弦是入门的关键。正确的姿势能让你演奏更轻松，音色更饱满。' },
+                    { type: 'list', items: ['琴身凹陷处放在右腿上', '右手手指分配：拇指负责6-4弦，食指3弦，中指2弦，无名指1弦', '手指拨弦时用指腹外侧触弦', '小指可轻靠面板作为支撑'] },
+                    { type: 'tip', text: '小贴士：指甲长度要适中，太长会碰弦，太短音色不够亮。' }
+                ]},
+                { id: 'kb_a2', category: 'basics', instrument: 'acoustic', title: '左手按弦与大横按入门', difficulty: 2, tags: ['左手', '大横按'], content: [
+                    { type: 'paragraph', text: '木吉他的琴弦较硬，按弦需要更多力气。大横按是初学者的一道坎，但掌握方法后就能突破。' },
+                    { type: 'list', items: ['指尖按弦，尽量靠近品丝', '大横按用食指侧面按弦', '手腕向前送，让手指更垂直', '从F和弦开始练习，先按住再松开反复'] },
+                    { type: 'tip', text: '小贴士：大横按不要用蛮力，找到手指的最佳支撑点很重要。' }
+                ]},
+                { id: 'kb_a3', category: 'basics', instrument: 'acoustic', title: '调弦与换弦', difficulty: 1, tags: ['调音', '保养'], content: [
+                    { type: 'paragraph', text: '木吉他的调弦和换弦是基本功。标准调弦同样是 E A D G B E，从最粗的6弦到最细的1弦。' },
+                    { type: 'list', items: ['使用调音器逐根弦调音', '换弦时一根一根换，保持琴颈稳定', '弦尾在琴桥处固定牢固', '琴头处琴弦绕3-4圈防止打滑'] },
+                    { type: 'tip', text: '小贴士：木吉他琴弦比电吉他粗，换弦时注意不要被弦尾划伤。' }
+                ]},
+                { id: 'kb_u1', category: 'basics', instrument: 'ukulele', title: '尤克里里持琴与右手扫弦', difficulty: 1, tags: ['入门', '扫弦'], content: [
+                    { type: 'paragraph', text: '尤克里里小巧轻便，非常适合入门。正确的持琴姿势和扫弦方法能让你快速上手。' },
+                    { type: 'list', items: ['将尤克里里抱在胸前，右臂轻靠琴身', '扫弦用食指指甲盖下扫，指腹上扫', '手腕放松，动作要轻盈有弹性', '可以用拇指辅助拨低音弦'] },
+                    { type: 'tip', text: '小贴士：尤克里里调音是 G C E A，和吉他不同，不要搞混哦。' }
+                ]},
+                { id: 'kb_u2', category: 'basics', instrument: 'ukulele', title: '左手按弦与常用和弦', difficulty: 1, tags: ['左手', '和弦'], content: [
+                    { type: 'paragraph', text: '尤克里里的弦很软，按弦非常轻松。掌握几个常用和弦就能弹唱很多歌曲了。' },
+                    { type: 'list', items: ['C和弦：无名指按1弦3品', 'Am和弦：中指按4弦2品', 'F和弦：食指按2弦1品+中指按4弦2品', 'G和弦：食指按3弦2品+中指按1弦2品+无名指按2弦3品'] },
+                    { type: 'tip', text: '小贴士：尤克里里和弦转换比吉他容易，多练习转换速度会很快提升。' }
+                ]},
+                { id: 'kb_ep1', category: 'practice', instrument: 'electric', title: '爬格子 Spider Exercise', difficulty: 2, tags: ['爬格子', '左手'], targetBPM: 80, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '爬格子是电吉他左手基本功的核心练习。它能锻炼手指的独立性、力量和按弦准确度。' },
+                    { type: 'list', items: ['从6弦到1弦，每根弦按1-2-3-4品依次弹奏', '使用交替拨弦，下拨上拨交替', '保持每个音清晰均匀', '从慢速度开始，确保姿势正确'] },
+                    { type: 'tip', text: '小贴士：练习时盯着左手，确保每个手指按弦位置准确，不要跳。' }
+                ]},
+                { id: 'kb_ep2', category: 'practice', instrument: 'electric', title: '交替拨弦训练', difficulty: 2, tags: ['拨弦', '交替拨弦'], targetBPM: 100, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '交替拨弦是电吉他最常用的拨弦方式。掌握好交替拨弦，你的演奏速度和清晰度都会大幅提升。' },
+                    { type: 'list', items: ['在一根弦上练习下拨上拨交替', '保持拨片角度稳定，不要随意变化', '从八分音符开始，再练十六分音符', '注意重音，让节奏更有律动'] },
+                    { type: 'tip', text: '小贴士：拨弦动作要小，用手腕发力，不要用整个手臂甩。' }
+                ]},
+                { id: 'kb_ep3', category: 'practice', instrument: 'electric', title: '击勾弦 Hammer-on & Pull-off', difficulty: 3, tags: ['击勾弦', '左手'], targetBPM: 80, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '击勾弦是左手的重要技巧，能让你的演奏更流畅连贯。击弦是用左手手指敲击琴弦发声，勾弦则相反。' },
+                    { type: 'list', items: ['击弦：手指从高处垂直落下，准确击在品丝旁', '勾弦：按住的手指向外侧勾出发声', '两个动作都要果断有力', '从相邻品开始练习，再扩大跨度'] },
+                    { type: 'tip', text: '小贴士：击勾弦的音量要尽量接近拨弦的音量，多练才能均衡。' }
+                ]},
+                { id: 'kb_ep4', category: 'practice', instrument: 'electric', title: '推弦与揉弦', difficulty: 3, tags: ['推弦', '揉弦'], targetBPM: 70, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '推弦和揉弦是电吉他最具表现力的技巧。它们能让你的演奏充满感情和个性。' },
+                    { type: 'list', items: ['推弦：用多个手指合力推弦，目标音高要准', '全音推弦和半音推弦都要练习', '揉弦：手腕转动带动手指，幅度均匀', '推弦后加揉弦，音色更动人'] },
+                    { type: 'tip', text: "小贴士：推弦的音高一定要准，可以用调音器辅助练习，推到目标音高后保持几秒再放开。" }
+                ]},
+                { id: 'kb_ap1', category: 'practice', instrument: 'acoustic', title: '爬格子训练', difficulty: 2, tags: ['爬格子'], targetBPM: 80, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '木吉他的爬格子练习同样重要。虽然木吉他弦更硬，但坚持练习能显著提升手指力量。' },
+                    { type: 'list', items: ['从6弦到1弦逐根练习', '手指按弦要到位，避免闷音', '可以用手指拨弦或拨片练习', '每天坚持10分钟，效果显著'] },
+                    { type: 'tip', text: '小贴士：木吉他指板较宽，注意手指跨度的拉伸，不要勉强。' }
+                ]},
+                { id: 'kb_ap2', category: 'practice', instrument: 'acoustic', title: '分解和弦练习', difficulty: 2, tags: ['分解和弦', '指弹'], targetBPM: 70, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '分解和弦是木吉他指弹的基础。右手手指有序地拨奏和弦音，创造出优美的流动感。' },
+                    { type: 'list', items: ['右手手指分配：拇指6-4弦，食指3弦，中指2弦，无名指1弦', '练习常见的分解节奏型：T-3-2-3-1-3-2-3', '保持每个音的清晰度和时值', '左手和弦转换要及时准确'] },
+                    { type: 'tip', text: '小贴士：分解和弦时拇指要稳住低音，高音手指要轻盈。' }
+                ]},
+                { id: 'kb_ap3', category: 'practice', instrument: 'acoustic', title: '扫弦节奏型', difficulty: 2, tags: ['扫弦', '节奏'], targetBPM: 90, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '扫弦是木吉他弹唱最常用的伴奏方式。掌握多种扫弦节奏型，你就能为不同风格的歌曲伴奏。' },
+                    { type: 'list', items: ['下扫用指甲盖，上扫用指腹', '手腕放松，动作要有弹性', '练习常见节奏：下 下上 空上 下上', '注意重音位置，让节奏更有层次'] },
+                    { type: 'tip', text: '小贴士：扫弦不是越用力越好，轻重变化才有音乐性。' }
+                ]},
+                { id: 'kb_up1', category: 'practice', instrument: 'ukulele', title: '爬格子训练', difficulty: 2, tags: ['爬格子'], targetBPM: 80, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '尤克里里虽然只有四根弦，但爬格子练习同样重要。它能提升手指的独立性和按弦准确度。' },
+                    { type: 'list', items: ['从4弦到1弦逐根练习', '每根弦按1-2-3-4品', '尤克里里品距小，注意不要按错品', '可以用手指或拨片练习'] },
+                    { type: 'tip', text: '小贴士：尤克里里弦软，按弦不要太用力，否则音会偏高。' }
+                ]},
+                { id: 'kb_up2', category: 'practice', instrument: 'ukulele', title: '扫弦节奏', difficulty: 2, tags: ['扫弦', '节奏'], targetBPM: 90, targetDuration: 600, content: [
+                    { type: 'paragraph', text: '尤克里里的扫弦轻快活泼，是它的特色之一。掌握好扫弦节奏，你就能弹唱很多热门歌曲。' },
+                    { type: 'list', items: ['下扫用食指指甲，上扫用指腹', '手腕放松，动作轻盈', '练习基础节奏：下 下上 下上', '尝试切音技巧，增加节奏感'] },
+                    { type: 'tip', text: '小贴士：尤克里里扫弦幅度要小，节奏要稳，不要太用力。' }
+                ]},
+                { id: 'kb_t1', category: 'theory', instrument: 'all', title: '音名与十二平均律', difficulty: 2, tags: ['音程', '基础乐理'], content: [
+                    { type: 'paragraph', text: '音名是音乐的基本语言。十二平均律是现代音乐最常用的调音系统，理解它对学习乐器非常重要。' },
+                    { type: 'list', items: ['基本音名：C D E F G A B（对应do re mi fa sol la si）', '相邻音名之间，除了E-F和B-C是半音，其他都是全音', '一个八度有12个半音，即十二平均律', '升号#表示升高半音，降号b表示降低半音'] },
+                    { type: 'tip', text: '小贴士：记住E-F和B-C之间没有黑键，是半音关系，其他都是全音。' }
+                ]},
+                { id: 'kb_t2', category: 'theory', instrument: 'all', title: '音程基础', difficulty: 3, tags: ['音程', '乐理'], content: [
+                    { type: 'paragraph', text: '音程是两个音之间的距离。理解音程是学习和弦、音阶和旋律的基础。' },
+                    { type: 'list', items: ['度数：两个音之间包含的音名数量', '性质：大、小、纯、增、减', '常见音程：纯一度、大二度、小三度、纯四度、纯五度、大六度、小七度、纯八度', '音程是构建和弦的基本单位'] },
+                    { type: 'tip', text: '小贴士：可以通过熟悉的歌曲开头来记忆音程，比如纯五度像《星球大战》主题。' }
+                ]},
+                { id: 'kb_t3', category: 'theory', instrument: 'all', title: '三和弦构成', difficulty: 2, tags: ['和弦', '乐理'], content: [
+                    { type: 'paragraph', text: '三和弦是最基本的和弦，由三个音叠置而成。掌握三和弦是学习和声的第一步。' },
+                    { type: 'list', items: ['大三和弦：根音 + 大三度 + 纯五度，听起来明亮', '小三和弦：根音 + 小三度 + 纯五度，听起来暗淡', '增三和弦：根音 + 大三度 + 增五度，听起来紧张', '减三和弦：根音 + 小三度 + 减五度，听起来不稳定'] },
+                    { type: 'tip', text: '小贴士：C大调和弦由C-E-G组成，换成C-Eb-G就是Cm小和弦，差别就在三度音。' }
+                ]},
+                { id: 'kb_t4', category: 'theory', instrument: 'all', title: '五声音阶', difficulty: 3, tags: ['音阶', '乐理'], content: [
+                    { type: 'paragraph', text: '五声音阶是由五个音组成的音阶，在流行、摇滚、布鲁斯等风格中广泛使用，是即兴演奏的基础。' },
+                    { type: 'list', items: ['大调五声音阶：1 2 3 5 6（去掉4和7）', '小调五声音阶：1 b3 4 5 b7（去掉2和6）', '五声音阶没有不协和的半音，怎么弹都好听', '吉他的五声音阶指型是入门必学'] },
+                    { type: 'tip', text: '小贴士：先学会小调五声音阶的五个指型，你就能在任何调上即兴solo了。' }
+                ]},
+                { id: 'kb_t5', category: 'theory', instrument: 'all', title: '自然大调音阶', difficulty: 2, tags: ['音阶', '乐理'], content: [
+                    { type: 'paragraph', text: '自然大调音阶是最基础的音阶，我们常说的do re mi fa sol la si就是自然大调。' },
+                    { type: 'list', items: ['音程结构：全 全 半 全 全 全 半', 'C大调：C D E F G A B（没有升降号）', '每个大调都有对应的关系小调', '大调音阶听起来明亮、愉快'] },
+                    { type: 'tip', text: '小贴士：记住全全半全全全半这个口诀，就能推出任何大调的组成音。' }
+                ]}
+            ],
+            videos: [
+                { id: 'vid_e1', title: '电吉他入门系统教程', bvid: 'BV1NJVJzEEnn', instrument: 'electric', summary: '从零开始学习电吉他的完整入门教程', tags: ['入门', '系统教学'] },
+                { id: 'vid_e2', title: '电吉他技巧进阶', bvid: 'BV1FT411Z7iu', instrument: 'electric', summary: '推弦、揉弦、滑音等进阶技巧详解', tags: ['技巧', '进阶'] },
+                { id: 'vid_e3', title: '摇滚吉他练习曲', bvid: 'BV1bx411H768', instrument: 'electric', summary: '经典摇滚风格练习曲，提升实战能力', tags: ['乐曲', '摇滚'] },
+                { id: 'vid_e4', title: '电吉他Solo教学', bvid: 'BV1uq4y1m7QN', instrument: 'electric', summary: '经典Solo段落拆解教学', tags: ['Solo', '技巧'] },
+                { id: 'vid_a1', title: '木吉他入门教程', bvid: 'BV1HG411V7wA', instrument: 'acoustic', summary: '木吉他零基础入门，从零开始学弹唱', tags: ['入门', '弹唱'] },
+                { id: 'vid_a2', title: '指弹吉他入门', bvid: 'BV1c7411t7dR', instrument: 'acoustic', summary: '指弹吉他基础技巧与经典曲目', tags: ['指弹', '入门'] },
+                { id: 'vid_a3', title: '吉他弹唱教程', bvid: 'BV1oy421B76E', instrument: 'acoustic', summary: '热门歌曲弹唱教学，边学边练', tags: ['弹唱', '入门'] },
+                { id: 'vid_a4', title: '木吉他技巧进阶', bvid: 'BV1hb411G7Pf', instrument: 'acoustic', summary: '打板、泛音等高级指弹技巧', tags: ['技巧', '进阶'] },
+                { id: 'vid_u1', title: '尤克里里入门教程', bvid: 'BV1Kx41147iq', instrument: 'ukulele', summary: '尤克里里零基础入门教程', tags: ['入门', '弹唱'] },
+                { id: 'vid_u2', title: '尤克里里弹唱教学', bvid: 'BV1Dx41147rA', instrument: 'ukulele', summary: '热门歌曲尤克里里弹唱教学', tags: ['弹唱', '入门'] },
+                { id: 'vid_u3', title: '尤克里里指弹教程', bvid: 'BV1Kx411S7vN', instrument: 'ukulele', summary: '尤克里里指弹技巧与曲目', tags: ['指弹', '入门'] },
+                { id: 'vid_u4', title: '尤克里里技巧进阶', bvid: 'BV1Rx411C7Nw', instrument: 'ukulele', summary: '尤克里里高级技巧教学', tags: ['技巧', '进阶'] },
+                { id: 'vid_u5', title: '尤克里里经典曲目合集', bvid: 'BV1Kx41147iq', instrument: 'ukulele', summary: '经典尤克里里曲目的演奏示范与教学', tags: ['乐曲', '经典'] }
+            ],
+            favorites: []
+        },
+        videoSize: 'compact'
+    };
+
+    function loadData() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                const loaded = JSON.parse(raw);
+                return mergeDefaults(loaded, defaultData);
+            }
+        } catch (e) {
+            console.error('Failed to load data', e);
+        }
+        return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function mergeDefaults(target, defaults) {
+        const result = { ...target };
+        for (const key of Object.keys(defaults)) {
+            if (result[key] === undefined) {
+                result[key] = JSON.parse(JSON.stringify(defaults[key]));
+            } else if (typeof defaults[key] === 'object' && defaults[key] !== null && !Array.isArray(defaults[key])) {
+                result[key] = mergeDefaults(result[key], defaults[key]);
+            }
+        }
+        return result;
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+            console.error('Failed to save data', e);
+        }
+    }
+
+    function exportData() {
+        const dataStr = JSON.stringify(state, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `string-practice-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (!data.sources || !data.sessions) {
+                    alert('文件格式不正确');
+                    return;
+                }
+                if (confirm('导入数据将覆盖当前数据，确定继续吗？')) {
+                    state = data;
+                    saveData();
+                    renderDashboard();
+                    alert('导入成功！');
+                }
+            } catch (err) {
+                alert('导入失败：文件格式错误');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    let state = loadData();
+
+    // ==================== Utility Functions ====================
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function formatDate(date) {
+        const d = new Date(date);
+        return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function timeAgo(date) {
+        if (!date) return '从未';
+        const diff = Date.now() - date;
+        const days = Math.floor(diff / (24 * 3600 * 1000));
+        if (days === 0) return '今天';
+        if (days === 1) return '昨天';
+        if (days < 7) return `${days}天前`;
+        return formatDate(date);
+    }
+
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 6) return '夜深了 🌙';
+        if (hour < 12) return '早上好 ☀️';
+        if (hour < 14) return '中午好 🌤️';
+        if (hour < 18) return '下午好 ☁️';
+        return '晚上好 🌙';
+    }
+
+    function uid(prefix) {
+        return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+    }
+
+    function getWeekRange() {
+        const now = new Date();
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        const monday = new Date(now);
+        monday.setDate(diff);
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        const fmt = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+        return `${fmt(monday)} - ${fmt(sunday)}`;
+    }
+
+    function getThisWeekSessions() {
+        const now = new Date();
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        const monday = new Date(now);
+        monday.setDate(diff);
+        monday.setHours(0, 0, 0, 0);
+        return state.sessions.filter(s => s.date >= monday.getTime());
+    }
+
+    function getLastWeekSessions() {
+        const now = new Date();
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        const thisMonday = new Date(now);
+        thisMonday.setDate(diff);
+        thisMonday.setHours(0, 0, 0, 0);
+        const lastMonday = new Date(thisMonday);
+        lastMonday.setDate(thisMonday.getDate() - 7);
+        return state.sessions.filter(s => s.date >= lastMonday.getTime() && s.date < thisMonday.getTime());
+    }
+
+    function getSourceById(id) {
+        return state.sources.find(s => s.id === id);
+    }
+
+    function getLessonById(id) {
+        for (const src of state.sources) {
+            const lesson = src.lessons.find(l => l.id === id);
+            if (lesson) return lesson;
+        }
+        return null;
+    }
+
+    function deleteSource(sourceId) {
+        const source = getSourceById(sourceId);
+        if (!source) return;
+        if (confirm(`确定要删除来源"${source.name}"及其所有课程吗？`)) {
+            state.sources = state.sources.filter(s => s.id !== sourceId);
+            saveData();
+            renderSourceLibrary();
+        }
+    }
+
+    function deleteLesson(lessonId) {
+        const lesson = getLessonById(lessonId);
+        if (!lesson) return;
+        if (confirm(`确定要删除课程"${lesson.title}"吗？`)) {
+            const source = getSourceById(lesson.sourceId);
+            if (source) {
+                source.lessons = source.lessons.filter(l => l.id !== lessonId);
+                if (source.lessons.length === 0) {
+                    state.sources = state.sources.filter(s => s.id !== source.id);
+                }
+                saveData();
+                renderSourceLibrary();
+            }
+        }
+    }
+
+    function editLesson(lessonId) {
+        const lesson = getLessonById(lessonId);
+        if (!lesson) return;
+        editingLessonId = lessonId;
+
+        // 预填表单数据
+        formBPM = lesson.targetBPM || 80;
+        formSelectedTags = [...(lesson.tags || [])];
+        formDuration = Math.round((lesson.targetDuration || 600) / 60);
+        formInstrument = lesson.instrument || 'acoustic';
+        formSourceType = lesson.bvid ? 'bilibili' : 'youtube';
+
+        // 填充表单UI
+        const titleInput = document.getElementById('lesson-title');
+        if (titleInput) titleInput.value = lesson.title;
+        const biliInput = document.getElementById('bili-url-input');
+        if (biliInput && lesson.bvid) {
+            biliInput.value = `https://www.bilibili.com/video/${lesson.bvid}`;
+        } else if (biliInput) {
+            biliInput.value = '';
+        }
+
+        // 隐藏来源选择区（编辑时不改来源）
+        const sourceSelect = document.getElementById('lesson-source');
+        if (sourceSelect) {
+            const sourceDiv = sourceSelect.closest('.mb-4');
+            if (sourceDiv) sourceDiv.style.display = 'none';
+        }
+        const newSourceField = document.getElementById('new-source-field');
+        if (newSourceField) newSourceField.style.display = 'none';
+
+        // 显示表单
+        document.getElementById('sheet-overlay').classList.add('visible');
+        document.getElementById('add-lesson-sheet').classList.add('visible');
+
+        // 更新表单显示
+        const formBpmDisplay = document.getElementById('form-bpm-display');
+        if (formBpmDisplay) formBpmDisplay.textContent = formBPM;
+        refreshFormUI();
+
+        // 修改标题和提交按钮文字
+        const sheetTitle = document.querySelector('#add-lesson-sheet .spc-title');
+        if (sheetTitle) sheetTitle.textContent = '编辑课程';
+        const submitBtn = document.getElementById('btn-save-lesson');
+        if (submitBtn) submitBtn.textContent = '保存修改';
+    }
+
+    function refreshFormUI() {
+        // 刷新标签选中状态
+        document.querySelectorAll('.tag-chip').forEach(chip => {
+            chip.classList.toggle('selected', formSelectedTags.includes(chip.dataset.tag));
+        });
+        // 刷新时长选中状态
+        document.querySelectorAll('.duration-chip').forEach(chip => {
+            chip.classList.toggle('selected', parseInt(chip.dataset.duration) === formDuration);
+        });
+        // 刷新类型选中状态
+        document.querySelectorAll('.type-chip').forEach(chip => {
+            chip.classList.toggle('selected', chip.dataset.type === formSourceType);
+        });
+        // 刷新乐器选中状态
+        document.querySelectorAll('.instrument-chip').forEach(chip => {
+            chip.classList.toggle('selected', chip.dataset.instrument === formInstrument);
+        });
+    }
+
+    function getSourceTypeColor(type) {
+        const map = {
+            bilibili: { bg: 'var(--color-mint-light)', color: '#5E9476' },
+            youtube: { bg: 'var(--color-lavender-light)', color: '#7B6E94' },
+            book: { bg: 'var(--color-warm-cream-light)', color: '#8B7355' },
+            score: { bg: 'var(--color-rose-soft-light)', color: '#9E6E7A' }
+        };
+        return map[type] || map.youtube;
+    }
+
+    function getInstrumentColor(instrument) {
+        const map = {
+            electric: '#F0D8A8',
+            acoustic: '#B8D8C8',
+            ukulele: '#D4C4E8'
+        };
+        return map[instrument] || map.acoustic;
+    }
+
+    function getSourceTypeName(type) {
+        const map = { bilibili: 'B站', youtube: 'YouTube', book: '教程书', score: '曲谱' };
+        return map[type] || type;
+    }
+
+    // ==================== Router ====================
+    let currentPage = 'dashboard';
+    let practiceLessonId = null;
+
+    function navigateTo(page, data = {}) {
+        // 离开练习页时停止节拍器
+        if (currentPage === 'practice' && page !== 'practice' && metronomeRunning) {
+            stopMetronome();
+        }
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        const pageEl = document.getElementById(`page-${page}`);
+        if (pageEl) pageEl.classList.add('active');
+
+        const navBtn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+        if (navBtn) navBtn.classList.add('active');
+
+        const bottomNav = document.getElementById('bottom-nav');
+        const pageHasNav = page !== 'practice' && page !== 'kb-video';
+        bottomNav.style.display = pageHasNav ? 'block' : 'none';
+
+        currentPage = page;
+
+        if (data.instrument) {
+            currentInstrumentFilter = data.instrument;
+        }
+
+        if (page === 'dashboard') renderDashboard();
+        if (page === 'source-library') renderSourceLibrary();
+        if (page === 'weekly-review') renderWeeklyReview();
+        if (page === 'calendar') renderCalendar();
+        if (page === 'knowledge') renderKnowledgeBase();
+        if (page === 'kb-video') {
+            renderKBVideoPage(data.videoId);
+        }
+        if (page === 'practice') {
+            practiceLessonId = data.lessonId || null;
+            renderPracticeSession();
+        }
+
+        window.scrollTo(0, 0);
+        lucide.createIcons();
+    }
+
+    // ==================== Dashboard Render ====================
+    function renderDashboard() {
+        document.getElementById('greeting-text').textContent = getGreeting();
+
+        const grid = document.getElementById('instrument-grid');
+        grid.innerHTML = state.instruments.map(inst => {
+            const sessions = state.sessions.filter(s => s.instrument === inst.id);
+            const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + s.durationSeconds / 60, 0));
+            const lastPractice = sessions.length > 0 ? Math.max(...sessions.map(s => s.date)) : null;
+            const iconSvg = getInstrumentIcon(inst.id);
+            return `
+                <div class="instrument-card ${inst.gradient}" data-instrument="${inst.id}" onclick="navigateTo('source-library', { instrument: '${inst.id}' })">
+                    ${iconSvg}
+                    <span style="font-size: var(--text-xs); font-weight: var(--weight-bold); color: var(--text-primary); margin-top: 4px;">${inst.name}</span>
+                    <span class="spc-mono" style="font-size: var(--text-sm); margin-top: 2px;">${totalMinutes} min</span>
+                    <span style="font-size: 9px; color: var(--text-tertiary); margin-top: 2px;">${timeAgo(lastPractice)}</span>
+                </div>
+            `;
+        }).join('');
+
+        const emptyState = document.getElementById('dashboard-empty-state');
+        const recSection = document.getElementById('dashboard-recommended-section');
+        const painSection = document.getElementById('dashboard-pain-section');
+        const skillSection = document.getElementById('dashboard-skill-section');
+        if (state.sessions.length === 0) {
+            if (emptyState) emptyState.style.display = 'block';
+            if (recSection) recSection.style.display = 'none';
+            if (painSection) painSection.style.display = 'none';
+            if (skillSection) skillSection.style.display = 'none';
+            lucide.createIcons();
+            return;
+        }
+        if (emptyState) emptyState.style.display = 'none';
+        if (recSection) recSection.style.display = 'block';
+        if (painSection) painSection.style.display = 'block';
+        if (skillSection) skillSection.style.display = 'block';
+
+        const allLessons = [];
+        for (const src of state.sources) {
+            for (const les of src.lessons) {
+                allLessons.push({ ...les, sourceName: src.name });
+            }
+        }
+
+        const recentSessions = [...state.sessions].sort((a, b) => b.date - a.date).slice(0, 10);
+        const recentPainPoints = new Set();
+        for (const s of recentSessions) {
+            for (const p of s.painPoints) recentPainPoints.add(p);
+        }
+
+        const scored = allLessons.map(les => {
+            let score = 0;
+            let reason = '';
+            const now = Date.now();
+            if (!les.lastPractice) {
+                score += 100;
+                reason = '从未练习';
+            } else {
+                const daysSince = Math.floor((now - les.lastPractice) / (24 * 3600 * 1000));
+                if (daysSince >= 3) {
+                    score += 50 + daysSince * 5;
+                    reason = `${daysSince}天未练习`;
+                } else {
+                    score += Math.max(0, 20 - daysSince * 5);
+                }
+            }
+            const painRelated = les.tags.some(tag => {
+                const painKeywords = {
+                    '节奏不稳': ['节奏'],
+                    '换和弦慢': ['和弦', '转换'],
+                    '手指僵硬': ['和弦', '转换', '大横按'],
+                    '大横按切换慢': ['大横按', '转换'],
+                    '高把位音准偏差': ['音阶'],
+                    '拨弦力度不均': ['拨弦', '扫弦']
+                };
+                return [...recentPainPoints].some(pain => {
+                    const kws = painKeywords[pain] || [];
+                    return kws.some(kw => tag.includes(kw) || kw.includes(tag));
+                });
+            });
+            if (painRelated) {
+                score += 30;
+                if (!reason) reason = '卡点关联';
+            }
+            return { ...les, score, reason: reason || '推荐练习' };
+        });
+
+        scored.sort((a, b) => b.score - a.score);
+        let recommended = scored.filter(r => r.score > 0).slice(0, 3);
+        if (recommended.length < 3) {
+            const remaining = scored.slice(recommended.length);
+            for (const r of remaining) {
+                if (recommended.length >= 3) break;
+                if (!recommended.find(x => x.id === r.id)) recommended.push(r);
+            }
+        }
+
+        const recList = document.getElementById('recommended-list');
+        if (recommended.length === 0) {
+            recList.innerHTML = `<div class="glass-card p-4 text-center" style="color: var(--text-tertiary); font-size: var(--text-sm);">还没有练习内容，去素材库添加吧~</div>`;
+        } else {
+            recList.innerHTML = recommended.map(les => `
+                <div class="practice-card glass-card" onclick="startPractice('${les.id}')">
+                    <div class="color-strip" style="background: ${getInstrumentColor(les.instrument)};"></div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; padding-left: 12px;">
+                        <div style="min-width: 0; flex: 1;">
+                            <h4 style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary); margin-bottom: 4px;">${les.title}</h4>
+                            <div style="display: flex; align-items: baseline; gap: 6px;">
+                                <span style="font-size: var(--text-xs); color: var(--text-tertiary);">目标</span>
+                                <span class="spc-mono gradient-text" style="font-size: var(--text-sm);">${les.targetBPM} BPM</span>
+                            </div>
+                            <span style="display: inline-block; margin-top: 4px; font-size: var(--text-xs); color: var(--text-tertiary);">${les.reason}</span>
+                        </div>
+                        <span class="pill-tag" style="background: ${getSourceTypeColor(getSourceById(les.sourceId)?.type).bg}; color: ${getSourceTypeColor(getSourceById(les.sourceId)?.type).color};">${getSourceTypeName(getSourceById(les.sourceId)?.type)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const painCounts = {};
+        for (const s of state.sessions.slice(-10)) {
+            for (const p of s.painPoints) {
+                painCounts[p] = (painCounts[p] || 0) + 1;
+            }
+        }
+        const painList = document.getElementById('pain-points-list');
+        const topPains = Object.entries(painCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        if (topPains.length === 0) {
+            painList.innerHTML = `<span style="font-size: var(--text-sm); color: var(--text-tertiary);">暂无卡点记录</span>`;
+        } else {
+            painList.innerHTML = topPains.map(([name]) => `
+                <span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error);">${name}</span>
+            `).join('');
+        }
+
+        const skills = ['和弦转换', '音阶跑动', '节奏训练', '拨弦控制'];
+        const thisWeek = getThisWeekSessions();
+        const lastWeek = getLastWeekSessions();
+        const skillGrid = document.getElementById('skill-progress-grid');
+        skillGrid.innerHTML = skills.map(skill => {
+            let thisMin = 0, lastMin = 0;
+            for (const s of thisWeek) {
+                const lesson = getLessonById(s.lessonId);
+                if (lesson && lesson.tags.some(t => skill.includes(t) || t.includes(skill))) {
+                    thisMin += s.durationSeconds / 60;
+                }
+            }
+            for (const s of lastWeek) {
+                const lesson = getLessonById(s.lessonId);
+                if (lesson && lesson.tags.some(t => skill.includes(t) || t.includes(skill))) {
+                    lastMin += s.durationSeconds / 60;
+                }
+            }
+            thisMin = Math.round(thisMin);
+            lastMin = Math.round(lastMin);
+            let iconName = 'arrow-right';
+            let color = 'var(--state-warning)';
+            if (thisMin > lastMin * 1.1) {
+                iconName = 'arrow-up';
+                color = 'var(--state-success)';
+            } else if (thisMin < lastMin * 0.9 && lastMin > 0) {
+                iconName = 'arrow-down';
+                color = 'var(--state-error)';
+            }
+            return `
+                <div class="skill-card">
+                    <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;">
+                        <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: var(--weight-medium);">${skill}</span>
+                        <div style="display: flex; align-items: baseline; gap: 4px;">
+                            <span style="color: var(--text-primary); font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold);">${thisMin}</span>
+                            <span style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--text-xs);">vs ${lastMin} min</span>
+                        </div>
+                    </div>
+                    <i data-lucide="${iconName}" style="width: 16px; height: 16px; flex-shrink: 0; color: ${color};"></i>
+                </div>
+            `;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    function getInstrumentIcon(id) {
+        if (id === 'electric') {
+            return `<svg style="width: 32px; height: 32px;" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="14" cy="22" rx="8" ry="10" fill="#F0D8A8" opacity="0.6"/>
+                <ellipse cx="14" cy="22" rx="6.5" ry="8" stroke="#D4B87A" stroke-width="1.5" fill="none"/>
+                <circle cx="11" cy="19" r="1" fill="#D4B87A"/>
+                <circle cx="14" cy="19" r="1" fill="#D4B87A"/>
+                <circle cx="17" cy="19" r="1" fill="#D4B87A"/>
+                <circle cx="11" cy="24" r="1" fill="#D4B87A"/>
+                <circle cx="14" cy="24" r="1" fill="#D4B87A"/>
+                <circle cx="17" cy="24" r="1" fill="#D4B87A"/>
+                <line x1="14" y1="12" x2="14" y2="5" stroke="#D4B87A" stroke-width="2" stroke-linecap="round"/>
+                <line x1="14" y1="6" x2="24" y2="3" stroke="#D4B87A" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="25" cy="2.8" r="1.5" fill="#D4B87A"/>
+            </svg>`;
+        }
+        if (id === 'acoustic') {
+            return `<svg style="width: 32px; height: 32px;" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="14" cy="22" rx="8" ry="10" fill="#B8D8C8" opacity="0.6"/>
+                <ellipse cx="14" cy="22" rx="6.5" ry="8" stroke="#8BB8A4" stroke-width="1.5" fill="none"/>
+                <circle cx="11" cy="19" r="1" fill="#8BB8A4"/>
+                <circle cx="14" cy="19" r="1" fill="#8BB8A4"/>
+                <circle cx="17" cy="19" r="1" fill="#8BB8A4"/>
+                <circle cx="11" cy="24" r="1" fill="#8BB8A4"/>
+                <circle cx="14" cy="24" r="1" fill="#8BB8A4"/>
+                <circle cx="17" cy="24" r="1" fill="#8BB8A4"/>
+                <line x1="14" y1="12" x2="14" y2="4" stroke="#8BB8A4" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="12.5" y="3.5" rx="1.5" width="3" height="2" fill="#8BB8A4"/>
+            </svg>`;
+        }
+        return `<svg style="width: 32px; height: 32px;" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <ellipse cx="14" cy="23" rx="7" ry="8.5" fill="#D4C4E8" opacity="0.6"/>
+            <ellipse cx="14" cy="23" rx="5.5" ry="7" stroke="#B8A0D4" stroke-width="1.5" fill="none"/>
+            <circle cx="11.5" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="14" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="16.5" cy="21" r="0.9" fill="#B8A0D4"/>
+            <circle cx="12" cy="25" r="0.9" fill="#B8A0D4"/>
+            <circle cx="14" cy="25" r="0.9" fill="#B8A0D4"/>
+            <circle cx="16" cy="25" r="0.9" fill="#B8A0D4"/>
+            <line x1="14" y1="15" x2="14" y2="7" stroke="#B8A0D4" stroke-width="2" stroke-linecap="round"/>
+            <rect x="12.2" y="6.5" rx="1.2" width="3.6" height="2.2" fill="#B8A0D4"/>
+        </svg>`;
+    }
+
+    // ==================== Source Library Render ====================
+    let currentCategory = 'all';
+    let currentInstrumentFilter = null;
+
+    function renderSourceLibrary() {
+        const filterBar = document.getElementById('instrument-filter-bar');
+        if (currentInstrumentFilter) {
+            const inst = state.instruments.find(i => i.id === currentInstrumentFilter);
+            const instName = inst ? inst.name : currentInstrumentFilter;
+            filterBar.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px; background: var(--color-primary-light); border-radius: var(--radius-full);">
+                    <span style="font-size: var(--text-sm); color: var(--text-primary); font-weight: var(--weight-medium);">当前筛选：${instName}</span>
+                    <button id="clear-instrument-filter" aria-label="清除乐器筛选" style="display: inline-flex; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; font-size: var(--text-xs); color: var(--color-primary); font-weight: var(--weight-semibold);">清除</button>
+                </div>
+            `;
+            document.getElementById('clear-instrument-filter').addEventListener('click', () => {
+                currentInstrumentFilter = null;
+                currentCategory = 'all';
+                renderSourceLibrary();
+            });
+        } else {
+            filterBar.innerHTML = '';
+        }
+
+        const tabs = document.getElementById('category-tabs');
+        const categories = [
+            { key: 'all', name: '全部' },
+            { key: 'bilibili', name: 'B站' },
+            { key: 'youtube', name: 'YouTube' },
+            { key: 'book', name: '教程书' },
+            { key: 'score', name: '曲谱' }
+        ];
+        tabs.innerHTML = categories.map(c => `
+            <button class="category-tab ${c.key === currentCategory ? 'active' : ''}" data-category="${c.key}">
+                ${c.name}
+            </button>
+        `).join('');
+
+        tabs.querySelectorAll('.category-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentCategory = btn.dataset.category;
+                if (currentCategory === 'all') {
+                    currentInstrumentFilter = null;
+                }
+                renderSourceLibrary();
+            });
+        });
+
+        let filteredSources = currentCategory === 'all'
+            ? state.sources
+            : state.sources.filter(s => s.type === currentCategory);
+
+        if (currentInstrumentFilter) {
+            filteredSources = filteredSources
+                .map(src => ({ ...src, lessons: src.lessons.filter(l => l.instrument === currentInstrumentFilter) }))
+                .filter(src => src.lessons.length > 0);
+        }
+
+        const list = document.getElementById('source-cards-list');
+        if (filteredSources.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" style="color: var(--text-tertiary);">
+                        <i data-lucide="library" style="width: 64px; height: 64px;"></i>
+                    </div>
+                    <h3 style="font-size: var(--text-lg); font-weight: var(--weight-semibold); color: var(--text-primary); margin-bottom: 8px;">还没有素材</h3>
+                    <p style="font-size: var(--text-sm); color: var(--text-tertiary);">点击右下角 + 号添加你的第一个练习来源</p>
+                </div>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        list.innerHTML = filteredSources.map(src => {
+            const typeColor = getSourceTypeColor(src.type);
+            const isExpanded = src.id === expandedSourceId;
+            return `
+                <div class="source-card">
+                    <button class="source-header" data-source-id="${src.id}" aria-expanded="${isExpanded}">
+                        <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                            <span class="pill-tag" style="background: ${typeColor.bg}; color: ${typeColor.color}; font-size: 11px; padding: 2px 8px;">${getSourceTypeName(src.type)}</span>
+                            <span style="font-size: var(--text-base); font-weight: var(--weight-semibold); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${src.name}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <span class="pill-tag" style="background: var(--gradient-primary); color: var(--text-on-primary); font-size: 11px; padding: 2px 10px; font-weight: var(--weight-semibold);">${src.lessons.length} 个课程</span>
+                            <button class="btn-icon-danger" onclick="event.stopPropagation(); deleteSource('${src.id}')" aria-label="删除来源" style="width: 28px; height: 28px;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                            <svg class="chevron ${isExpanded ? 'rotated' : ''}" style="width: 18px; height: 18px; color: var(--text-tertiary);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                    </button>
+                    <div class="lessons-list ${isExpanded ? 'open' : ''}" id="lessons-${src.id}">
+                        ${src.lessons.map(les => `
+                            <div class="lesson-row" onclick="startPractice('${les.id}')" style="position: relative;">
+                                <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1;">
+                                    <span style="font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${les.title}</span>
+                                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                        ${les.tags.map(tag => `<span style="font-size: 11px; padding: 2px 8px; background: var(--color-lavender-light); color: #7B6E94; border-radius: var(--radius-full);">${tag}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; gap: 4px;">
+                                    <span class="spc-mono" style="font-size: var(--text-xs); color: var(--color-primary);">BPM:${les.targetBPM}</span>
+                                    <span style="font-size: 11px; color: var(--text-tertiary);">${timeAgo(les.lastPractice)}</span>
+                                </div>
+                                <div style="display: flex; gap: 2px; flex-shrink: 0; margin-left: 8px;" onclick="event.stopPropagation()">
+                                    <button class="btn-icon" onclick="editLesson('${les.id}')" aria-label="编辑" style="width: 28px; height: 28px;">
+                                        <i data-lucide="pencil" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn-icon-danger" onclick="deleteLesson('${les.id}')" aria-label="删除" style="width: 28px; height: 28px;">
+                                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        list.querySelectorAll('.source-header').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sourceId = btn.dataset.sourceId;
+                expandedSourceId = expandedSourceId === sourceId ? null : sourceId;
+                renderSourceLibrary();
+            });
+        });
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    let expandedSourceId = null;
+
+    // ==================== Practice Session ====================
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let isRunning = false;
+    let currentBPM = 80;
+    let metronomeRunning = false;
+    let metronomeInterval = null;
+    let audioContext = null;
+    let currentReps = 3;
+    let targetReps = 10;
+    let currentRating = 0;
+    let selectedPainPoints = [];
+    let targetDuration = 10 * 60;
+
+    function startPractice(lessonId) {
+        practiceLessonId = lessonId;
+        const lesson = getLessonById(lessonId);
+        if (!lesson) return;
+
+        timerSeconds = 0;
+        isRunning = false;
+        currentBPM = lesson.targetBPM;
+        currentReps = 0;
+        targetReps = 10;
+        currentRating = 0;
+        selectedPainPoints = [];
+        targetDuration = lesson.targetDuration || 600;
+
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (metronomeRunning) stopMetronome();
+
+        navigateTo('practice', { lessonId });
+    }
+
+    function renderPracticeSession() {
+        const lesson = getLessonById(practiceLessonId);
+        const source = lesson ? getSourceById(lesson.sourceId) : null;
+
+        document.getElementById('practice-title').textContent = lesson?.title || '练习';
+        document.getElementById('practice-source').textContent = source?.name || '';
+
+        const pageEl = document.getElementById('page-practice');
+        const gradientMap = {
+            electric: 'var(--gradient-electric)',
+            acoustic: 'var(--gradient-acoustic)',
+            ukulele: 'var(--gradient-ukulele)'
+        };
+        pageEl.style.background = gradientMap[lesson?.instrument] || gradientMap.acoustic;
+        pageEl.style.backgroundAttachment = 'fixed';
+
+        const hintEl = document.getElementById('target-duration-hint');
+        if (hintEl) {
+            hintEl.textContent = `目标 ${formatTime(targetDuration)}`;
+        }
+
+        const videoSection = document.getElementById('video-section');
+        const biliPlayer = document.getElementById('bili-player');
+        const practiceEpisodes = document.getElementById('practice-episodes');
+        const practiceEpList = document.getElementById('practice-ep-list');
+        const practiceOpenBili = document.getElementById('practice-open-bili');
+        if (videoSection && biliPlayer) {
+            if (lesson && lesson.bvid) {
+                videoSection.style.display = 'block';
+                const page = lesson.page || 1;
+                biliPlayer.src = `https://player.bilibili.com/player.html?bvid=${lesson.bvid}&page=${page}&high_quality=1&danmaku=1&as_wide=1&autoplay=0`;
+                if (practiceOpenBili) practiceOpenBili.href = `https://www.bilibili.com/video/${lesson.bvid}`;
+                // 初始化视频尺寸
+                setVideoSize(state.videoSize || 'compact');
+                // 异步获取选集列表
+                currentPracticeEpisodes = [];
+                const currentEpLabel = document.getElementById('practice-current-ep');
+                if (currentEpLabel) currentEpLabel.textContent = '';
+                if (practiceEpisodes && practiceEpList) {
+                    practiceEpisodes.style.display = 'none';
+                    practiceEpList.innerHTML = '';
+                    fetchBiliEpisodes(lesson.bvid).then(episodes => {
+                        if (episodes && episodes.length > 1) {
+                            currentPracticeEpisodes = episodes;
+                            practiceEpisodes.style.display = 'block';
+                            practiceEpList.innerHTML = episodes.map(ep => {
+                                const isActive = ep.page === page;
+                                return `<div onclick="switchPracticeEpisode(${ep.page})" style="flex-shrink: 0; padding: 4px 10px; border-radius: var(--radius-full); font-size: var(--text-xs); cursor: pointer; white-space: nowrap; background: ${isActive ? 'var(--gradient-primary)' : 'var(--bg-surface)'}; color: ${isActive ? 'var(--text-on-primary)' : 'var(--text-secondary)'}; transition: all var(--transition-fast);">P${ep.page} ${ep.title}</div>`;
+                            }).join('');
+                            if (currentEpLabel) {
+                                const ep = episodes.find(e => e.page === page);
+                                currentEpLabel.textContent = ep ? `P${page} ${ep.title}` : `P${page}`;
+                            }
+                        } else if (currentEpLabel) {
+                            currentEpLabel.textContent = episodes && episodes.length === 1 ? `P1 ${episodes[0].title}` : 'P1';
+                        }
+                    });
+                }
+            } else {
+                videoSection.style.display = 'none';
+                biliPlayer.src = '';
+                if (practiceEpisodes) practiceEpisodes.style.display = 'none';
+            }
+        }
+
+        updateTimerDisplay();
+        updateBPMDisplay();
+        updateRepDisplay();
+        renderStars();
+        renderPainTags();
+        document.getElementById('practice-notes').value = '';
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function updateTimerDisplay() {
+        const time = formatTime(timerSeconds);
+        const [m, s] = time.split(':');
+        document.getElementById('timer-minutes').textContent = m;
+        document.getElementById('timer-seconds').textContent = s;
+        const timerEl = document.getElementById('timer-display');
+        if (timerEl) {
+            if (targetDuration > 0 && timerSeconds >= targetDuration) {
+                timerEl.style.color = 'var(--state-success)';
+            } else {
+                timerEl.style.color = 'var(--text-primary)';
+            }
+        }
+    }
+
+    function toggleTimer() {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isRunning = false;
+            // 暂停计时时同步停止节拍器
+            if (metronomeRunning) stopMetronome();
+            const playBtn = document.getElementById('btn-play');
+            playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
+            playBtn.classList.remove('play-btn-pulse');
+        } else {
+            isRunning = true;
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+            const playBtn = document.getElementById('btn-play');
+            playBtn.innerHTML = `<i data-lucide="pause" style="width: 24px; height: 24px; color: var(--text-on-primary);"></i>`;
+            playBtn.classList.add('play-btn-pulse');
+        }
+        lucide.createIcons();
+    }
+
+    function resetTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        isRunning = false;
+        timerSeconds = 0;
+        // 重置计时时同步停止节拍器
+        if (metronomeRunning) stopMetronome();
+        updateTimerDisplay();
+        const playBtn = document.getElementById('btn-play');
+        playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
+        playBtn.classList.remove('play-btn-pulse');
+        lucide.createIcons();
+    }
+
+    function updateBPMDisplay() {
+        document.getElementById('bpm-display').textContent = currentBPM;
+    }
+
+    function playBeep() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 1000;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.05);
+    }
+
+    function toggleMetronome() {
+        if (metronomeRunning) {
+            stopMetronome();
+        } else {
+            startMetronome();
+        }
+    }
+
+    function startMetronome() {
+        metronomeRunning = true;
+        const intervalMs = 60000 / currentBPM;
+        playBeep();
+        metronomeInterval = setInterval(playBeep, intervalMs);
+        updateMetronomeButton();
+    }
+
+    function stopMetronome() {
+        metronomeRunning = false;
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+        }
+        updateMetronomeButton();
+    }
+
+    function updateMetronomeButton() {
+        const btn = document.getElementById('btn-metronome');
+        if (!btn) return;
+        if (metronomeRunning) {
+            btn.innerHTML = `<i data-lucide="pause" style="width: 16px; height: 16px; margin-right: 4px;"></i><span>停止节拍器</span>`;
+        } else {
+            btn.innerHTML = `<i data-lucide="play" style="width: 16px; height: 16px; margin-right: 4px;"></i><span>启动节拍器</span>`;
+        }
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function updateRepDisplay() {
+        document.getElementById('rep-display').textContent = `${currentReps} / ${targetReps}`;
+        const pct = Math.min(100, Math.round((currentReps / targetReps) * 100));
+        document.getElementById('rep-progress').style.width = pct + '%';
+    }
+
+    function renderStars() {
+        const container = document.getElementById('stars-container');
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            const filled = i <= currentRating;
+            html += `
+                <button class="star-btn" data-rating="${i}" aria-label="${i}星">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <defs><linearGradient id="starGrad${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C4A4D7"/><stop offset="100%" stop-color="#8BA4C7"/></linearGradient></defs>
+                        <path d="M12 2.5l2.35 4.76 5.25.77-3.8 3.7.9 5.22L12 14.27l-4.7 2.47.9-5.22-3.8-3.7 5.25-.77L12 2.5z" 
+                            fill="${filled ? `url(#starGrad${i})` : 'none'}" 
+                            stroke="${filled ? `url(#starGrad${i})` : 'var(--text-tertiary)'}" 
+                            stroke-width="${filled ? '0.5' : '1.2'}" 
+                            stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            `;
+        }
+        container.innerHTML = html;
+        container.querySelectorAll('.star-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentRating = parseInt(btn.dataset.rating);
+                renderStars();
+            });
+        });
+    }
+
+    function renderPainTags() {
+        const container = document.getElementById('pain-tags-container');
+        container.innerHTML = state.painPointOptions.map(point => {
+            const selected = selectedPainPoints.includes(point);
+            return `
+                <button class="pain-tag ${selected ? 'selected' : 'unselected'}" data-pain="${point}">
+                    ${point}
+                </button>
+            `;
+        }).join('');
+
+        container.querySelectorAll('.pain-tag').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const point = btn.dataset.pain;
+                const idx = selectedPainPoints.indexOf(point);
+                if (idx >= 0) {
+                    selectedPainPoints.splice(idx, 1);
+                } else {
+                    selectedPainPoints.push(point);
+                }
+                renderPainTags();
+            });
+        });
+    }
+
+    function completePractice() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        isRunning = false;
+        if (metronomeRunning) stopMetronome();
+
+        const lesson = getLessonById(practiceLessonId);
+        if (!lesson) {
+            navigateTo('dashboard');
+            return;
+        }
+
+        const session = {
+            id: uid('sess'),
+            lessonId: practiceLessonId,
+            instrument: lesson.instrument,
+            date: Date.now(),
+            durationSeconds: timerSeconds,
+            bpm: currentBPM,
+            repetitions: currentReps,
+            selfRating: currentRating,
+            painPoints: [...selectedPainPoints],
+            notes: document.getElementById('practice-notes').value
+        };
+        state.sessions.push(session);
+
+        lesson.lastPractice = Date.now();
+
+        saveData();
+        navigateTo('weekly-review');
+    }
+
+    // ==================== Weekly Review Render ====================
+    function renderWeeklyReview() {
+        document.getElementById('week-range').textContent = getWeekRange();
+
+        const sessions = getThisWeekSessions();
+        const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + s.durationSeconds / 60, 0));
+        const uniqueDays = new Set(sessions.map(s => new Date(s.date).toDateString())).size;
+
+        document.getElementById('stat-minutes').textContent = totalMinutes;
+        document.getElementById('stat-days').textContent = `${uniqueDays} 天`;
+
+        const logList = document.getElementById('practice-log-list');
+        const sorted = [...sessions].sort((a, b) => b.date - a.date);
+        if (sorted.length === 0) {
+            logList.innerHTML = `
+                <div class="glass-card p-4 text-center" style="color: var(--text-tertiary); font-size: var(--text-sm);">
+                    本周还没有练习记录
+                </div>
+            `;
+        } else {
+            logList.innerHTML = sorted.map(s => {
+                const lesson = getLessonById(s.lessonId);
+                return `
+                    <div class="glass-card p-4">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            <div style="min-width: 0; flex: 1;">
+                                <p style="font-weight: var(--weight-semibold); color: var(--text-primary); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${lesson?.title || '已删除课程'}</p>
+                            </div>
+                            <span style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--text-xs); flex-shrink: 0;">${formatDate(s.date)}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+                            <span class="gradient-text" style="font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold);">${Math.round(s.durationSeconds / 60)} min</span>
+                            <span style="color: var(--text-secondary); font-family: var(--font-mono); font-size: var(--text-xs);">${s.bpm} BPM</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const skills = ['和弦转换', '音阶跑动', '节奏训练', '拨弦控制'];
+        const skillKeywords = {
+            '和弦转换': ['和弦', '转换'],
+            '音阶跑动': ['音阶'],
+            '节奏训练': ['节奏'],
+            '拨弦控制': ['拨弦', '扫弦']
+        };
+        const lastWeekSessions = getLastWeekSessions();
+        const skillGrid = document.getElementById('review-skill-grid');
+        skillGrid.innerHTML = skills.map(skill => {
+            const keywords = skillKeywords[skill] || [skill];
+            let thisMin = 0, lastMin = 0;
+            for (const s of sessions) {
+                const lesson = getLessonById(s.lessonId);
+                if (lesson && lesson.tags.some(t => keywords.some(k => t.includes(k) || k.includes(t)))) {
+                    thisMin += s.durationSeconds / 60;
+                }
+            }
+            for (const s of lastWeekSessions) {
+                const lesson = getLessonById(s.lessonId);
+                if (lesson && lesson.tags.some(t => keywords.some(k => t.includes(k) || k.includes(t)))) {
+                    lastMin += s.durationSeconds / 60;
+                }
+            }
+            thisMin = Math.round(thisMin);
+            lastMin = Math.round(lastMin);
+            let bgColor, iconColor, iconName, changeText;
+            if (thisMin > lastMin && lastMin > 0) {
+                bgColor = 'var(--state-success-light)';
+                iconColor = 'var(--state-success)';
+                iconName = 'arrow-up';
+                const pct = Math.round(((thisMin - lastMin) / lastMin) * 100);
+                changeText = `+${pct}%`;
+            } else if (thisMin < lastMin && lastMin > 0) {
+                bgColor = 'var(--state-error-light)';
+                iconColor = 'var(--state-error)';
+                iconName = 'arrow-down';
+                const pct = Math.round(((lastMin - thisMin) / lastMin) * 100);
+                changeText = `-${pct}%`;
+            } else if (lastMin === 0 && thisMin > 0) {
+                bgColor = 'var(--state-success-light)';
+                iconColor = 'var(--state-success)';
+                iconName = 'arrow-up';
+                changeText = '新增';
+            } else {
+                bgColor = 'var(--color-amber-soft-light)';
+                iconColor = 'var(--color-amber-soft)';
+                iconName = 'arrow-right';
+                changeText = '持平';
+            }
+            return `
+                <div style="background: ${bgColor}; border-radius: var(--radius-lg); padding: 12px; backdrop-filter: var(--glass-blur); border: var(--glass-border);">
+                    <p style="font-weight: var(--weight-semibold); margin-bottom: 8px; color: var(--text-primary); font-size: var(--text-sm);">${skill}</p>
+                    <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px;">
+                        <span style="color: var(--text-primary); font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold);">${thisMin}</span>
+                        <span style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--text-xs);">vs ${lastMin} min</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="${iconName}" style="width: 12px; height: 12px; color: ${iconColor};"></i>
+                        <span style="color: ${iconColor}; font-family: var(--font-mono); font-size: var(--text-xs); font-weight: var(--weight-semibold);">${changeText}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const painCounts = {};
+        for (const s of sessions) {
+            for (const p of s.painPoints) {
+                painCounts[p] = (painCounts[p] || 0) + 1;
+            }
+        }
+        const painList = document.getElementById('review-pain-list');
+        const painEntries = Object.entries(painCounts).sort((a, b) => b[1] - a[1]);
+        if (painEntries.length === 0) {
+            painList.innerHTML = `<span style="font-size: var(--text-sm); color: var(--text-tertiary);">本周暂无卡点记录</span>`;
+        } else {
+            const maxCount = Math.max(...painEntries.map(e => e[1]));
+            painList.innerHTML = painEntries.map(([name, count], idx) => {
+                const scale = 1 - (idx * 0.12);
+                const opacity = 1 - (idx * 0.12);
+                const fontSize = idx === 0 ? 'var(--text-sm)' : 'var(--text-xs)';
+                const badgeSize = idx === 0 ? '22px' : '18px';
+                const padding = idx === 0 ? '6px 14px' : '4px 10px';
+                return `
+                    <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--state-error-light); border-radius: var(--radius-full); padding: ${padding}; opacity: ${opacity}; transform: scale(${scale}); transform-origin: left center;">
+                        <span style="font-weight: var(--weight-semibold); color: var(--state-error); font-size: ${fontSize};">${name}</span>
+                        <span style="display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: ${badgeSize}; height: ${badgeSize}; border-radius: 50%; background: var(--state-error); color: #FFFFFF; font-family: var(--font-mono); font-size: 10px; font-weight: var(--weight-bold);">${count}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const suggestions = generateSuggestions(sessions, painCounts);
+        const sugList = document.getElementById('suggestions-list');
+        if (suggestions.length === 0) {
+            sugList.innerHTML = `
+                <div class="glass-card p-4 text-center" style="color: var(--text-tertiary); font-size: var(--text-sm);">
+                    开始练习后会生成个性化建议
+                </div>
+            `;
+        } else {
+            const icons = ['crosshair', 'zap', 'refresh-cw'];
+            const colors = ['var(--color-lavender)', 'var(--color-mint)', 'var(--color-rose-soft)'];
+            const lightColors = ['var(--color-lavender-light)', 'var(--color-mint-light)', 'var(--color-rose-soft-light)'];
+            sugList.innerHTML = suggestions.map((sug, i) => `
+                <div class="suggestion-card" style="border-left: 4px solid ${colors[i % colors.length]};">
+                    <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-md); background: ${lightColors[i % lightColors]};">
+                        <i data-lucide="${icons[i % icons.length]}" style="width: 20px; height: 20px; color: var(--color-primary);"></i>
+                    </div>
+                    <div style="min-width: 0; flex: 1;">
+                        <p style="font-weight: var(--weight-semibold); color: var(--text-primary); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${sug.title}</p>
+                        <p style="margin-top: 4px; color: var(--text-secondary); font-size: var(--text-xs); line-height: 1.5;">${sug.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        lucide.createIcons();
+    }
+
+    // ==================== Calendar Render ====================
+    let calCurrentDate = new Date();
+    let calSelectedDate = null;
+
+    function renderCalendar() {
+        const year = calCurrentDate.getFullYear();
+        const month = calCurrentDate.getMonth();
+
+        // 标题
+        document.getElementById('cal-month-title').textContent = `${year}年${month + 1}月`;
+
+        // 本月统计
+        const monthSessions = state.sessions.filter(s => {
+            const d = new Date(s.date);
+            return d.getFullYear() === year && d.getMonth() === month;
+        });
+        const monthMinutes = Math.round(monthSessions.reduce((sum, s) => sum + s.durationSeconds / 60, 0));
+        const monthDays = new Set(monthSessions.map(s => new Date(s.date).toDateString())).size;
+        document.getElementById('cal-month-stats').textContent = `本月练习 ${monthMinutes} 分钟 · ${monthDays} 天`;
+
+        // 生成日历格子
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startWeekday = firstDay.getDay(); // 0=周日
+        const daysInMonth = lastDay.getDate();
+
+        // 上个月的尾部填充
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+
+        const grid = document.getElementById('cal-grid');
+        let html = '';
+
+        // 上个月填充
+        for (let i = startWeekday - 1; i >= 0; i--) {
+            const day = prevMonthLastDay - i;
+            html += `<div class="cal-day other-month"><span class="cal-day-num">${day}</span></div>`;
+        }
+
+        // 本月
+        const today = new Date();
+        const todayStr = today.toDateString();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const dateStr = date.toDateString();
+            const daySessions = monthSessions.filter(s => new Date(s.date).toDateString() === dateStr);
+            const minutes = Math.round(daySessions.reduce((sum, s) => sum + s.durationSeconds / 60, 0));
+            const isToday = dateStr === todayStr;
+            const isSelected = calSelectedDate && dateStr === calSelectedDate.toDateString();
+
+            let classes = 'cal-day';
+            if (isToday) classes += ' today';
+            if (minutes > 0) classes += ' has-practice';
+            if (isSelected) classes += ' selected';
+
+            const minsHtml = minutes > 0 ? `<span class="cal-day-mins">${minutes}m</span>` : '';
+            html += `<div class="${classes}" onclick="selectCalDay(${year}, ${month}, ${day})"><span class="cal-day-num">${day}</span>${minsHtml}</div>`;
+        }
+
+        // 下个月头部填充
+        const totalCells = startWeekday + daysInMonth;
+        const remaining = (7 - (totalCells % 7)) % 7;
+        for (let i = 1; i <= remaining; i++) {
+            html += `<div class="cal-day other-month"><span class="cal-day-num">${i}</span></div>`;
+        }
+
+        grid.innerHTML = html;
+
+        // 渲染选中日期详情
+        renderCalDayDetail();
+        lucide.createIcons();
+    }
+
+    function selectCalDay(year, month, day) {
+        calSelectedDate = new Date(year, month, day);
+        renderCalendar();
+    }
+
+    function renderCalDayDetail() {
+        const detail = document.getElementById('cal-day-detail');
+        if (!calSelectedDate) {
+            detail.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); font-size: var(--text-sm); padding: 20px;">点击日期查看当天练习详情</p>';
+            return;
+        }
+
+        const dateStr = calSelectedDate.toDateString();
+        const daySessions = state.sessions.filter(s => new Date(s.date).toDateString() === dateStr);
+
+        if (daySessions.length === 0) {
+            detail.innerHTML = `
+                <div class="glass-card" style="padding: 16px; text-align: center;">
+                    <p style="color: var(--text-tertiary); font-size: var(--text-sm);">这天没有练习记录</p>
+                    <p style="color: var(--text-tertiary); font-size: var(--text-xs); margin-top: 4px;">${calSelectedDate.getMonth() + 1}月${calSelectedDate.getDate()}日</p>
+                </div>
+            `;
+            return;
+        }
+
+        const totalMinutes = Math.round(daySessions.reduce((sum, s) => sum + s.durationSeconds / 60, 0));
+        let html = `
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <h3 style="font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary);">${calSelectedDate.getMonth() + 1}月${calSelectedDate.getDate()}日</h3>
+                <span class="pill-tag" style="background: var(--gradient-primary); color: var(--text-on-primary);">${totalMinutes} 分钟</span>
+            </div>
+            <div class="flex flex-col gap-3">
+        `;
+
+        daySessions.sort((a, b) => a.date - b.date).forEach(s => {
+            const lesson = getLessonById(s.lessonId);
+            const minutes = Math.round(s.durationSeconds / 60);
+            html += `
+                <div class="glass-card" style="padding: 12px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                        <div style="min-width: 0; flex: 1;">
+                            <p style="font-weight: var(--weight-semibold); color: var(--text-primary); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${lesson?.title || '已删除课程'}</p>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                <span class="spc-mono" style="font-size: var(--text-xs); color: var(--text-secondary);">${minutes} min</span>
+                                <span class="spc-mono" style="font-size: var(--text-xs); color: var(--text-tertiary);">${s.bpm} BPM</span>
+                                <span style="font-size: var(--text-xs); color: var(--text-tertiary);">${'★'.repeat(s.selfRating)}${'☆'.repeat(5 - s.selfRating)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${s.painPoints && s.painPoints.length > 0 ? `<div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;">${s.painPoints.map(p => `<span style="font-size: var(--text-xs); padding: 2px 8px; border-radius: var(--radius-full); background: var(--state-error-light); color: var(--state-error);">${p}</span>`).join('')}</div>` : ''}
+                    ${s.notes ? `<p style="font-size: var(--text-xs); color: var(--text-secondary); margin-top: 6px; line-height: var(--leading-normal);">${s.notes}</p>` : ''}
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        detail.innerHTML = html;
+    }
+
+    function generateSuggestions(sessions, painCounts) {
+        const suggestions = [];
+        const painEntries = Object.entries(painCounts).sort((a, b) => b[1] - a[1]);
+
+        if (painEntries.length > 0) {
+            const topPain = painEntries[0];
+            suggestions.push({
+                title: `集中突破${topPain[0]}`,
+                desc: `本周${topPain[0]}卡点出现${topPain[1]}次，建议每天安排10分钟专项练习`
+            });
+        }
+
+        const avgBPM = sessions.length > 0
+            ? Math.round(sessions.reduce((sum, s) => sum + s.bpm, 0) / sessions.length)
+            : 0;
+        if (avgBPM > 0) {
+            suggestions.push({
+                title: '提升练习速度',
+                desc: `当前平均BPM ${avgBPM}，目标 ${avgBPM + 10}，可以尝试挑战一下`
+            });
+        }
+
+        const uniqueLessons = new Set(sessions.map(s => s.lessonId));
+        if (sessions.length > 0 && uniqueLessons.size <= 2) {
+            suggestions.push({
+                title: '丰富练习内容',
+                desc: '本周练习种类较少，可以尝试素材库里的其他课程'
+            });
+        }
+
+        if (sessions.length === 0) {
+            suggestions.push({
+                title: '开始你的第一次练习',
+                desc: '从素材库选择一个课程，开始你的练习之旅吧'
+            });
+        }
+
+        return suggestions.slice(0, 3);
+    }
+
+    // ==================== Bottom Sheet / Add Lesson ====================
+    let formBPM = 80;
+    let formSelectedTags = [];
+    let formDuration = 10;
+    let formSourceType = 'youtube';
+    let formNewSource = false;
+    let formInstrument = 'acoustic';
+    let editingLessonId = null;
+
+    function openAddLessonSheet() {
+        formBPM = 80;
+        formSelectedTags = [];
+        formDuration = 10;
+        formSourceType = 'youtube';
+        formNewSource = false;
+        formInstrument = 'acoustic';
+        editingLessonId = null;
+
+        const select = document.getElementById('lesson-source');
+        select.innerHTML = '<option value="new">+ 新建来源...</option>' +
+            state.sources.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        select.value = 'new';
+        // 恢复来源选择区可见性
+        const sourceDiv = select.closest('.mb-4');
+        if (sourceDiv) sourceDiv.style.display = '';
+        // 恢复标题和按钮文字
+        const sheetTitle = document.querySelector('#add-lesson-sheet .spc-title');
+        if (sheetTitle) sheetTitle.textContent = '添加练习';
+        const submitBtn = document.getElementById('btn-save-lesson');
+        if (submitBtn) submitBtn.textContent = '保存';
+
+        document.getElementById('lesson-title').value = '';
+        document.getElementById('new-source-name').value = '';
+        document.getElementById('new-source-field').style.display = 'block';
+
+        const biliUrlInput = document.getElementById('bili-url-input');
+        if (biliUrlInput) biliUrlInput.value = '';
+        const biliLinkField = document.getElementById('bili-link-field');
+        if (biliLinkField) biliLinkField.style.display = 'none';
+        const biliEpisodeArea = document.getElementById('bili-episode-area');
+        if (biliEpisodeArea) biliEpisodeArea.style.display = 'none';
+        const biliEpisodeSelect = document.getElementById('bili-episode-select');
+        if (biliEpisodeSelect) { biliEpisodeSelect.innerHTML = ''; biliEpisodeSelect.style.display = 'none'; }
+        const biliEpisodeInput = document.getElementById('bili-episode-input');
+        if (biliEpisodeInput) { biliEpisodeInput.value = '1'; biliEpisodeInput.style.display = 'none'; }
+        const biliLoading = document.getElementById('bili-loading');
+        if (biliLoading) biliLoading.style.display = 'none';
+
+        updateFormBPMDisplay();
+        updateFormChipSelections();
+
+        document.getElementById('sheet-overlay').classList.add('visible');
+        document.getElementById('add-lesson-sheet').classList.add('visible');
+    }
+
+    function closeAddLessonSheet() {
+        document.getElementById('sheet-overlay').classList.remove('visible');
+        document.getElementById('add-lesson-sheet').classList.remove('visible');
+
+        formBPM = 80;
+        formSelectedTags = [];
+        formDuration = 10;
+        formSourceType = 'youtube';
+        formNewSource = false;
+        formInstrument = 'acoustic';
+        editingLessonId = null;
+
+        const titleInput = document.getElementById('lesson-title');
+        if (titleInput) titleInput.value = '';
+        const newSourceInput = document.getElementById('new-source-name');
+        if (newSourceInput) newSourceInput.value = '';
+        const sourceSelect = document.getElementById('lesson-source');
+        if (sourceSelect) {
+            sourceSelect.value = 'new';
+            const sourceDiv = sourceSelect.closest('.mb-4');
+            if (sourceDiv) sourceDiv.style.display = '';
+        }
+        const newSourceField = document.getElementById('new-source-field');
+        if (newSourceField) newSourceField.style.display = 'block';
+        // 恢复标题和按钮文字
+        const sheetTitle = document.querySelector('#add-lesson-sheet .spc-title');
+        if (sheetTitle) sheetTitle.textContent = '添加练习';
+        const submitBtn = document.getElementById('btn-save-lesson');
+        if (submitBtn) submitBtn.textContent = '保存';
+
+        const biliUrlInput = document.getElementById('bili-url-input');
+        if (biliUrlInput) biliUrlInput.value = '';
+        const biliLinkField = document.getElementById('bili-link-field');
+        if (biliLinkField) biliLinkField.style.display = 'none';
+        const biliEpisodeArea = document.getElementById('bili-episode-area');
+        if (biliEpisodeArea) biliEpisodeArea.style.display = 'none';
+        const biliEpisodeSelect = document.getElementById('bili-episode-select');
+        if (biliEpisodeSelect) { biliEpisodeSelect.innerHTML = ''; biliEpisodeSelect.style.display = 'none'; }
+        const biliEpisodeInput = document.getElementById('bili-episode-input');
+        if (biliEpisodeInput) { biliEpisodeInput.value = '1'; biliEpisodeInput.style.display = 'none'; }
+        const biliLoading = document.getElementById('bili-loading');
+        if (biliLoading) biliLoading.style.display = 'none';
+
+        updateFormBPMDisplay();
+        updateFormChipSelections();
+    }
+
+    function updateFormBPMDisplay() {
+        document.getElementById('form-bpm-display').textContent = formBPM;
+    }
+
+    function updateFormChipSelections() {
+        document.querySelectorAll('#skill-tag-chips .chip').forEach(chip => {
+            const tag = chip.dataset.tag;
+            chip.classList.toggle('selected', formSelectedTags.includes(tag));
+        });
+        document.querySelectorAll('#duration-chips .chip').forEach(chip => {
+            const dur = parseInt(chip.dataset.duration);
+            chip.classList.toggle('selected', dur === formDuration);
+        });
+        document.querySelectorAll('#source-type-chips .chip').forEach(chip => {
+            const type = chip.dataset.type;
+            chip.classList.toggle('selected', type === formSourceType);
+        });
+        document.querySelectorAll('#form-instrument .chip').forEach(chip => {
+            const inst = chip.dataset.instrument;
+            const isSelected = inst === formInstrument;
+            chip.classList.toggle('selected', isSelected);
+            chip.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+        });
+    }
+
+    // ==================== Bilibili Helpers ====================
+    function extractBvid(url) {
+        if (!url) return null;
+        const match = url.match(/BV([a-zA-Z0-9]{10})/);
+        return match ? 'BV' + match[1] : null;
+    }
+
+    async function fetchBiliEpisodes(bvid) {
+        const apiUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`;
+        // 多个 CORS 代理，按顺序尝试
+        const proxies = [
+            url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+            url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            url => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
+        ];
+        for (const makeProxyUrl of proxies) {
+            try {
+                const proxyUrl = makeProxyUrl(apiUrl);
+                const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
+                if (!response.ok) continue;
+                const data = await response.json();
+                if (data.code === 0 && data.data && data.data.pages && data.data.pages.length > 0) {
+                    return data.data.pages.map(p => ({
+                        page: p.page,
+                        title: p.part,
+                        cid: p.cid
+                    }));
+                }
+            } catch (e) {
+                // 静默失败，尝试下一个代理
+                continue;
+            }
+        }
+        return null;
+    }
+
+    function saveLesson() {
+        const title = document.getElementById('lesson-title').value.trim();
+        if (!title) {
+            alert('请输入练习标题');
+            return;
+        }
+
+        // 编辑模式：更新已有课程
+        if (editingLessonId) {
+            const lesson = getLessonById(editingLessonId);
+            if (lesson) {
+                lesson.title = title;
+                lesson.targetBPM = formBPM;
+                lesson.tags = [...formSelectedTags];
+                lesson.instrument = formInstrument;
+                lesson.targetDuration = formDuration * 60;
+                if (formSourceType === 'bilibili') {
+                    const bvidVal = extractBvid(document.getElementById('bili-url-input').value.trim());
+                    if (bvidVal) lesson.bvid = bvidVal;
+                }
+                saveData();
+                closeAddLessonSheet();
+                renderSourceLibrary();
+            }
+            return;
+        }
+
+        const sourceSelect = document.getElementById('lesson-source');
+        let sourceId = sourceSelect.value;
+        let sourceName = '';
+
+        if (sourceId === 'new') {
+            sourceName = document.getElementById('new-source-name').value.trim();
+            if (!sourceName) {
+                alert('请输入来源名称');
+                return;
+            }
+            sourceId = uid('src');
+            const newSource = {
+                id: sourceId,
+                name: sourceName,
+                type: formSourceType,
+                lessons: []
+            };
+            state.sources.push(newSource);
+        } else {
+            const src = getSourceById(sourceId);
+            sourceName = src?.name || '';
+        }
+
+        let bvid = null;
+        let page = 1;
+        if (formSourceType === 'bilibili') {
+            bvid = extractBvid(document.getElementById('bili-url-input').value.trim());
+            const episodeSelect = document.getElementById('bili-episode-select');
+            const episodeInput = document.getElementById('bili-episode-input');
+            if (episodeSelect.style.display !== 'none' && episodeSelect.value) {
+                page = parseInt(episodeSelect.value) || 1;
+            } else if (episodeInput.style.display !== 'none') {
+                page = parseInt(episodeInput.value) || 1;
+            }
+        }
+
+        const lesson = {
+            id: uid('les'),
+            sourceId: sourceId,
+            title: title,
+            targetBPM: formBPM,
+            tags: [...formSelectedTags],
+            instrument: formInstrument,
+            targetDuration: formDuration * 60,
+            lastPractice: null,
+            bvid: bvid || null,
+            page: page || 1
+        };
+
+        const src = getSourceById(sourceId);
+        if (src) {
+            src.lessons.push(lesson);
+        }
+
+        saveData();
+        closeAddLessonSheet();
+        renderSourceLibrary();
+    }
+
+    // ==================== Event Bindings ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        navigateTo('dashboard');
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                navigateTo(btn.dataset.page);
+            });
+        });
+
+        document.getElementById('fab-add').addEventListener('click', openAddLessonSheet);
+        document.getElementById('sheet-overlay').addEventListener('click', closeAddLessonSheet);
+        document.getElementById('sheet-close-btn').addEventListener('click', closeAddLessonSheet);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sheet = document.getElementById('add-lesson-sheet');
+                if (sheet && sheet.classList.contains('visible')) {
+                    closeAddLessonSheet();
+                }
+            }
+        });
+
+        document.getElementById('lesson-source').addEventListener('change', (e) => {
+            formNewSource = e.target.value === 'new';
+            document.getElementById('new-source-field').style.display = formNewSource ? 'block' : 'none';
+        });
+
+        document.getElementById('form-bpm-minus').addEventListener('click', () => {
+            formBPM = Math.max(40, formBPM - 5);
+            updateFormBPMDisplay();
+        });
+        document.getElementById('form-bpm-plus').addEventListener('click', () => {
+            formBPM = Math.min(240, formBPM + 5);
+            updateFormBPMDisplay();
+        });
+
+        document.querySelectorAll('#skill-tag-chips .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const tag = chip.dataset.tag;
+                const idx = formSelectedTags.indexOf(tag);
+                if (idx >= 0) formSelectedTags.splice(idx, 1);
+                else formSelectedTags.push(tag);
+                updateFormChipSelections();
+            });
+        });
+
+        document.querySelectorAll('#duration-chips .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                formDuration = parseInt(chip.dataset.duration);
+                updateFormChipSelections();
+            });
+        });
+
+        document.querySelectorAll('#source-type-chips .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                formSourceType = chip.dataset.type;
+                updateFormChipSelections();
+                const biliField = document.getElementById('bili-link-field');
+                if (biliField) {
+                    biliField.style.display = formSourceType === 'bilibili' ? 'block' : 'none';
+                }
+            });
+        });
+
+        document.getElementById('bili-url-input').addEventListener('blur', async function() {
+            const url = this.value.trim();
+            const bvid = extractBvid(url);
+            const episodeArea = document.getElementById('bili-episode-area');
+            const episodeSelect = document.getElementById('bili-episode-select');
+            const episodeInput = document.getElementById('bili-episode-input');
+            const loading = document.getElementById('bili-loading');
+
+            episodeArea.style.display = 'none';
+            episodeSelect.style.display = 'none';
+            episodeSelect.innerHTML = '';
+            episodeInput.style.display = 'none';
+
+            if (!bvid) return;
+
+            loading.style.display = 'block';
+            const episodes = await fetchBiliEpisodes(bvid);
+            loading.style.display = 'none';
+
+            episodeArea.style.display = 'block';
+            if (episodes && episodes.length > 0) {
+                episodeSelect.style.display = 'block';
+                episodeSelect.innerHTML = episodes.map(ep =>
+                    `<option value="${ep.page}">P${ep.page} ${ep.title}</option>`
+                ).join('');
+            } else {
+                episodeInput.style.display = 'block';
+            }
+        });
+
+        document.querySelectorAll('#form-instrument .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                formInstrument = chip.dataset.instrument;
+                updateFormChipSelections();
+            });
+        });
+
+        document.getElementById('btn-save-lesson').addEventListener('click', saveLesson);
+
+        document.getElementById('practice-back').addEventListener('click', () => {
+            if (isRunning) {
+                if (confirm('练习还在进行中，确定要退出吗？')) {
+                    if (timerInterval) clearInterval(timerInterval);
+                    navigateTo('source-library');
+                }
+            } else {
+                navigateTo('source-library');
+            }
+        });
+
+        document.getElementById('btn-play').addEventListener('click', toggleTimer);
+        document.getElementById('btn-pause').addEventListener('click', toggleTimer);
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            resetTimer();
+        });
+
+        document.getElementById('btn-metronome').addEventListener('click', toggleMetronome);
+
+        document.getElementById('bpm-minus').addEventListener('click', () => {
+            currentBPM = Math.max(40, currentBPM - 5);
+            updateBPMDisplay();
+            if (metronomeRunning) { stopMetronome(); startMetronome(); }
+        });
+        document.getElementById('bpm-plus').addEventListener('click', () => {
+            currentBPM = Math.min(240, currentBPM + 5);
+            updateBPMDisplay();
+            if (metronomeRunning) { stopMetronome(); startMetronome(); }
+        });
+
+        document.getElementById('rep-minus').addEventListener('click', () => {
+            currentReps = Math.max(0, currentReps - 1);
+            updateRepDisplay();
+        });
+        document.getElementById('rep-plus').addEventListener('click', () => {
+            currentReps = Math.min(targetReps * 2, currentReps + 1);
+            updateRepDisplay();
+        });
+
+        document.getElementById('btn-complete').addEventListener('click', () => {
+            if (timerSeconds < 10) {
+                if (!confirm('练习时间较短，确定要完成吗？')) return;
+            }
+            completePractice();
+        });
+
+        document.getElementById('practice-notes').addEventListener('focus', function() {
+            setTimeout(() => {
+                this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        });
+
+        document.getElementById('cal-prev').addEventListener('click', () => {
+            calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
+            renderCalendar();
+        });
+        document.getElementById('cal-next').addEventListener('click', () => {
+            calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        document.getElementById('btn-export').addEventListener('click', exportData);
+        document.getElementById('btn-import').addEventListener('click', () => {
+            document.getElementById('import-file').click();
+        });
+        document.getElementById('import-file').addEventListener('change', (e) => {
+            if (e.target.files[0]) importData(e.target.files[0]);
+            e.target.value = '';
+        });
+
+        document.querySelectorAll('#kb-instrument-chips .kb-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                kbInstrumentFilter = chip.dataset.instrument;
+                renderKnowledgeBase();
+            });
+        });
+
+        document.getElementById('kb-detail-overlay').addEventListener('click', closeKBDetail);
+        document.getElementById('kb-detail-close-btn').addEventListener('click', closeKBDetail);
+
+        document.getElementById('kb-video-back').addEventListener('click', () => {
+            const player = document.getElementById('kb-video-player');
+            if (player) player.src = '';
+            navigateTo('knowledge');
+        });
+
+        document.getElementById('kb-add-to-library-btn').addEventListener('click', () => {
+            if (currentKBVideoId) {
+                addKBToLibrary(currentKBVideoId, 'video');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const detailSheet = document.getElementById('kb-detail-sheet');
+                if (detailSheet && detailSheet.classList.contains('visible')) {
+                    closeKBDetail();
+                }
+            }
+        });
+    });
+
+    // ==================== Knowledge Base ====================
+    let kbInstrumentFilter = 'all';
+    let kbCategoryFilter = 'basics';
+    let kbCurrentDetailId = null;
+    let kbCurrentDetailType = null;
+
+    function renderKnowledgeBase() {
+        const tabsContainer = document.getElementById('kb-category-tabs');
+        const categories = state.knowledgeBase.categories;
+        tabsContainer.innerHTML = categories.map(cat => `
+            <button class="kb-category-tab ${cat.id === kbCategoryFilter ? 'active' : ''}" data-category="${cat.id}">
+                <i data-lucide="${cat.icon}"></i>
+                ${cat.name}
+            </button>
+        `).join('');
+
+        tabsContainer.querySelectorAll('.kb-category-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                kbCategoryFilter = btn.dataset.category;
+                renderKnowledgeBase();
+            });
+        });
+
+        const instrumentChips = document.querySelectorAll('#kb-instrument-chips .kb-chip');
+        instrumentChips.forEach(chip => {
+            chip.classList.toggle('selected', chip.dataset.instrument === kbInstrumentFilter);
+        });
+
+        const listContainer = document.getElementById('kb-list');
+        const emptyState = document.getElementById('kb-empty');
+        const items = getFilteredKBItems();
+
+        if (items.length === 0) {
+            listContainer.innerHTML = '';
+            emptyState.style.display = 'flex';
+        } else {
+            emptyState.style.display = 'none';
+            listContainer.innerHTML = items.map(item => renderKBCard(item, item.type || 'item')).join('');
+        }
+
+        lucide.createIcons();
+    }
+
+    function getFilteredKBItems() {
+        const items = [];
+
+        if (kbCategoryFilter === 'video') {
+            const videos = state.knowledgeBase.videos.filter(v => {
+                if (kbInstrumentFilter === 'all') return true;
+                return v.instrument === kbInstrumentFilter;
+            });
+            videos.forEach(v => items.push({ ...v, type: 'video' }));
+        } else {
+            const filtered = state.knowledgeBase.items.filter(item => {
+                const categoryMatch = item.category === kbCategoryFilter;
+                const instrumentMatch = kbInstrumentFilter === 'all' || item.instrument === 'all' || item.instrument === kbInstrumentFilter;
+                return categoryMatch && instrumentMatch;
+            });
+            filtered.forEach(item => items.push({ ...item, type: 'item' }));
+        }
+
+        return items;
+    }
+
+    function renderKBCard(item, type) {
+        const isVideo = type === 'video';
+        const iconName = isVideo ? 'play-circle' : getCategoryIcon(item.category);
+        const difficulty = item.difficulty || 0;
+
+        let leftHtml;
+        if (isVideo) {
+            leftHtml = `
+                <div class="kb-video-cover">
+                    <i data-lucide="play-circle"></i>
+                </div>
+            `;
+        } else {
+            leftHtml = `
+                <div class="kb-card-icon">
+                    <i data-lucide="${iconName}" style="width: 22px; height: 22px;"></i>
+                </div>
+            `;
+        }
+
+        const difficultyHtml = difficulty > 0 ? `
+            <div class="kb-difficulty">
+                ${[1, 2, 3].map(i => `
+                    <i data-lucide="star" class="star ${i <= difficulty ? 'filled' : 'empty'}"></i>
+                `).join('')}
+            </div>
+        ` : '';
+
+        const tagsHtml = (item.tags || []).slice(0, 2).map(tag => `
+            <span style="font-size: 11px; padding: 2px 8px; background: var(--color-lavender-light); color: #7B6E94; border-radius: var(--radius-full);">${tag}</span>
+        `).join('');
+
+        const clickHandler = isVideo
+            ? `onclick="openKBVideo('${item.id}')"`
+            : `onclick="openKBDetail('${item.id}', 'item')"`;
+
+        return `
+            <div class="kb-card" ${clickHandler}>
+                ${leftHtml}
+                <div class="kb-card-content">
+                    <div class="kb-card-title">${item.title}</div>
+                    <div class="kb-card-meta">
+                        ${difficultyHtml}
+                        ${tagsHtml}
+                    </div>
+                    ${isVideo && item.summary ? `<p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 6px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.summary}</p>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    function getCategoryIcon(category) {
+        const cat = state.knowledgeBase.categories.find(c => c.id === category);
+        return cat ? cat.icon : 'book-open';
+    }
+
+    function openKBDetail(id, type) {
+        kbCurrentDetailId = id;
+        kbCurrentDetailType = type;
+
+        let item;
+        if (type === 'video') {
+            item = state.knowledgeBase.videos.find(v => v.id === id);
+        } else {
+            item = state.knowledgeBase.items.find(i => i.id === id);
+        }
+
+        if (!item) return;
+
+        const isFav = state.knowledgeBase.favorites.includes(`${type}_${id}`);
+        const difficulty = item.difficulty || 0;
+
+        const difficultyHtml = difficulty > 0 ? `
+            <div class="kb-difficulty">
+                ${[1, 2, 3].map(i => `
+                    <i data-lucide="star" class="star ${i <= difficulty ? 'filled' : 'empty'}"></i>
+                `).join('')}
+            </div>
+        ` : '';
+
+        const tagsHtml = (item.tags || []).map(tag => `
+            <span class="kb-detail-tag">${tag}</span>
+        `).join('');
+
+        let bodyHtml = '';
+        if (type === 'video') {
+            bodyHtml = `
+                <p class="kb-detail-paragraph">${item.summary || ''}</p>
+                <div class="kb-tip-card">
+                    <i data-lucide="lightbulb"></i>
+                    <p>点击下方播放按钮开始观看视频教程，看完后可以加入练习素材进行实践。</p>
+                </div>
+            `;
+        } else if (item.content) {
+            bodyHtml = item.content.map(block => {
+                if (block.type === 'paragraph') {
+                    return `<p class="kb-detail-paragraph">${block.text}</p>`;
+                } else if (block.type === 'list') {
+                    return `
+                        <div class="kb-detail-list">
+                            ${block.items.map(it => `<div class="kb-detail-list-item">${it}</div>`).join('')}
+                        </div>
+                    `;
+                } else if (block.type === 'tip') {
+                    return `
+                        <div class="kb-tip-card">
+                            <i data-lucide="lightbulb"></i>
+                            <p>${block.text}</p>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+        }
+
+        document.getElementById('kb-detail-content').innerHTML = `
+            <div class="kb-detail-content">
+                <h2 class="kb-detail-title">${item.title}</h2>
+                <div class="kb-detail-header-row">
+                    ${difficultyHtml}
+                    ${tagsHtml}
+                </div>
+                <div class="kb-detail-body">
+                    ${bodyHtml}
+                </div>
+            </div>
+        `;
+
+        let actionsHtml = `
+            <button class="kb-fav-btn ${isFav ? 'active' : ''}" onclick="toggleKBFavorite('${id}', '${type}')" aria-label="收藏">
+                <i data-lucide="heart"></i>
+            </button>
+        `;
+
+        if (type === 'video') {
+            actionsHtml += `
+                <button class="kb-action-btn" onclick="openKBVideo('${id}')">
+                    <i data-lucide="play"></i>
+                    播放视频
+                </button>
+            `;
+        } else {
+            actionsHtml += `
+                <button class="kb-action-btn" onclick="addKBToLibrary('${id}', '${type}')">
+                    <i data-lucide="plus"></i>
+                    加入素材库
+                </button>
+            `;
+        }
+
+        document.getElementById('kb-detail-actions').innerHTML = actionsHtml;
+
+        document.getElementById('kb-detail-overlay').classList.add('visible');
+        document.getElementById('kb-detail-sheet').classList.add('visible');
+
+        lucide.createIcons();
+    }
+
+    function closeKBDetail() {
+        document.getElementById('kb-detail-overlay').classList.remove('visible');
+        document.getElementById('kb-detail-sheet').classList.remove('visible');
+        kbCurrentDetailId = null;
+        kbCurrentDetailType = null;
+    }
+
+    function toggleKBFavorite(id, type) {
+        const key = `${type}_${id}`;
+        const idx = state.knowledgeBase.favorites.indexOf(key);
+        if (idx >= 0) {
+            state.knowledgeBase.favorites.splice(idx, 1);
+        } else {
+            state.knowledgeBase.favorites.push(key);
+        }
+        saveData();
+        if (kbCurrentDetailId === id && kbCurrentDetailType === type) {
+            openKBDetail(id, type);
+        }
+    }
+
+    function addKBToLibrary(id, type) {
+        let item;
+        let sourceType;
+        let sourceName;
+        let lessonTitle;
+        let targetBPM = 60;
+        let targetDuration = 600;
+        let tags = [];
+        let instrument = 'acoustic';
+        let bvid = null;
+        let page = 1;
+
+        if (type === 'video') {
+            item = state.knowledgeBase.videos.find(v => v.id === id);
+            if (!item) return;
+            sourceType = 'bilibili';
+            sourceName = item.title;
+            lessonTitle = item.title;
+            targetBPM = 80;
+            targetDuration = 600;
+            tags = [...(item.tags || [])];
+            instrument = item.instrument === 'all' ? 'acoustic' : item.instrument;
+            bvid = item.bvid;
+            page = 1;
+        } else {
+            item = state.knowledgeBase.items.find(i => i.id === id);
+            if (!item) return;
+            lessonTitle = item.title;
+            tags = [...(item.tags || [])];
+            instrument = item.instrument === 'all' ? 'acoustic' : item.instrument;
+
+            if (item.category === 'practice') {
+                sourceType = 'book';
+                sourceName = '基本功练习';
+                targetBPM = item.targetBPM || 80;
+                targetDuration = item.targetDuration || 600;
+            } else if (item.category === 'basics') {
+                sourceType = 'book';
+                sourceName = '基础教程';
+                targetBPM = 60;
+                targetDuration = 600;
+            } else {
+                sourceType = 'book';
+                sourceName = '乐理知识';
+                targetBPM = 60;
+                targetDuration = 600;
+            }
+        }
+
+        let source = state.sources.find(s => s.name === sourceName && s.type === sourceType);
+        if (!source) {
+            source = {
+                id: uid('src'),
+                name: sourceName,
+                type: sourceType,
+                lessons: []
+            };
+            state.sources.push(source);
+        }
+
+        const existingLesson = source.lessons.find(l => l.title === lessonTitle);
+        if (existingLesson) {
+            alert('这个内容已经在素材库中了~');
+            closeKBDetail();
+            expandedSourceId = source.id;
+            navigateTo('source-library');
+            return;
+        }
+
+        const lesson = {
+            id: uid('les'),
+            sourceId: source.id,
+            title: lessonTitle,
+            targetBPM: targetBPM,
+            tags: tags,
+            instrument: instrument,
+            targetDuration: targetDuration,
+            lastPractice: null
+        };
+
+        if (bvid) {
+            lesson.bvid = bvid;
+            lesson.page = page;
+        }
+
+        source.lessons.push(lesson);
+        saveData();
+        closeKBDetail();
+
+        expandedSourceId = source.id;
+        navigateTo('source-library');
+    }
+
+    function openKBVideo(videoId) {
+        navigateTo('kb-video', { videoId });
+    }
+
+    let currentKBVideoId = null;
+
+    let currentKBVideoPage = 1;
+    let currentKBVideoEpisodes = [];
+
+    let currentPracticeEpisodes = [];
+
+    function renderKBVideoPage(videoId) {
+        currentKBVideoId = videoId;
+        currentKBVideoPage = 1;
+        currentKBVideoEpisodes = [];
+        const video = state.knowledgeBase.videos.find(v => v.id === videoId);
+        if (!video) {
+            navigateTo('knowledge');
+            return;
+        }
+
+        document.getElementById('kb-video-title').textContent = video.title;
+        document.getElementById('kb-video-info-title').textContent = video.title;
+        document.getElementById('kb-video-summary').textContent = video.summary || '';
+
+        // 设置B站打开链接
+        const openBiliLink = document.getElementById('kb-open-bili');
+        if (openBiliLink) {
+            openBiliLink.href = `https://www.bilibili.com/video/${video.bvid}`;
+        }
+
+        const player = document.getElementById('kb-video-player');
+        player.src = `https://player.bilibili.com/player.html?bvid=${video.bvid}&page=1&high_quality=1&danmaku=1&as_wide=1&autoplay=0`;
+
+        const tagsContainer = document.getElementById('kb-video-tags');
+        tagsContainer.innerHTML = (video.tags || []).map(tag => `
+            <span class="kb-detail-tag">${tag}</span>
+        `).join('');
+
+        const addBtn = document.getElementById('kb-add-to-library-btn');
+        addBtn.onclick = () => addKBToLibrary(videoId, 'video');
+
+        // 初始化视频尺寸
+        setVideoSize(state.videoSize || 'compact');
+
+        // 隐藏选集区，异步获取
+        const epSection = document.getElementById('kb-video-episodes');
+        if (epSection) {
+            // 恢复原始结构（防止上次单集视频替换了innerHTML）
+            epSection.innerHTML = `<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"><h3 style="font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--text-primary);">选集</h3><span id="kb-video-current-ep" style="font-size: var(--text-xs); color: var(--text-tertiary);"></span></div><div id="kb-video-ep-list" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div>`;
+            epSection.style.display = 'none';
+        }
+        const epList = document.getElementById('kb-video-ep-list');
+        const currentEpLabel = document.getElementById('kb-video-current-ep');
+        if (epList) epList.innerHTML = '';
+        if (currentEpLabel) currentEpLabel.textContent = '';
+
+        // 异步获取选集列表
+        if (epSection) {
+            fetchBiliEpisodes(video.bvid).then(episodes => {
+                if (episodes && episodes.length > 1) {
+                    currentKBVideoEpisodes = episodes;
+                    epSection.style.display = 'block';
+                    if (epList) renderKBVideoEpisodes(epList, episodes, 1);
+                    if (currentEpLabel) {
+                        const ep = episodes.find(e => e.page === 1);
+                        currentEpLabel.textContent = ep ? `P1 ${ep.title}` : 'P1';
+                    }
+                } else {
+                    // 单集视频显示"共1集"
+                    epSection.style.display = 'block';
+                    epSection.innerHTML = '<div style="text-align: center; font-size: var(--text-xs); color: var(--text-tertiary); padding: 8px;">共1集</div>';
+                }
+            });
+        }
+
+        lucide.createIcons();
+    }
+
+    function renderKBVideoEpisodes(container, episodes, currentPage) {
+        container.innerHTML = episodes.map(ep => {
+            const isActive = ep.page === currentPage;
+            return `
+                <div class="kb-ep-item ${isActive ? 'active' : ''}" onclick="switchKBVideoEpisode(${ep.page})" style="padding: 8px 12px; border-radius: var(--radius-md); cursor: pointer; font-size: var(--text-sm); display: flex; align-items: center; gap: 8px; background: ${isActive ? 'var(--gradient-primary)' : 'var(--bg-surface)'}; color: ${isActive ? 'var(--text-on-primary)' : 'var(--text-secondary)'}; transition: all var(--transition-fast);">
+                    <span style="font-family: var(--font-mono); font-size: var(--text-xs); opacity: 0.7; flex-shrink: 0;">P${ep.page}</span>
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${ep.title}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function switchKBVideoEpisode(page) {
+        const video = state.knowledgeBase.videos.find(v => v.id === currentKBVideoId);
+        if (!video) return;
+        currentKBVideoPage = page;
+        const player = document.getElementById('kb-video-player');
+        player.src = `https://player.bilibili.com/player.html?bvid=${video.bvid}&page=${page}&high_quality=1&danmaku=1&as_wide=1&autoplay=0`;
+
+        // 更新选集列表高亮
+        const epList = document.getElementById('kb-video-ep-list');
+        if (epList && currentKBVideoEpisodes.length > 0) {
+            renderKBVideoEpisodes(epList, currentKBVideoEpisodes, page);
+        }
+
+        // 更新当前选集标签
+        const currentEpLabel = document.getElementById('kb-video-current-ep');
+        if (currentEpLabel) {
+            const ep = currentKBVideoEpisodes.find(e => e.page === page);
+            currentEpLabel.textContent = ep ? `P${page} ${ep.title}` : `P${page}`;
+        }
+    }
+
+    function setVideoSize(size) {
+        state.videoSize = size;
+        saveData();
+        const practiceWrap = document.getElementById('practice-video-wrap');
+        if (practiceWrap) {
+            practiceWrap.className = `video-wrap video-size-${size}`;
+        }
+        const kbWrap = document.getElementById('kb-video-wrap');
+        if (kbWrap) {
+            kbWrap.className = `video-wrap video-size-${size}`;
+        }
+        document.querySelectorAll('.video-size-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.size === size);
+        });
+    }
+
+    function switchPracticeEpisode(page) {
+        const lesson = getLessonById(practiceLessonId);
+        if (!lesson || !lesson.bvid) return;
+        lesson.page = page;
+        const biliPlayer = document.getElementById('bili-player');
+        if (biliPlayer) {
+            biliPlayer.src = `https://player.bilibili.com/player.html?bvid=${lesson.bvid}&page=${page}&high_quality=1&danmaku=1&as_wide=1&autoplay=0`;
+        }
+        // 更新选集高亮
+        const practiceEpList = document.getElementById('practice-ep-list');
+        if (practiceEpList) {
+            const chips = practiceEpList.querySelectorAll('div');
+            chips.forEach(chip => {
+                const match = chip.textContent.match(/^P(\d+)/);
+                if (match) {
+                    const epPage = parseInt(match[1]);
+                    if (epPage === page) {
+                        chip.style.background = 'var(--gradient-primary)';
+                        chip.style.color = 'var(--text-on-primary)';
+                    } else {
+                        chip.style.background = 'var(--bg-surface)';
+                        chip.style.color = 'var(--text-secondary)';
+                    }
+                }
+            });
+        }
+        // 更新当前选集标签
+        const currentEpLabel = document.getElementById('practice-current-ep');
+        if (currentEpLabel) {
+            const ep = currentPracticeEpisodes.find(e => e.page === page);
+            currentEpLabel.textContent = ep ? `P${page} ${ep.title}` : `P${page}`;
+        }
+        saveData();
+    }
+
+    window.navigateTo = navigateTo;
+    window.startPractice = startPractice;
+    window.selectCalDay = selectCalDay;
+    window.renderKnowledgeBase = renderKnowledgeBase;
+    window.openKBDetail = openKBDetail;
+    window.closeKBDetail = closeKBDetail;
+    window.toggleKBFavorite = toggleKBFavorite;
+    window.addKBToLibrary = addKBToLibrary;
+    window.openKBVideo = openKBVideo;
+    window.switchKBVideoEpisode = switchKBVideoEpisode;
+    window.switchPracticeEpisode = switchPracticeEpisode;
+    window.setVideoSize = setVideoSize;
+    window.toggleMetronome = toggleMetronome;
+    window.deleteSource = deleteSource;
+    window.deleteLesson = deleteLesson;
+    window.editLesson = editLesson;
+    </script>
+</body>
+</html>
