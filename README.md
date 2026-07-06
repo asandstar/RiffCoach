@@ -2,10 +2,6 @@
 
 > 把喜欢的歌，拆成每天能练的任务。每天只有 20 分钟，也能离你的 cover 目标更近一步。
 
-<p align="center">
-  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=A%20modern%20music%20practice%20app%20interface%20with%20guitar%20elements%2C%20glassmorphism%20design%2C%20purple%20and%20mint%20color%20scheme%2C%20showing%20practice%20timer%20and%20BPM%20knob%2C%20clean%20UI%20design&image_size=landscape_16_9" alt="RiffCoach" width="800" />
-</p>
-
 ## 🏆 项目简介
 
 RiffCoach 是一款面向业余吉他学习者的 **AI 高效练习教练**。通过 AI 驱动的练习计划生成、Cover 目标管理、资料中心、视频学习、知识库和周复盘，帮助用户系统化地追踪练习进度，克服自学瓶颈。
