@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RiffCoach · 弦乐练习指南针</title>
+    <title>RiffCoach · AI 高效练习教练</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,6 +11,9 @@
     <style>
         :root {
             --color-primary: #B89CD4;
+            --color-mint: #7EBCA6;
+            --color-amber: #E8C87A;
+            --color-lavender: #A895C4;
             --gradient-primary: linear-gradient(135deg, #C4A4D7 0%, #8BA4C7 100%);
             --gradient-electric: linear-gradient(135deg, #FFF5E6 0%, #F0D8A8 100%);
             --gradient-acoustic: linear-gradient(135deg, #F0FAF5 0%, #B8D8C8 100%);
@@ -39,6 +42,14 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(184, 156, 212, 0.20);
             border-radius: 20px;
+        }
+        .glass-elevated {
+            background: var(--bg-surface-elevated);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(184, 156, 212, 0.25);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(74, 63, 92, 0.08);
         }
         .gradient-text {
             background: var(--gradient-primary);
@@ -110,21 +121,46 @@
             opacity: 1;
             transform: translateY(0);
         }
-        .string-line {
-            position: absolute;
-            left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(184, 156, 212, 0.3), transparent);
-        }
         .pulse-dot {
             width: 8px; height: 8px;
             border-radius: 50%;
-            background: #7EBCA6;
+            background: var(--color-mint);
             animation: pulse 2s ease-in-out infinite;
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.3); }
+        }
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .nav-dot {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(184, 156, 212, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 16px rgba(184, 156, 212, 0.4);
         }
     </style>
 </head>
@@ -140,13 +176,14 @@
     <div style="position: relative; z-index: 1; max-width: 800px; margin: 0 auto; text-align: center;">
         <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(184,156,212,0.2); margin-bottom: 24px;">
             <span class="pulse-dot"></span>
-            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary);">自学弦乐者的练习伙伴</span>
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary);">面向业余吉他学习者的 AI 高效练习教练</span>
         </div>
-        <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 20px;">
+        <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;">
             <span class="gradient-text">RiffCoach</span>
         </h1>
         <p style="font-size: 1.25rem; color: var(--text-secondary); font-weight: 500; max-width: 560px; margin: 0 auto 32px;">
-            弦乐练习指南针 —— 让每一次按弦都有方向，让每一分钟练习都有痕迹。
+            把喜欢的歌，拆成每天能练的任务。<br>
+            每天只有 20 分钟，也能离你的 cover 目标更近一步。
         </p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <a href="./index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 14px; background: var(--gradient-primary); color: white; font-weight: 700; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 8px 24px rgba(184, 156, 212, 0.35);">
@@ -159,15 +196,18 @@
     </div>
 </section>
 
-<!-- Origin Story -->
-<section style="max-width: 760px; margin: 0 auto; padding: 40px 24px;">
-    <div class="glass section-fade" style="padding: 40px;">
+<!-- Core Value -->
+<section style="max-width: 760px; margin: 0 auto; padding: 20px 24px 40px;">
+    <div class="glass-elevated section-fade" style="padding: 40px;">
         <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px;">为什么做这个？</h2>
-        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.8; margin: 0;">
+        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.8; margin: 0 0 16px;">
             作为一个自学吉他和 ukulele 的人，我发现最大的问题不是没有教程——B站上有无数好视频——
-            而是<strong style="color: var(--text-primary);">没有结构化的练习追踪</strong>。看了很多教程，但不知道自己练了什么、练了多久、哪里卡住了。
-            RiffCoach 就是为了填补这个空白：把散落的视频教程组织成练习课程，记录每次练习的时间和感受，
-            用日历看到自己的坚持，用知识库随时查阅乐理。
+            而是<strong style="color: var(--text-primary);">没有结构化的练习追踪和智能计划</strong>。
+        </p>
+        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.8; margin: 0;">
+            看了很多教程，但不知道自己练了什么、练了多久、哪里卡住了。
+            RiffCoach 就是为了填补这个空白：<strong style="color: var(--text-primary);">AI 帮你把视频教程和 cover 目标拆成每天能练的任务</strong>，
+            根据你的可用时间、练习历史、BPM 和卡点，生成最小有效练习计划。
         </p>
     </div>
 </section>
@@ -176,20 +216,41 @@
 <section style="max-width: 800px; margin: 0 auto; padding: 20px 24px 60px;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
         <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">3</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">支持乐器</div>
+            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">5</div>
+            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">核心页面</div>
         </div>
         <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">24</div>
+            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">8</div>
+            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">视频教程</div>
+        </div>
+        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
+            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">12+</div>
             <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">知识库条目</div>
         </div>
         <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">13</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">B站视频教程</div>
+            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">AI</div>
+            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">智能教练</div>
         </div>
-        <div class="glass section-fade" style="padding: 28px 20px; text-align: center;">
-            <div class="stat-number" style="font-size: 2.5rem; line-height: 1;">100%</div>
-            <div style="font-size: 0.8125rem; color: var(--text-tertiary); margin-top: 8px; font-weight: 600;">本地存储 · 零依赖</div>
+    </div>
+</section>
+
+<!-- Navigation Preview -->
+<section style="max-width: 760px; margin: 0 auto; padding: 20px 24px 40px;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 24px;">核心导航</h2>
+    <div class="glass-elevated section-fade" style="padding: 32px;">
+        <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px;">
+            <div class="nav-dot active">🏠</div>
+            <div class="nav-dot">🎸</div>
+            <div class="nav-dot">📚</div>
+            <div class="nav-dot">📊</div>
+            <div class="nav-dot">👤</div>
+        </div>
+        <div style="display: flex; justify-content: space-around; text-align: center;">
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">今日</span>
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">Cover</span>
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">资料</span>
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">复盘</span>
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);">我的</span>
         </div>
     </div>
 </section>
@@ -197,62 +258,132 @@
 <!-- Features -->
 <section id="features" style="max-width: 900px; margin: 0 auto; padding: 40px 24px;">
     <h2 style="font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 12px;">核心功能</h2>
-    <p style="text-align: center; color: var(--text-tertiary); margin-bottom: 40px;">为自学弦乐者设计的完整练习工作流</p>
+    <p style="text-align: center; color: var(--text-tertiary); margin-bottom: 40px;">AI 驱动的完整练习工作流</p>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-        <!-- B站集成 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #FFF5E6, #F0D8A8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">🎬</div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">B站视频集成</h3>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #C4A4D7, #8BA4C7); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">✨</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">AI 高效练习计划</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                粘贴B站链接自动解析 BV 号，支持选集切换，内嵌播放器边看边练。多代理 CORS 轮换确保稳定获取分集列表。
+                根据今日可用时间、精力状态、Cover 目标和最近卡点，生成最小有效练习计划。10-45分钟智能分配。
             </p>
         </div>
 
-        <!-- 练习计时器 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F0FAF5, #B8D8C8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">⏱️</div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">练习计时器</h3>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #FFF5E6, #F0D8A8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">🎸</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">Cover 目标管理</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                为每节课设定目标时长，开始/暂停/重置，完成后自动记录到练习历史。带节拍器同步，暂停时自动静音。
+                把喜欢的歌拆成可追踪的段落进度。记录每个段落的 target BPM、当前干净 BPM、卡点和进度百分比。
             </p>
         </div>
 
-        <!-- 节拍器 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F5F0FF, #D4C4E8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">🎵</div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">内置节拍器</h3>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F0FAF5, #B8D8C8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">📚</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">资料中心</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                Web Audio API 驱动，BPM 可调，练习时自动同步。完成练习或暂停计时器时自动停止，不会有"幽灵节拍"。
+                视频教程、素材篮、已整理练习一站式管理。粘贴链接快速添加，AI 自动整理成练习任务。
             </p>
         </div>
 
-        <!-- 练习日历 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #FFF0F5, #E8B8C4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">📅</div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">练琴日历</h3>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F5F0FF, #D4C4E8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">🎬</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">视频学习页</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                月视图日历展示每日练习时长，类似番茄 Todo。一眼看到自己的坚持轨迹，连续打卡激励持续练习。
+                B站视频嵌入 + AI 摘要 + 关键技能标签 + 建议练习方式 + 选集切换（自动获取失败可手动输入）。
             </p>
         </div>
 
-        <!-- 知识库 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F0F4FF, #8BA4C7); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">📚</div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">内置知识库</h3>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F0F4FF, #8BA4C7); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">📖</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">目录式知识库</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                24 条乐理知识 + 13 个B站视频教程，覆盖电吉他、木吉他、ukulele。分类筛选，随时查阅，无需联网搜索。
+                电吉他/木吉他/尤克里里分类知识，包含持琴姿势、基本功、技巧、乐理等，桌面端左侧目录+右侧内容。
             </p>
         </div>
 
-        <!-- 数据备份 -->
         <div class="glass feature-card section-fade" style="padding: 28px;">
-            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F5FFF0, #C8E8B8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">💾</div>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #FFF0F5, #E8B8C4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">🤖</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">AI 练后反馈</h3>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                练习完成后，AI 根据 BPM、自评、卡点和练习时长，给出今日总结、可能原因、下次计划和 Cover 进度更新。
+            </p>
+        </div>
+
+        <div class="glass feature-card section-fade" style="padding: 28px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F5FFF0, #C8E8B8); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">📅</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">周复盘</h3>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                本周练习统计、Cover 进度变化、技能进步、反复卡点分析、AI 下周建议，一目了然。
+            </p>
+        </div>
+
+        <div class="glass feature-card section-fade" style="padding: 28px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #FFF5E6, #E8C87A); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">⏱️</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">练习工具</h3>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                计时器 + 节拍器 + BPM 调节 + 重复次数 + 自评 + 卡点标签 + 备注，完整练习记录。
+            </p>
+        </div>
+
+        <div class="glass feature-card section-fade" style="padding: 28px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #F0F5FF, #8BA4C7); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">💾</div>
             <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 8px;">数据备份</h3>
             <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0;">
-                一键导出/导入 JSON 数据，深合并迁移机制确保版本升级时不丢失历史记录。完全本地存储，隐私安全。
+                一键导出/导入 JSON 数据，本地存储零依赖，支持旧数据迁移，隐私安全。
             </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Workflow Demo -->
+<section style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">使用流程</h2>
+    <div class="glass-elevated section-fade" style="padding: 32px;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">1</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">添加资料</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">粘贴 B站链接或标题，选择用途（关联 Cover / 收藏 / 基础练习），快速加入素材篮。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">2</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">AI 整理</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">AI 根据标题自动分析，生成 2-4 个建议练习任务，确认后进入已整理练习。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">3</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">生成计划</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">今日页选择可用时间和精力状态，AI 生成最小有效练习计划。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">4</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">开始练习</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">进入练习页，计时器 + 节拍器 + 卡点记录，沉浸式练习。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">5</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">AI 反馈</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">完成练习后，AI 给出今日总结、下次计划和 Cover 进度更新。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div class="step-number">6</div>
+                <div>
+                    <strong style="font-size: 0.9375rem;">周复盘</strong>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 4px 0 0;">查看本周练习数据，追踪 Cover 进度，调整下周计划。</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -269,11 +400,11 @@
                 🎸 木吉他
             </span>
             <span class="instrument-badge" style="background: var(--gradient-ukulele); color: #6B5B8A;">
-                🌺 Ukulele
+                🌺 尤克里里
             </span>
         </div>
         <p style="color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.8; margin: 0;">
-            每种乐器有专属的视觉主题色和知识库分类。练习时背景渐变随乐器切换，营造沉浸式练习氛围。
+            每种乐器有专属的视频教程和知识库分类。练习时背景渐变随乐器切换，营造沉浸式练习氛围。
         </p>
     </div>
 </section>
@@ -284,38 +415,38 @@
     <div class="glass section-fade" style="padding: 32px;">
         <div style="display: grid; gap: 16px;">
             <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">SPA</span>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">Vite</span>
                 <div>
-                    <strong style="font-size: 0.9375rem;">单页应用架构</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">客户端路由 navigateTo()，无后端依赖，打开即用。</p>
+                    <strong style="font-size: 0.9375rem;">Vite + React + TypeScript</strong>
+                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">现代化前端工程化，极速开发体验，类型安全。</p>
                 </div>
             </div>
             <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">STORAGE</span>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">Zustand</span>
                 <div>
-                    <strong style="font-size: 0.9375rem;">LocalStorage 持久化</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">loadData/saveData + mergeDefaults 深合并，支持 schema 迁移。</p>
+                    <strong style="font-size: 0.9375rem;">Zustand 状态管理</strong>
+                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">轻量级状态管理 + LocalStorage 持久化，支持数据迁移。</p>
                 </div>
             </div>
             <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">AUDIO</span>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">Tailwind</span>
+                <div>
+                    <strong style="font-size: 0.9375rem;">Tailwind CSS 3</strong>
+                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">原子化 CSS，自定义主题变量，玻璃拟态设计系统。</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">Audio</span>
                 <div>
                     <strong style="font-size: 0.9375rem;">Web Audio API</strong>
                     <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">OscillatorNode 生成节拍器声音，零音频文件依赖。</p>
                 </div>
             </div>
             <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">CORS</span>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">API</span>
                 <div>
-                    <strong style="font-size: 0.9375rem;">多代理 CORS 轮换</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">corsproxy.io → allorigins.win → codetabs.com，5s 超时自动切换。</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-primary); background: rgba(184,156,212,0.12); padding: 4px 10px; border-radius: 8px; flex-shrink: 0;">UI</span>
-                <div>
-                    <strong style="font-size: 0.9375rem;">Glassmorphism 设计系统</strong>
-                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">CSS 变量 + Tailwind CDN + Lucide 图标，毛玻璃质感。</p>
+                    <strong style="font-size: 0.9375rem;">B站 API 集成</strong>
+                    <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 4px 0 0;">BVID 解析、播放器 URL 构建、选集获取（多代理兜底）。</p>
                 </div>
             </div>
         </div>
@@ -332,35 +463,55 @@ git clone https://github.com/asandstar/RiffCoach.git<br>
 cd RiffCoach
         </div>
         <div class="code-block" style="margin-bottom: 16px;">
-# 直接打开 index.html 即可使用<br>
-open index.html
+# 安装依赖<br>
+npm install
         </div>
-        <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 0;">
-            无需安装依赖，无需构建步骤，无需后端服务。打开即用，数据存储在浏览器本地。
+        <div class="code-block" style="margin-bottom: 16px;">
+# 启动开发服务器<br>
+npm run dev
+        </div>
+        <div class="code-block">
+# 构建生产版本<br>
+npm run build
+        </div>
+        <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 16px 0 0;">
+            数据存储在浏览器 LocalStorage，无需后端服务，隐私安全。
         </p>
     </div>
 </section>
 
 <!-- Roadmap -->
 <section style="max-width: 800px; margin: 0 auto; padding: 40px 24px 80px;">
-    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">未来计划</h2>
+    <h2 style="font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 28px;">功能路线图</h2>
     <div class="glass section-fade" style="padding: 32px;">
         <div style="display: grid; gap: 14px;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">B站视频集成 + 选集切换</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">AI 高效练习计划</span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">练琴日历 + 数据备份</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">Cover 目标管理 + 段落进度追踪</span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">内置知识库 + 节拍器</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">资料中心 + 素材篮 + AI 整理</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">视频学习页 + 选集切换 + AI 摘要</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">目录式知识库 + 练习工具</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(126, 188, 166, 0.2); color: #7EBCA6; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">✓</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">AI 练后反馈 + 周复盘</span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">外部免费乐理 API 接入</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">真实 AI API 接入</span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
@@ -368,7 +519,7 @@ open index.html
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span style="width: 24px; height: 24px; border-radius: 50%; background: rgba(232, 200, 122, 0.2); color: #C8A847; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">○</span>
-                <span style="font-size: 0.9375rem; color: var(--text-secondary);">PWA 离线支持 + 移动端适配</span>
+                <span style="font-size: 0.9375rem; color: var(--text-secondary);">PWA 离线支持 + 移动端优化</span>
             </div>
         </div>
     </div>
@@ -377,13 +528,12 @@ open index.html
 <!-- Footer -->
 <footer style="padding: 40px 24px; text-align: center; border-top: 1px solid rgba(184, 156, 212, 0.15);">
     <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin: 0;">
-        RiffCoach · String Practice Compass<br>
-        为自学弦乐者而造 · 本地优先 · 隐私安全
+        RiffCoach · AI 高效练习教练<br>
+        面向业余吉他学习者 · 本地优先 · 隐私安全
     </p>
 </footer>
 
 <script>
-    // Scroll reveal animation
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
