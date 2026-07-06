@@ -19,6 +19,13 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
   useEffect(() => {
     if (!bvid) return;
 
+    if (customEpisodes && customEpisodes.length > 0) {
+      setEpisodes(customEpisodes);
+      setFetchFailed(false);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setFetchFailed(false);
 
@@ -27,22 +34,14 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
         if (data && data.length > 0) {
           setEpisodes(data);
           setFetchFailed(false);
-        } else if (customEpisodes && customEpisodes.length > 0) {
-          setEpisodes(customEpisodes);
-          setFetchFailed(false);
         } else {
           setEpisodes(getBiliFallbackEpisodes(10));
           setFetchFailed(true);
         }
       })
       .catch(() => {
-        if (customEpisodes && customEpisodes.length > 0) {
-          setEpisodes(customEpisodes);
-          setFetchFailed(false);
-        } else {
-          setEpisodes(getBiliFallbackEpisodes(10));
-          setFetchFailed(true);
-        }
+        setEpisodes(getBiliFallbackEpisodes(10));
+        setFetchFailed(true);
       })
       .finally(() => {
         setLoading(false);
@@ -89,19 +88,23 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
       ) : (
         <div className="space-y-2">
           {episodes.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
+            <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
               {episodes.map((ep) => (
                 <button
                   key={ep.page}
                   onClick={() => onPageChange(ep.page)}
-                  className={`px-3 py-1.5 text-xs rounded-full transition-all ${
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all text-left ${
                     currentPage === ep.page
                       ? 'bg-primary text-white font-semibold'
-                      : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                      : 'bg-primary-light/50 text-text-secondary hover:bg-primary-subtle'
                   }`}
-                  title={ep.title}
                 >
-                  P{ep.page}
+                  <span className={`text-xs font-mono flex-shrink-0 ${
+                    currentPage === ep.page ? 'text-white/80' : 'text-text-tertiary'
+                  }`}>
+                    P{ep.page}
+                  </span>
+                  <span className="flex-1 truncate">{ep.title}</span>
                 </button>
               ))}
             </div>
@@ -131,7 +134,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
           )}
           
           <div className="flex items-center justify-between pt-2 border-t border-border-subtle">
-            <span className="text-xs text-text-tertiary">当前播放: P{currentPage}</span>
+            <span className="text-xs text-text-tertiary">当前: P{currentPage} · 共 {episodes.length} 集</span>
             <div className="flex items-center gap-2">
               <input
                 type="number"

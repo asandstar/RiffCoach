@@ -13,7 +13,7 @@ interface ResourcePageProps {
 export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
   const { materialInbox, videoResources, sources, updateMaterialInbox, addLesson, recentResources, addRecentResource } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'recent' | 'inbox' | 'videos' | 'lessons'>('recent');
+  const [activeTab, setActiveTab] = useState<'videos' | 'recent' | 'inbox' | 'lessons'>('videos');
 
   const allLessons = sources.flatMap((s) => s.lessons);
 
@@ -101,9 +101,9 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
 
       <div className="flex gap-2 overflow-x-auto pb-2">
         {[
+          { id: 'videos' as const, label: '视频教程', icon: Play },
           { id: 'recent' as const, label: '最近使用', icon: Clock },
           { id: 'inbox' as const, label: '素材篮', icon: FileText },
-          { id: 'videos' as const, label: '视频教程', icon: Play },
           { id: 'lessons' as const, label: '已整理练习', icon: BookOpen },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -262,18 +262,27 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
             </GlassCard>
           ) : (
             filteredVideos.map((video) => (
-              <GlassCard key={video.id} className="p-4 cursor-pointer hover:shadow-elevated transition-shadow" onClick={() => handleVideoClick(video)}>
+              <GlassCard
+                key={video.id}
+                className="p-4 cursor-pointer hover:shadow-elevated transition-shadow"
+                onClick={() => handleVideoClick(video)}
+              >
                 <div className="flex items-start gap-4">
-                  <div className="w-24 h-14 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0">
-                    <Play size={24} className="text-white/70" />
+                  <div className="relative w-32 h-20 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <Play size={28} className="text-white/70" />
+                    {video.episodes && video.episodes.length > 0 && (
+                      <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
+                        {video.episodes.length}集
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-text-primary line-clamp-2">{video.title}</h3>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs text-text-tertiary">{video.stage}</span>
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="text-xs chip chip-primary">
                         {video.instrument === 'electric' ? '电吉他' : video.instrument === 'acoustic' ? '木吉他' : '尤克里里'}
                       </span>
+                      <span className="text-xs chip chip-success">{video.stage}</span>
                       <span className="text-xs text-text-tertiary">
                         难度 {'★'.repeat(video.difficulty)}{'☆'.repeat(5 - video.difficulty)}
                       </span>

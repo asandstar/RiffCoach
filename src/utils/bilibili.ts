@@ -20,39 +20,32 @@ export async function fetchBiliEpisodes(bvid: string): Promise<BiliEpisode[] | n
     (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
     (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     (url: string) => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
-    (url: string) => `https://proxy.cors.sh/${url}`,
-    (url: string) => `https://cors-anywhere.herokuapp.com/${url}`,
   ];
   
-  for (let attempt = 0; attempt < 2; attempt++) {
-    for (const makeProxyUrl of proxies) {
-      try {
-        const proxyUrl = makeProxyUrl(apiUrl);
-        const abortController = new AbortController();
-        const timeoutId = setTimeout(() => abortController.abort(), 5000);
-        
-        const response = await fetch(proxyUrl, { 
-          signal: abortController.signal,
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) continue;
-        
-        const data = await response.json() as BiliApiResponse;
-        if (data.code === 0 && data.data && data.data.pages && data.data.pages.length > 0) {
-          return normalizeBiliEpisodes(data);
-        }
-      } catch (error) {
-        continue;
+  for (const makeProxyUrl of proxies) {
+    try {
+      const proxyUrl = makeProxyUrl(apiUrl);
+      const abortController = new AbortController();
+      const timeoutId = setTimeout(() => abortController.abort(), 3000);
+      
+      const response = await fetch(proxyUrl, { 
+        signal: abortController.signal,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) continue;
+      
+      const data = await response.json() as BiliApiResponse;
+      if (data.code === 0 && data.data && data.data.pages && data.data.pages.length > 0) {
+        return normalizeBiliEpisodes(data);
       }
-    }
-    if (attempt === 0) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+    } catch (error) {
+      continue;
     }
   }
   return null;

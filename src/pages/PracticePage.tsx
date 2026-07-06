@@ -78,10 +78,11 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       const interval = (60 / bpm) * 1000;
       
       const playClick = () => {
-        if (!audioContextRef.current) {
-          audioContextRef.current = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
-        }
         const ctx = audioContextRef.current;
+        if (!ctx) return;
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
         
@@ -116,6 +117,12 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   };
 
   const toggleMetronome = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+    }
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
     setIsMetronomeOn((prev) => !prev);
   };
 

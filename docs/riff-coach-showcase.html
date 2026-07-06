@@ -121,21 +121,21 @@
     <p style="text-align:center;color:var(--text-tertiary);margin-bottom:24px;">5 个底部入口，职责清晰</p>
     <div class="glass-elevated" style="padding:32px;">
         <div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:20px;">
-            <div class="nav-dot active">🏠</div><div class="nav-dot">🎸</div><div class="nav-dot">📚</div><div class="nav-dot">📊</div><div class="nav-dot">👤</div>
+            <div class="nav-dot active">🏠</div><div class="nav-dot">🎸</div><div class="nav-dot">📚</div><div class="nav-dot">�</div><div class="nav-dot">👤</div>
         </div>
         <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:24px;">
             <span style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">今日</span>
             <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">Cover</span>
             <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">资料</span>
-            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">复盘</span>
+            <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">知识库</span>
             <span style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">我的</span>
         </div>
         <div style="display:grid;gap:8px;font-size:0.8125rem;color:var(--text-secondary);">
             <div><strong>今日</strong> — AI 高效练习计划，每天打开就知道今天练什么</div>
             <div><strong>Cover</strong> — 管理想 cover 的歌曲目标和段落进度</div>
             <div><strong>资料</strong> — 视频教程、素材篮、已整理练习</div>
-            <div><strong>复盘</strong> — 本周练习、BPM、卡点、Cover 进度</div>
-            <div><strong>我的</strong> — 日历、<strong>知识库入口</strong>、设置、导入导出、演示数据</div>
+            <div><strong>知识库</strong> — 目录式知识体系，乐器+技能分类浏览</div>
+            <div><strong>我的</strong> — 日历、复盘、设置、导入导出、演示数据</div>
         </div>
     </div>
 </section>
@@ -352,17 +352,54 @@
     <div class="glass-elevated" style="padding:32px;margin-bottom:20px;">
         <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
             <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#F5F0FF,#D4C4E8);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">🎬</div>
-            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">视频学习页</h3><p style="font-size:0.875rem;color:var(--text-secondary);">B站嵌入 + AI 摘要 + 选集切换 + 建议练习方式</p></div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">视频学习页</h3><p style="font-size:0.875rem;color:var(--text-secondary);">B站嵌入 + 练习模式 + 视频信息切换 + 完整练习工具 + 分集列表</p></div>
         </div>
         <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
-            <div style="background:#333;border-radius:12px;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><div style="color:white;font-size:2rem;">▶</div></div>
+            <div style="background:#333;border-radius:12px;height:160px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><div style="color:white;font-size:2rem;">▶</div></div>
+            
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <div style="flex:1;padding:8px 16px;border-radius:8px;background:var(--gradient-primary);color:white;font-size:0.8125rem;font-weight:600;text-align:center;">视频信息</div>
+                <div style="flex:1;padding:8px 16px;border-radius:8px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.8125rem;text-align:center;">开始练习</div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">🎯 练习工具（练习模式）</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <div style="font-size:2rem;font-weight:700;color:var(--color-primary);font-family:var(--font-mono);">00:00</div>
+                    <div style="display:flex;gap:8px;">
+                        <div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);display:flex;align-items:center;justify-content:center;color:white;">▶</div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:var(--color-mint);display:flex;align-items:center;justify-content:center;color:white;">♪</div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:rgba(184,156,212,0.2);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">↻</div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;">
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">5分</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">10分</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">15分</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">20分</span>
+                </div>
+                <div style="text-align:center;font-size:0.75rem;color:var(--text-tertiary);">计时器 + 节拍器 + BPM 旋钮 · 推荐 60-80 BPM</div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">📋 选集列表（当前：P1）</div>
+                <div style="display:flex;flex-direction:column;gap:4px;max-height:80px;overflow-y:auto;">
+                    <div style="padding:6px 10px;border-radius:8px;background:var(--gradient-primary);color:white;font-size:0.75rem;display:flex;align-items:center;gap:8px;"><span style="opacity:0.8;font-family:var(--font-mono);">P1</span><span>持琴姿势与坐姿</span></div>
+                    <div style="padding:6px 10px;border-radius:8px;background:rgba(184,156,212,0.1);color:var(--text-secondary);font-size:0.75rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--text-tertiary);font-family:var(--font-mono);">P2</span><span>右手拨弦与拨片使用</span></div>
+                    <div style="padding:6px 10px;border-radius:8px;background:rgba(184,156,212,0.1);color:var(--text-secondary);font-size:0.75rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--text-tertiary);font-family:var(--font-mono);">P3</span><span>左手按弦要领</span></div>
+                </div>
+            </div>
+
             <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;">
-                <div style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">AI 摘要</div>
-                <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:8px;">本视频讲解了电吉他交替拨弦的基本技巧，包括拨片持法、手腕放松和节拍器配合练习。</div>
+                <div style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">练习记录</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="padding:6px 12px;border-radius:8px;background:rgba(255,216,168,0.3);color:var(--text-primary);font-size:0.75rem;">重复次数: 0</span>
+                    <span style="padding:6px 12px;border-radius:8px;background:rgba(255,216,168,0.3);color:var(--text-primary);font-size:0.75rem;">自评: ★★★☆☆</span>
+                </div>
                 <div style="display:flex;flex-wrap:gap:4px;">
-                    <span class="chip chip-primary">拨弦</span>
-                    <span class="chip chip-primary">基本功</span>
-                    <span class="chip chip-primary">右手</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">节奏不稳</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">换和弦慢</span>
+                    <span style="padding:4px 10px;border-radius:16px;background:rgba(184,156,212,0.2);color:var(--text-secondary);font-size:0.6875rem;">手指僵硬</span>
                 </div>
             </div>
         </div>
@@ -416,7 +453,7 @@
         <div>│   ├── PracticePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 练习页（计时器+节拍器+BPM旋钮）</span></div>
         <div>│   ├── AIFeedbackPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># AI 练后反馈</span></div>
         <div>│   ├── ReviewPage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 周复盘</span></div>
-        <div>│   └── MePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 我的页（含知识库入口）</span></div>
+        <div>│   └── MePage.tsx <span style="color:var(--text-tertiary);font-style:italic;"># 我的页（概览/日历/数据 三个tab）</span></div>
         <div>├── <span style="color:var(--color-primary);font-weight:600;">store/</span></div>
         <div>│   └── useAppStore.ts <span style="color:var(--text-tertiary);font-style:italic;"># Zustand 状态管理 + LocalStorage 持久化</span></div>
         <div>├── <span style="color:var(--color-primary);font-weight:600;">utils/</span></div>
