@@ -188,12 +188,22 @@ npm install
 # 启动开发服务器（端口 5173）
 npm run dev
 
-# 构建生产版本
+# 构建生产版本（输出到 docs/ 目录）
 npm run build
 
 # 预览生产版本
 npm run preview
 ```
+
+### 部署说明
+
+项目使用 **GitHub Pages** 部署，构建产物输出到 `docs/` 目录。
+
+**部署步骤：**
+1. 执行 `npm run build` 构建生产版本
+2. 构建产物自动输出到 `docs/` 目录
+3. 在 GitHub 仓库设置中，配置 Pages 从 `main` 分支的 `/docs` 目录部署
+4. 访问地址：https://asandstar.github.io/RiffCoach/
 
 ### 首次使用
 
@@ -272,6 +282,10 @@ RiffCoach/
 │   ├── main.tsx             # 入口文件（React 挂载）
 │   └── index.css            # 全局样式（主题变量、玻璃拟态）
 ├── riff-coach-showcase.html # 创意展示页（详细功能演示）
+├── docs/                   # 构建产物（GitHub Pages 部署目录）
+│   ├── index.html          # 生产版入口
+│   ├── assets/             # 构建后的 JS/CSS 资源
+│   └── riff-coach-showcase.html
 ├── package.json
 ├── vite.config.ts           # Vite 配置（路径别名）
 ├── tailwind.config.js       # Tailwind 配置（主题变量）
