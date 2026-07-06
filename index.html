@@ -1210,7 +1210,7 @@
                             <button class="plan-time-btn" data-minutes="45">45 分钟</button>
                         </div>
                         <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 12px;">今日状态：</p>
-                        <div style="display: flex; flex-wrap: gap: 6px; margin-bottom: 16px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;">
                             <button class="plan-state-btn" data-state="很好">精力很好</button>
                             <button class="plan-state-btn active" data-state="一般">一般</button>
                             <button class="plan-state-btn" data-state="很累">很累</button>
@@ -1374,6 +1374,27 @@
                         </button>
                     </div>
                     <input type="file" id="profile-import-file" accept=".json" style="display: none;">
+                </section>
+
+                <section class="mb-6">
+                    <h3 class="spc-label mb-3">60 秒演示路径</h3>
+                    <div class="glass-card" style="padding: 16px; background: linear-gradient(135deg, var(--color-primary-light), var(--color-lavender-light));">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <i data-lucide="play-circle" style="width: 20px; height: 20px; color: var(--color-primary);"></i>
+                            <span style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">快速体验 RiffCoach</span>
+                        </div>
+                        <ol style="margin: 0; padding-left: 20px; font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.8;">
+                            <li>点击「加载比赛演示数据」</li>
+                            <li>选择 20 分钟 + 状态一般，生成计划</li>
+                            <li>一键开始练习，选择卡点并完成</li>
+                            <li>查看 AI 反馈和 Cover 进度</li>
+                            <li>去周复盘看本周成果</li>
+                        </ol>
+                        <button class="btn-primary" style="width: 100%; margin-top: 12px; padding: 10px; font-size: var(--text-sm);" onclick="generateDemoData()">
+                            <i data-lucide="zap" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                            加载演示数据开始体验
+                        </button>
+                    </div>
                 </section>
 
                 <section class="mb-6">
@@ -1576,7 +1597,7 @@
 
                     <section id="pain-point-detail-card" style="display: none; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-static);">
                         <p style="font-weight: 500; font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: 12px;">卡点详情</p>
-                        <div id="pain-detail-options" style="display: flex; flex-wrap: gap: 8px;"></div>
+                        <div id="pain-detail-options" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
                     </section>
 
                     <section style="margin-bottom: 20px;">
@@ -2115,7 +2136,8 @@
             favorites: []
         },
         videoSize: 'compact',
-        coverProjects: []
+        coverProjects: [],
+        currentEfficientPlan: null
     };
 
     function loadData() {
@@ -2123,12 +2145,56 @@
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
                 const loaded = JSON.parse(raw);
-                return mergeDefaults(loaded, defaultData);
+                const merged = mergeDefaults(loaded, defaultData);
+                return migrateData(merged);
             }
         } catch (e) {
             console.error('Failed to load data', e);
         }
         return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function migrateData(data) {
+        if (data.sources) {
+            data.sources = data.sources.map(src => ({
+                ...src,
+                lessons: (src.lessons || []).map(les => ({
+                    projectId: les.projectId !== undefined ? les.projectId : null,
+                    sectionId: les.sectionId !== undefined ? les.sectionId : null,
+                    ...les
+                }))
+            }));
+        }
+        if (data.sessions) {
+            data.sessions = data.sessions.map(s => {
+                const selfRating = s.selfRating ?? s.rating ?? 0;
+                const currentBPM = s.currentBPM || s.bpm || 0;
+                const cleanBPM = s.cleanBPM !== undefined 
+                    ? s.cleanBPM 
+                    : Math.max(0, currentBPM - (selfRating <= 2 ? 10 : selfRating <= 3 ? 5 : 0));
+                return {
+                    aiFeedback: s.aiFeedback !== undefined ? s.aiFeedback : null,
+                    painPointDetails: Array.isArray(s.painPointDetails) ? s.painPointDetails : [],
+                    cleanBPM: Math.max(0, cleanBPM),
+                    selfRating: selfRating,
+                    lessonId: s.lessonId || null,
+                    ...s
+                };
+            });
+        }
+        if (data.coverProjects === undefined) {
+            data.coverProjects = [];
+        }
+        if (data.currentEfficientPlan === undefined) {
+            data.currentEfficientPlan = null;
+        }
+        if (data.videoSize === undefined) {
+            data.videoSize = 'compact';
+        }
+        if (!data.knowledgeBase) {
+            data.knowledgeBase = JSON.parse(JSON.stringify(defaultData.knowledgeBase));
+        }
+        return data;
     }
 
     function mergeDefaults(target, defaults) {
@@ -2172,7 +2238,7 @@
                     return;
                 }
                 if (confirm('导入数据将覆盖当前数据，确定继续吗？')) {
-                    state = data;
+                    state = migrateData(data);
                     saveData();
                     renderDashboard();
                     alert('导入成功！');
@@ -2202,12 +2268,22 @@
 
         let project = null;
         let section = null;
+        let lessonId = null;
         if (projects.length > 0) {
             project = projects[0];
             const incompleteSections = project.sections.filter(s => s.progress < 100);
             if (incompleteSections.length > 0) {
                 section = incompleteSections.reduce((a, b) => a.progress > b.progress ? a : b);
+                if (section.lessonIds && section.lessonIds.length > 0) {
+                    lessonId = section.lessonIds[0];
+                }
             }
+        }
+
+        const allLessons = (state.sources || []).flatMap(src => src.lessons || []);
+        let fallbackLesson = null;
+        if (!section && allLessons.length > 0) {
+            fallbackLesson = allLessons[0];
         }
 
         const plan = {
@@ -2215,62 +2291,75 @@
             reason: '',
             steps: [],
             avoid: [],
-            completion: ''
+            completion: '',
+            projectId: project?.id || null,
+            sectionId: section?.id || null,
+            lessonId: lessonId || fallbackLesson?.id || null
         };
 
-        if (availableMinutes < 15) {
+        const baseBPM = section?.currentCleanBPM || fallbackLesson?.targetBPM || 70;
+        const sectionName = section?.name || fallbackLesson?.title || '练习';
+
+        if (energyState === '轻松') {
+            plan.target = `轻松复习 ${sectionName}`;
+            plan.reason = '今天状态放松，适合做轻松的复习，保持手感。';
+            plan.steps = [
+                { duration: 3, bpm: 60, desc: '热身，活动手指' },
+                { duration: Math.max(5, availableMinutes - 8), bpm: baseBPM, desc: `${sectionName}轻松练习` },
+                { duration: 2, bpm: 0, desc: '简单复盘' }
+            ];
+            plan.avoid = ['不要冲速度', '不要练新内容'];
+            plan.completion = '轻松完成，保持手感';
+        } else if (availableMinutes < 15) {
             if (topPain) {
                 plan.target = `集中解决「${topPain}」卡点`;
                 plan.reason = `你最近多次遇到${topPain}，今天先把这个瓶颈突破。`;
                 plan.steps = [
                     { duration: 2, bpm: 60, desc: '空弦热身，放松手指' },
-                    { duration: availableMinutes - 4, bpm: section?.currentCleanBPM || 65, desc: `${topPain}专项练习` },
+                    { duration: Math.max(3, availableMinutes - 4), bpm: baseBPM, desc: `${topPain}专项练习` },
                     { duration: 2, bpm: 0, desc: '复盘记录' }
                 ];
                 plan.avoid = ['不要练新内容', '不要冲原速'];
                 plan.completion = `${topPain}有所改善，能连续完成3遍`;
-            } else if (section) {
-                plan.target = `${section.name}巩固练习`;
+            } else {
+                plan.target = `${sectionName}巩固练习`;
                 plan.reason = '今天时间有限，先巩固已学内容。';
                 plan.steps = [
-                    { duration: availableMinutes - 2, bpm: section.currentCleanBPM || 60, desc: `${section.name}稳定练习` },
+                    { duration: Math.max(5, availableMinutes - 2), bpm: baseBPM, desc: `${sectionName}稳定练习` },
                     { duration: 2, bpm: 0, desc: '记录最高干净BPM' }
                 ];
                 plan.avoid = ['不要开新段落'];
                 plan.completion = '稳定完成目标BPM';
             }
         } else if (availableMinutes <= 30) {
-            if (section) {
-                plan.target = `${section.name}在${section.currentCleanBPM + 5} BPM稳定完成`;
-                plan.reason = topPain ? `最近${topPain}反复出现，今天结合段落练习解决。` : '今天适合做完整段落练习。';
-                plan.steps = [
-                    { duration: 3, bpm: 60, desc: '空弦交替拨弦热身' },
-                    { duration: 10, bpm: section.currentCleanBPM || 65, desc: `${section.name}分解练习` },
-                    { duration: availableMinutes - 15, bpm: section.currentCleanBPM + 5 || 70, desc: `${section.name}完整串联` },
-                    { duration: 2, bpm: 0, desc: '复盘并记录' }
-                ];
-                plan.avoid = ['不要练新段落', topPain ? '不要直接冲原速' : ''];
-                plan.completion = `${section.name}在${section.currentCleanBPM + 5} BPM连续3遍不卡顿`;
-            }
+            plan.target = `${sectionName}在${baseBPM + 5} BPM稳定完成`;
+            plan.reason = topPain ? `最近${topPain}反复出现，今天结合段落练习解决。` : '今天适合做完整段落练习。';
+            plan.steps = [
+                { duration: 3, bpm: 60, desc: '空弦交替拨弦热身' },
+                { duration: 10, bpm: baseBPM, desc: `${sectionName}分解练习` },
+                { duration: Math.max(5, availableMinutes - 15), bpm: baseBPM + 5, desc: `${sectionName}完整串联` },
+                { duration: 2, bpm: 0, desc: '复盘并记录' }
+            ];
+            plan.avoid = ['不要练新段落', topPain ? '不要直接冲原速' : ''];
+            plan.completion = `${sectionName}在${baseBPM + 5} BPM连续3遍不卡顿`;
         } else {
-            if (section) {
-                plan.target = `${section.name}突破${section.currentCleanBPM + 10} BPM`;
-                plan.reason = '今天时间充裕，可以尝试提速并做完整练习。';
-                plan.steps = [
-                    { duration: 3, bpm: 60, desc: '空弦热身' },
-                    { duration: 8, bpm: section.currentCleanBPM || 65, desc: `${section.name}分解练习` },
-                    { duration: 15, bpm: section.currentCleanBPM + 5 || 70, desc: `${section.name}完整串联` },
-                    { duration: availableMinutes - 28, bpm: section.currentCleanBPM + 10 || 75, desc: '尝试提速练习' },
-                    { duration: 2, bpm: 0, desc: '复盘记录最高干净BPM' }
-                ];
-                plan.avoid = ['不要贪快，确保每个音清晰'];
-                plan.completion = `${section.name}在${section.currentCleanBPM + 10} BPM能完成`;
-            }
+            plan.target = `${sectionName}突破${baseBPM + 10} BPM`;
+            plan.reason = '今天时间充裕，可以尝试提速并做完整练习。';
+            plan.steps = [
+                { duration: 3, bpm: 60, desc: '空弦热身' },
+                { duration: 8, bpm: baseBPM, desc: `${sectionName}分解练习` },
+                { duration: 15, bpm: baseBPM + 5, desc: `${sectionName}完整串联` },
+                { duration: Math.max(5, availableMinutes - 28), bpm: baseBPM + 10, desc: '尝试提速练习' },
+                { duration: 2, bpm: 0, desc: '复盘记录最高干净BPM' }
+            ];
+            plan.avoid = ['不要贪快，确保每个音清晰'];
+            plan.completion = `${sectionName}在${baseBPM + 10} BPM能完成`;
         }
 
         if (energyState === '很累' || energyState === '手指酸') {
             plan.avoid.push('不要冲BPM');
             plan.steps.forEach(s => { if (s.bpm > 0) s.bpm = Math.max(60, s.bpm - 5); });
+            plan.reason += ' 今天状态不太好，降低强度，保持练习节奏就好。';
         }
 
         plan.avoid = plan.avoid.filter(Boolean);
@@ -2340,75 +2429,164 @@
     }
 
     function generateAIFeedback(session, lesson, recentSessions, project) {
-        const feedback = {
-            summary: '',
-            triedBPM: session.currentBPM || 80,
-            cleanBPM: session.cleanBPM || 0,
-            reason: '',
-            nextPlan: '',
-            avoid: [],
-            coverUpdate: ''
-        };
-
+        const lessonTitle = lesson?.title || '本次练习';
         const painPoints = session.painPoints || [];
         const duration = session.durationSeconds || 0;
+        const durationMin = Math.round(duration / 60);
+        const triedBPM = session.currentBPM || 80;
+        const selfRating = session.selfRating || 0;
+        const painDetails = Array.isArray(session.painPointDetails) ? session.painPointDetails : [];
+        const notes = session.notes || '';
+        const reps = session.reps || 0;
 
-        if (duration < 60) {
-            feedback.summary = '练习时间较短，建议下次安排至少10分钟。';
-        } else {
-            feedback.summary = `你今天练习了${Math.round(duration / 60)}分钟，完成了${session.reps || 0}次重复。`;
+        let cleanBPM = session.cleanBPM || 0;
+        if (cleanBPM <= 0) {
+            if (selfRating <= 2 || painPoints.length >= 2) {
+                cleanBPM = Math.max(40, triedBPM - 10);
+            } else if (selfRating <= 3 || painPoints.length >= 1) {
+                cleanBPM = Math.max(40, triedBPM - 5);
+            } else {
+                cleanBPM = triedBPM;
+            }
         }
 
-        if (session.cleanBPM && session.cleanBPM > 0) {
-            feedback.summary += ` 最高干净BPM达到了${session.cleanBPM}。`;
+        const repeatedPains = [];
+        if (recentSessions && recentSessions.length > 1) {
+            const painCounts = {};
+            recentSessions.forEach(s => {
+                (s.painPoints || []).forEach(p => {
+                    painCounts[p] = (painCounts[p] || 0) + 1;
+                });
+            });
+            Object.entries(painCounts).forEach(([p, c]) => {
+                if (c >= 3) repeatedPains.push(p);
+            });
         }
+
+        const targetDuration = lesson?.targetDuration || 600;
+        const targetDurationMin = Math.round(targetDuration / 60);
+        const durationRatio = targetDurationMin > 0 ? durationMin / targetDurationMin : 1;
+        const isShortSession = durationRatio < 0.6 && durationMin > 0;
+
+        let mainReason = '';
+        let nextSteps = [];
+        let avoidList = [];
 
         if (painPoints.length > 0) {
             const mainPain = painPoints[0];
+            const detailText = painDetails.length > 0 ? painDetails.join('、') : '';
+
             if (mainPain === '节奏不稳') {
-                feedback.reason = '节奏不稳通常是因为换弦时注意力集中在手上，忽略了节拍。建议放慢速度，用节拍器打拍子，确保每个音符都落在节拍上。';
-                feedback.nextPlan = '下次先从60 BPM开始，用嘴数拍子，确保换弦时拍子不断。';
-                feedback.avoid = ['不要在节奏不稳时提速'];
+                mainReason = detailText 
+                    ? `节奏不稳，特别是${detailText}。这通常是因为换弦时注意力集中在手上，忽略了节拍。`
+                    : '节奏不稳通常是因为换弦时注意力集中在手上，忽略了节拍。';
+                nextSteps = [
+                    { bpm: 60, duration: 3, desc: '空弦热身，跟着节拍器打拍子' },
+                    { bpm: Math.max(60, cleanBPM - 10), duration: 8, desc: `慢速练习${mainPain}难点小节` },
+                    { bpm: Math.max(60, cleanBPM - 5), duration: 6, desc: '完整段落串联，确保每拍稳定' },
+                    { bpm: 0, duration: 3, desc: '复盘记录最高干净BPM' }
+                ];
+                avoidList = ['不要在节奏不稳时提速', '不要跳过节拍器练习'];
             } else if (mainPain === '换弦慢' || mainPain === '换和弦慢') {
-                feedback.reason = '换弦慢可能是手型不够熟悉，或者手指抬得太高。建议先单独练换弦动作，不弹响，只练手型切换。';
-                feedback.nextPlan = '下次先花5分钟做无声换弦练习，再配合节拍器。';
-                feedback.avoid = ['不要急于连奏，先把换弦练熟'];
+                mainReason = detailText
+                    ? `${mainPain}，表现为${detailText}。可能是手型不够熟悉，或者手指抬得太高。`
+                    : `${mainPain}可能是手型不够熟悉，或者手指抬得太高。`;
+                nextSteps = [
+                    { bpm: 0, duration: 5, desc: '无声换弦练习，只练手型切换' },
+                    { bpm: 60, duration: 8, desc: '慢速换弦练习，每个转换停2拍' },
+                    { bpm: Math.max(60, cleanBPM - 5), duration: 5, desc: '配合节拍器连贯练习' },
+                    { bpm: 0, duration: 2, desc: '复盘记录' }
+                ];
+                avoidList = ['不要急于连奏', '不要抬指太高'];
             } else if (mainPain === '拨弦力度不均') {
-                feedback.reason = '力度不均通常是右手控制问题，可能是下拨太重或上拨太弱。建议对着镜子练习，观察右手动作是否一致。';
-                feedback.nextPlan = '下次先练空弦拨弦，用节拍器打4/4拍，确保每拍力度一致。';
-                feedback.avoid = ['不要一开始就追求速度'];
+                mainReason = '力度不均通常是右手控制问题，可能是下拨太重或上拨太弱。';
+                nextSteps = [
+                    { bpm: 70, duration: 5, desc: '空弦交替拨弦热身' },
+                    { bpm: 80, duration: 8, desc: '单弦力度控制练习' },
+                    { bpm: Math.max(60, cleanBPM), duration: 5, desc: '简单音阶拨弦练习' },
+                    { bpm: 0, duration: 2, desc: '复盘记录' }
+                ];
+                avoidList = ['不要一开始就追求速度'];
             } else {
-                feedback.reason = `「${mainPain}」是常见的练习卡点，需要针对性练习。`;
-                feedback.nextPlan = `下次安排「${mainPain}」专项练习5分钟。`;
+                mainReason = `「${mainPain}」是常见的练习卡点，需要针对性练习。`;
+                nextSteps = [
+                    { bpm: 60, duration: 5, desc: '热身练习' },
+                    { bpm: Math.max(50, cleanBPM - 10), duration: 10, desc: `${mainPain}专项练习` },
+                    { bpm: Math.max(60, cleanBPM), duration: 3, desc: '完整练习' },
+                    { bpm: 0, duration: 2, desc: '复盘记录' }
+                ];
+                avoidList = ['不要贪快，确保每个音清晰'];
             }
         } else {
-            feedback.reason = '没有明显卡点，继续保持！';
-            feedback.nextPlan = '下次可以尝试提高5-10 BPM，或者练习下一个段落。';
+            mainReason = '没有明显卡点，继续保持良好的练习习惯！';
+            nextSteps = [
+                { bpm: 70, duration: 3, desc: '热身练习' },
+                { bpm: triedBPM, duration: 8, desc: '巩固当前速度' },
+                { bpm: triedBPM + 5, duration: 5, desc: '尝试提高5 BPM' },
+                { bpm: 0, duration: 2, desc: '复盘记录' }
+            ];
+            avoidList = ['不要一次性提速太多'];
         }
 
+        if (repeatedPains.length > 0) {
+            mainReason += ` 注意：「${repeatedPains.join('、')}」最近反复出现，建议重点突破。`;
+        }
+
+        if (isShortSession) {
+            mainReason += ` 本次练习时间较短（${durationMin}分钟），建议下次安排至少${Math.round(targetDurationMin * 0.6)}分钟。`;
+        }
+
+        let summary = '';
+        if (durationMin < 1) {
+            summary = `今天在「${lessonTitle}」上完成了练习，时间较短，建议下次多练一会儿。`;
+        } else {
+            summary = `你今天在「${lessonTitle}」上练习了${durationMin}分钟，完成了${reps}次重复。`;
+        }
+        summary += ` 尝试了${triedBPM} BPM，最高干净BPM约${cleanBPM}。`;
+        if (painPoints.length > 0) {
+            summary += ` 主要卡点：${painPoints.join('、')}。`;
+        } else {
+            summary += ' 今天状态不错，继续保持！';
+        }
+        if (notes) {
+            summary += ` 备注：${notes}`;
+        }
+
+        let coverUpdate = '';
+        let sectionName = '';
         if (project && session.projectId && session.sectionId) {
-            const section = project.sections.find(s => s.id === session.sectionId);
+            const section = project.sections?.find(s => s.id === session.sectionId);
             if (section) {
-                const oldProgress = section.progress;
-                const oldCleanBPM = section.currentCleanBPM;
-                const newCleanBPM = Math.max(section.currentCleanBPM, session.cleanBPM || 0);
-                const progressIncrease = Math.min(100 - section.progress, Math.round((duration / 60) * 2));
-                section.currentCleanBPM = newCleanBPM;
-                section.progress = Math.min(100, section.progress + progressIncrease);
-                section.updatedAt = Date.now();
-                if (session.painPointDetails) {
-                    session.painPointDetails.forEach(d => {
-                        if (!section.painPoints.includes(d)) {
-                            section.painPoints.push(d);
-                        }
-                    });
-                }
-                feedback.coverUpdate = `${section.name}进度从${oldProgress}%提升到${section.progress}%，最高干净BPM从${oldCleanBPM}提升到${newCleanBPM}`;
+                sectionName = section.name;
+                const newCleanBPM = Math.max(section.currentCleanBPM, cleanBPM);
+                const progressIncrease = Math.min(100 - section.progress, Math.max(1, Math.round(durationMin * 1.5)));
+                const newProgress = Math.min(100, section.progress + progressIncrease);
+                coverUpdate = `${project.title} - ${section.name}：进度从${section.progress}%提升到${newProgress}%，最高干净BPM从${section.currentCleanBPM}提升到${newCleanBPM}`;
             }
         }
 
-        feedback.avoid = feedback.avoid.filter(Boolean);
-        return feedback;
+        const nextPlanText = nextSteps.map((s, i) => 
+            `${i + 1}. ${s.duration > 0 ? s.duration + '分钟 ' : ''}${s.bpm > 0 ? s.bpm + ' BPM ' : ''}${s.desc}`
+        ).join('\n');
+
+        while (nextSteps.length < 3) {
+            nextSteps.push({ bpm: 0, duration: 2, desc: '复盘总结' });
+        }
+
+        return {
+            summary: summary,
+            triedBPM: triedBPM,
+            cleanBPM: cleanBPM,
+            reason: mainReason,
+            nextPlan: nextPlanText,
+            nextSteps: nextSteps,
+            avoid: avoidList.filter(Boolean),
+            coverUpdate: coverUpdate,
+            repeatedPains: repeatedPains,
+            isShortSession: isShortSession,
+            projectTitle: project?.title || '',
+            sectionName: sectionName
+        };
     }
 
     function diagnosePainPoint(painPoint, detail) {
@@ -2470,6 +2648,10 @@
     }
 
     function generateDemoData() {
+        if (!confirm('加载演示数据将覆盖当前所有数据，确定继续吗？')) {
+            return;
+        }
+        stopPracticeRuntime();
         const now = Date.now();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -2513,7 +2695,7 @@
                 currentBPM: bpm,
                 cleanBPM: bpm - Math.floor(Math.random() * 5),
                 reps: 5 + Math.floor(Math.random() * 8),
-                rating: 3 + Math.floor(Math.random() * 2),
+                selfRating: 3 + Math.floor(Math.random() * 2),
                 painPoints: i > 3 ? ['节奏不稳'] : i > 1 ? ['节奏不稳', '换弦慢'] : ['换弦慢'],
                 painPointDetails: i > 2 ? ['换弦时乱'] : [],
                 notes: i === 0 ? '换弦处会抢拍' : '',
@@ -2531,8 +2713,40 @@
             demoSessions.push(session);
         }
 
+        const demoLesson = {
+            id: 'lesson_demo_1',
+            sourceId: 'src_demo',
+            title: 'Demo Song Intro Riff',
+            targetBPM: 90,
+            targetDuration: 1200,
+            instrument: 'electric',
+            tags: ['Riff', '节奏'],
+            bvid: 'BV1NJVJzEEnn',
+            page: 1,
+            projectId: 'cover_demo_1',
+            sectionId: 'sec_intro',
+            lastPractice: now
+        };
+        
+        const demoSource = {
+            id: 'src_demo',
+            name: 'Demo 教程',
+            type: 'bilibili',
+            lessons: [demoLesson]
+        };
+        
+        demoProject.sections[0].lessonIds = ['lesson_demo_1'];
+        
+        const efficientPlan = generateEfficientPracticePlan(
+            { ...state, coverProjects: [demoProject], sessions: demoSessions },
+            20,
+            '一般'
+        );
+        
         state.coverProjects = [demoProject];
         state.sessions = demoSessions;
+        state.sources = [demoSource];
+        state.currentEfficientPlan = efficientPlan;
         saveData();
         navigateTo('dashboard');
     }
@@ -2692,22 +2906,7 @@
     }
 
     function refreshFormUI() {
-        // 刷新标签选中状态
-        document.querySelectorAll('.tag-chip').forEach(chip => {
-            chip.classList.toggle('selected', formSelectedTags.includes(chip.dataset.tag));
-        });
-        // 刷新时长选中状态
-        document.querySelectorAll('.duration-chip').forEach(chip => {
-            chip.classList.toggle('selected', parseInt(chip.dataset.duration) === formDuration);
-        });
-        // 刷新类型选中状态
-        document.querySelectorAll('.type-chip').forEach(chip => {
-            chip.classList.toggle('selected', chip.dataset.type === formSourceType);
-        });
-        // 刷新乐器选中状态
-        document.querySelectorAll('.instrument-chip').forEach(chip => {
-            chip.classList.toggle('selected', chip.dataset.instrument === formInstrument);
-        });
+        updateFormChipSelections();
     }
 
     function getSourceTypeColor(type) {
@@ -2747,8 +2946,8 @@
             previousPage = currentPage;
         }
         
-        if (currentPage === 'practice' && page !== 'practice' && metronomeRunning) {
-            stopMetronome();
+        if (currentPage === 'practice' && page !== 'practice') {
+            stopPracticeRuntime();
         }
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -2791,7 +2990,7 @@
         }
 
         window.scrollTo(0, 0);
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     // ==================== Dashboard Render ====================
@@ -2802,7 +3001,7 @@
         const coverTargetCard = document.getElementById('cover-target-card');
         const demoGuide = document.getElementById('dashboard-demo-guide');
         
-        if (state.coverProjects && state.coverProjects.length > 0) {
+        if (state.coverProjects && state.coverProjects.length > 0 && coverCard && coverTargetCard) {
             coverCard.style.display = 'block';
             const project = state.coverProjects[0];
             const totalProgress = Math.round(project.sections.reduce((sum, s) => sum + s.progress, 0) / project.sections.length);
@@ -2841,11 +3040,11 @@
                     </button>
                 </div>
             `;
-        } else {
+        } else if (coverCard) {
             coverCard.style.display = 'none';
         }
 
-        demoGuide.style.display = 'block';
+        if (demoGuide) demoGuide.style.display = 'block';
 
         const emptyState = document.getElementById('dashboard-empty-state');
         const recSection = document.getElementById('dashboard-recommended-section');
@@ -2856,7 +3055,7 @@
             if (recSection) recSection.style.display = 'none';
             if (painSection) painSection.style.display = 'none';
             if (skillSection) skillSection.style.display = 'none';
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
             return;
         }
         if (emptyState) emptyState.style.display = 'none';
@@ -3004,7 +3203,7 @@
                 </div>
             `;
         }).join('');
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function getInstrumentIcon(id) {
@@ -3052,8 +3251,29 @@
     }
 
     // ==================== Cover Page Render ====================
+    function getProjectTopPain(project) {
+        if (!project || !project.sections) return '无';
+        const painCounts = {};
+        project.sections.forEach(s => {
+            (s.painPoints || []).forEach(p => {
+                painCounts[p] = (painCounts[p] || 0) + 1;
+            });
+        });
+        const sorted = Object.entries(painCounts).sort((a, b) => b[1] - a[1]);
+        return sorted.length > 0 ? sorted[0][0] : '无';
+    }
+
+    function generateCoverPlanForProject(projectId) {
+        const project = (state.coverProjects || []).find(p => p.id === projectId);
+        if (!project) return;
+        generateCoverPracticePlan(project);
+        saveData();
+        renderCoverPage();
+    }
+
     function renderCoverPage() {
         const projectList = document.getElementById('cover-project-list');
+        if (!projectList) return;
         const projects = state.coverProjects || [];
 
         if (projects.length === 0) {
@@ -3069,14 +3289,14 @@
         } else {
             projectList.innerHTML = projects.map(project => {
                 const totalProgress = Math.round(project.sections.reduce((sum, s) => sum + s.progress, 0) / project.sections.length);
-                const maxCleanBPM = Math.max(...project.sections.map(s => s.currentCleanBPM));
-                const topPain = project.sections.flatMap(s => s.painPoints)[0];
+                const maxCleanBPM = Math.max(0, ...project.sections.map(s => s.currentCleanBPM || 0));
+                const topPain = getProjectTopPain(project);
                 return `
                     <div class="glass-card" style="padding: 16px; margin-bottom: 12px;" onclick="showCoverDetail('${project.id}')">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                             <div>
                                 <h4 style="font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary);">${project.title}</h4>
-                                <p style="font-size: var(--text-xs); color: var(--text-tertiary);">${project.artist} · ${getInstrumentName(project.instrument)}</p>
+                                <p style="font-size: var(--text-xs); color: var(--text-tertiary);">${project.artist || '未知艺术家'} · ${getInstrumentName(project.instrument)}</p>
                             </div>
                             <div style="text-align: right;">
                                 <span class="spc-mono" style="font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--color-primary);">${totalProgress}%</span>
@@ -3092,11 +3312,11 @@
                             </div>
                             <div>
                                 <p style="font-size: var(--text-xs); color: var(--text-tertiary);">当前卡点</p>
-                                <p style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--state-error);">${topPain || '无'}</p>
+                                <p style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--state-error);">${topPain}</p>
                             </div>
                             <div>
                                 <p style="font-size: var(--text-xs); color: var(--text-tertiary);">目标日期</p>
-                                <p style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">${project.targetDate}</p>
+                                <p style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-primary);">${project.targetDate || '未设置'}</p>
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px;">
@@ -3104,7 +3324,7 @@
                                 <i data-lucide="play" style="width: 14px; height: 14px; margin-right: 4px;"></i>
                                 继续练习
                             </button>
-                            <button class="btn-ghost" style="flex: 1; padding: 8px; font-size: var(--text-xs);" onclick="event.stopPropagation(); generateCoverPracticePlan(state.coverProjects.find(p => p.id === '${project.id}')); saveData(); renderCoverPage();">
+                            <button class="btn-ghost" style="flex: 1; padding: 8px; font-size: var(--text-xs);" onclick="event.stopPropagation(); generateCoverPlanForProject('${project.id}')">
                                 <i data-lucide="brain-circuit" style="width: 14px; height: 14px; margin-right: 4px;"></i>
                                 AI 拆解
                             </button>
@@ -3113,7 +3333,7 @@
                 `;
             }).join('');
         }
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function showCoverDetail(projectId) {
@@ -3157,7 +3377,7 @@
                                 <div style="width: ${section.progress}%; height: 100%; border-radius: var(--radius-full); background: var(--gradient-primary);"></div>
                             </div>
                             ${section.painPoints.length > 0 ? `
-                                <div style="display: flex; flex-wrap: gap: 4px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                                     ${section.painPoints.map(p => `<span class="pill-tag" style="background: var(--state-error-light); color: var(--state-error); font-size: 10px;">${p}</span>`).join('')}
                                 </div>
                             ` : ''}
@@ -3198,7 +3418,7 @@
             sheet.remove();
             overlay.remove();
         });
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function getInstrumentName(id) {
@@ -3213,30 +3433,76 @@
         practiceSectionId = sectionId;
         practicePlan = null;
         
-        if (section) {
-            navigateTo('practice', { projectId, sectionId });
-        } else {
-            navigateTo('practice', { projectId });
+        let lessonId = null;
+        if (section?.lessonIds?.length > 0) {
+            lessonId = section.lessonIds[0];
+        } else if (project?.sections?.[0]?.lessonIds?.length > 0) {
+            lessonId = project.sections[0].lessonIds[0];
         }
+        
+        if (!lessonId) {
+            const tempLesson = {
+                id: `temp_${Date.now()}`,
+                sourceId: 'temp_source',
+                title: section?.name || project?.title || '练习',
+                targetBPM: section?.targetBPM || 80,
+                targetDuration: 600,
+                instrument: project?.instrument || 'electric',
+                tags: [],
+                projectId: projectId,
+                sectionId: sectionId
+            };
+            let tempSource = state.sources.find(s => s.id === 'temp_source');
+            if (!tempSource) {
+                tempSource = { id: 'temp_source', name: 'Cover 练习', type: 'custom', lessons: [] };
+                state.sources.push(tempSource);
+            }
+            tempSource.lessons.push(tempLesson);
+            lessonId = tempLesson.id;
+            saveData();
+        }
+        
+        startPractice(lessonId);
+        practiceProjectId = projectId;
+        practiceSectionId = sectionId;
+        practicePlan = null;
     }
 
     function startPracticeFromPlan(plan) {
         practicePlan = plan;
+        if (plan && plan.lessonId) {
+            const lesson = getLessonById(plan.lessonId);
+            if (lesson) {
+                startPractice(plan.lessonId);
+                practiceProjectId = plan.projectId || null;
+                practiceSectionId = plan.sectionId || null;
+                practicePlan = plan;
+                return;
+            }
+        }
         const projects = state.coverProjects || [];
         if (projects.length > 0) {
             const project = projects[0];
-            const section = project.sections[0];
-            practiceProjectId = project.id;
-            practiceSectionId = section?.id || '';
-            navigateTo('practice', { projectId: project.id, sectionId: section?.id || '', plan });
+            const incompleteSections = project.sections.filter(s => s.progress < 100);
+            const section = incompleteSections.length > 0 
+                ? incompleteSections.reduce((a, b) => a.progress > b.progress ? a : b)
+                : project.sections[0];
+            startPracticeFromProject(project.id, section?.id || '');
+            practicePlan = plan;
         } else {
-            navigateTo('practice', { plan });
+            const allLessons = state.sources.flatMap(s => s.lessons);
+            if (allLessons.length > 0) {
+                startPractice(allLessons[0].id);
+                practicePlan = plan;
+            } else {
+                alert('请先添加一些练习素材，或加载演示数据开始体验');
+            }
         }
     }
 
     // ==================== Profile Page Render ====================
     function renderProfilePage() {
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     // ==================== AI Feedback Page Render ====================
@@ -3287,13 +3553,23 @@
                     </div>
                 ` : ''}
 
-                ${feedback.nextPlan ? `
+                ${feedback.nextSteps && feedback.nextSteps.length > 0 ? `
                     <div class="glass-card" style="padding: 16px; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
                             <i data-lucide="target" style="width: 18px; height: 18px; color: var(--state-success);"></i>
                             <h4 style="font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary);">下次练习计划</h4>
                         </div>
-                        <p style="font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-relaxed);">${feedback.nextPlan}</p>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            ${feedback.nextSteps.map((step, idx) => `
+                                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                    <span style="width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: var(--weight-bold); flex-shrink: 0;">${idx + 1}</span>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <p style="font-size: var(--text-sm); color: var(--text-primary);">${step.desc}</p>
+                                        <p style="font-size: var(--text-xs); color: var(--text-tertiary);">${step.duration > 0 ? step.duration + ' 分钟' : ''}${step.bpm > 0 ? ' · ' + step.bpm + ' BPM' : ''}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 ` : ''}
 
@@ -3303,9 +3579,9 @@
                             <i data-lucide="alert-circle" style="width: 18px; height: 18px; color: var(--state-warning);"></i>
                             <h4 style="font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary);">今天不建议做什么</h4>
                         </div>
-                        <div style="display: flex; flex-wrap: gap: 6px;">
-                            ${feedback.avoid.map(item => `<span class="pill-tag" style="background: var(--state-warning); color: white;">${item}</span>`).join('')}
-                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                ${feedback.avoid.map(item => `<span class="pill-tag" style="background: var(--state-warning); color: white;">${item}</span>`).join('')}
+                            </div>
                     </div>
                 ` : ''}
 
@@ -3338,7 +3614,7 @@
                 </div>
             </div>
         `;
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     // ==================== Source Library Render ====================
@@ -3410,7 +3686,7 @@
                     <p style="font-size: var(--text-sm); color: var(--text-tertiary);">点击右下角 + 号添加你的第一个练习来源</p>
                 </div>
             `;
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
             return;
         }
 
@@ -3506,13 +3782,34 @@
         '大横按切换慢': ['按不响', '切换慢', '手酸', '食指压不住']
     };
 
+    function stopPracticeRuntime() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+        }
+        metronomeRunning = false;
+        isRunning = false;
+        
+        const btnPlay = document.getElementById('btn-play');
+        const btnPause = document.getElementById('btn-pause');
+        const btnMetronome = document.getElementById('btn-metronome');
+        if (btnPlay) btnPlay.style.display = 'flex';
+        if (btnPause) btnPause.style.display = 'none';
+        if (btnMetronome) btnMetronome.classList.remove('active');
+    }
+
     function startPractice(lessonId) {
         practiceLessonId = lessonId;
         const lesson = getLessonById(lessonId);
         if (!lesson) return;
 
+        stopPracticeRuntime();
+        
         timerSeconds = 0;
-        isRunning = false;
         currentBPM = lesson.targetBPM;
         currentReps = 0;
         targetReps = 10;
@@ -3521,12 +3818,6 @@
         selectedPainPointDetails = [];
         currentCleanBPM = 0;
         targetDuration = lesson.targetDuration || 600;
-
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-        if (metronomeRunning) stopMetronome();
 
         navigateTo('practice', { lessonId });
     }
@@ -3636,7 +3927,7 @@
             const avoidTips = document.getElementById('practice-avoid-tips');
             if (practicePlan.avoid && practicePlan.avoid.length > 0) {
                 avoidTips.innerHTML = `
-                    <div style="display: flex; flex-wrap: gap: 6px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                         ${practicePlan.avoid.map(item => `<span class="pill-tag" style="background: var(--state-warning); color: white; font-size: var(--text-xs);">${item}</span>`).join('')}
                     </div>
                 `;
@@ -3672,38 +3963,41 @@
             clearInterval(timerInterval);
             timerInterval = null;
             isRunning = false;
-            // 暂停计时时同步停止节拍器
             if (metronomeRunning) stopMetronome();
             const playBtn = document.getElementById('btn-play');
-            playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
-            playBtn.classList.remove('play-btn-pulse');
+            if (playBtn) {
+                playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
+                playBtn.classList.remove('play-btn-pulse');
+            }
         } else {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
             isRunning = true;
             timerInterval = setInterval(() => {
                 timerSeconds++;
                 updateTimerDisplay();
             }, 1000);
             const playBtn = document.getElementById('btn-play');
-            playBtn.innerHTML = `<i data-lucide="pause" style="width: 24px; height: 24px; color: var(--text-on-primary);"></i>`;
-            playBtn.classList.add('play-btn-pulse');
+            if (playBtn) {
+                playBtn.innerHTML = `<i data-lucide="pause" style="width: 24px; height: 24px; color: var(--text-on-primary);"></i>`;
+                playBtn.classList.add('play-btn-pulse');
+            }
         }
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function resetTimer() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-        isRunning = false;
+        stopPracticeRuntime();
         timerSeconds = 0;
-        // 重置计时时同步停止节拍器
-        if (metronomeRunning) stopMetronome();
         updateTimerDisplay();
         const playBtn = document.getElementById('btn-play');
-        playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
-        playBtn.classList.remove('play-btn-pulse');
-        lucide.createIcons();
+        if (playBtn) {
+            playBtn.innerHTML = `<i data-lucide="play" style="width: 24px; height: 24px; color: var(--text-on-primary); margin-left: 2px;"></i>`;
+            playBtn.classList.remove('play-btn-pulse');
+        }
+        if (window.lucide) lucide.createIcons();
     }
 
     function updateBPMDisplay() {
@@ -3740,6 +4034,10 @@
     }
 
     function startMetronome() {
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+        }
         metronomeRunning = true;
         const intervalMs = 60000 / currentBPM;
         playBeep();
@@ -3848,7 +4146,7 @@
             html += `
                 <div style="width: 100%; margin-bottom: 12px;">
                     <p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 6px;">${pain}</p>
-                    <div style="display: flex; flex-wrap: gap: 6px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                         ${details.map(detail => {
                             const selected = selectedPainPointDetails.includes(detail);
                             return `<button class="chip ${selected ? 'selected' : ''}" data-detail="${detail}" onclick="togglePainDetail('${detail}')">${detail}</button>`;
@@ -3859,7 +4157,7 @@
         });
         
         optionsContainer.innerHTML = html;
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function togglePainDetail(detail) {
@@ -3873,12 +4171,7 @@
     }
 
     function completePractice() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-        isRunning = false;
-        if (metronomeRunning) stopMetronome();
+        stopPracticeRuntime();
 
         const lesson = getLessonById(practiceLessonId);
         if (!lesson) {
@@ -3897,7 +4190,7 @@
             currentBPM: currentBPM,
             cleanBPM: currentCleanBPM,
             reps: currentReps,
-            rating: currentRating,
+            selfRating: currentRating,
             painPoints: [...selectedPainPoints],
             painPointDetails: [...selectedPainPointDetails],
             notes: document.getElementById('practice-notes').value,
@@ -4115,7 +4408,7 @@
             const lightColors = ['var(--color-lavender-light)', 'var(--color-mint-light)', 'var(--color-rose-soft-light)'];
             sugList.innerHTML = suggestions.map((sug, i) => `
                 <div class="suggestion-card" style="border-left: 4px solid ${colors[i % colors.length]};">
-                    <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-md); background: ${lightColors[i % lightColors]};">
+                    <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-md); background: ${lightColors[i % lightColors.length]};">
                         <i data-lucide="${icons[i % icons.length]}" style="width: 20px; height: 20px; color: var(--color-primary);"></i>
                     </div>
                     <div style="min-width: 0; flex: 1;">
@@ -4126,7 +4419,7 @@
             `).join('');
         }
 
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     // ==================== Calendar Render ====================
@@ -4198,7 +4491,7 @@
 
         // 渲染选中日期详情
         renderCalDayDetail();
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function selectCalDay(year, month, day) {
@@ -4565,7 +4858,7 @@
 
     // ==================== Event Bindings ====================
     document.addEventListener('DOMContentLoaded', () => {
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
         navigateTo('dashboard');
 
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -4695,10 +4988,11 @@
         document.getElementById('practice-back').addEventListener('click', () => {
             if (isRunning) {
                 if (confirm('练习还在进行中，确定要退出吗？')) {
-                    if (timerInterval) clearInterval(timerInterval);
+                    stopPracticeRuntime();
                     navigateTo(previousPage || 'source-library');
                 }
             } else {
+                stopPracticeRuntime();
                 navigateTo(previousPage || 'source-library');
             }
         });
@@ -4803,16 +5097,14 @@
         });
 
         document.getElementById('btn-load-demo').addEventListener('click', () => {
-            if (confirm('加载演示数据将覆盖当前数据，确定继续吗？')) {
-                state = JSON.parse(JSON.stringify({
-                    instruments: [{ id: 'electric', name: '电吉他', gradient: 'electric' }, { id: 'acoustic', name: '木吉他', gradient: 'acoustic' }, { id: 'ukulele', name: 'Ukulele', gradient: 'ukulele' }],
-                    sources: [],
-                    sessions: [],
-                    coverProjects: [],
-                    knowledgeBase: state.knowledgeBase || {}
-                }));
-                generateDemoData();
-            }
+            state = JSON.parse(JSON.stringify({
+                instruments: [{ id: 'electric', name: '电吉他', gradient: 'electric' }, { id: 'acoustic', name: '木吉他', gradient: 'acoustic' }, { id: 'ukulele', name: 'Ukulele', gradient: 'ukulele' }],
+                sources: [],
+                sessions: [],
+                coverProjects: [],
+                knowledgeBase: state.knowledgeBase || {}
+            }));
+            generateDemoData();
         });
 
         document.querySelectorAll('.plan-time-btn').forEach(btn => {
@@ -4830,8 +5122,10 @@
         });
 
         document.getElementById('btn-generate-plan').addEventListener('click', () => {
-            const selectedMinutes = parseInt(document.querySelector('.plan-time-btn.active').dataset.minutes);
-            const selectedState = document.querySelector('.plan-state-btn.active').dataset.state;
+            const timeBtn = document.querySelector('.plan-time-btn.active');
+            const stateBtn = document.querySelector('.plan-state-btn.active');
+            const selectedMinutes = timeBtn ? parseInt(timeBtn.dataset.minutes) : 20;
+            const selectedState = stateBtn ? stateBtn.dataset.state : '一般';
             const plan = generateEfficientPracticePlan(state, selectedMinutes, selectedState);
             
             document.getElementById('plan-target').textContent = plan.target;
@@ -4850,7 +5144,7 @@
             
             document.getElementById('plan-avoid').innerHTML = plan.avoid.length > 0 ? `
                 <p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 4px;">今天不建议做什么</p>
-                <div style="display: flex; flex-wrap: gap: 6px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                     ${plan.avoid.map(item => `<span class="pill-tag" style="background: var(--state-warning); color: white;">${item}</span>`).join('')}
                 </div>
             ` : '';
@@ -4930,7 +5224,7 @@
             listContainer.innerHTML = items.map(item => renderKBCard(item, item.type || 'item')).join('');
         }
 
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function getFilteredKBItems() {
@@ -5109,7 +5403,7 @@
         document.getElementById('kb-detail-overlay').classList.add('visible');
         document.getElementById('kb-detail-sheet').classList.add('visible');
 
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function closeKBDetail() {
@@ -5302,7 +5596,7 @@
             });
         }
 
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
     }
 
     function renderKBVideoEpisodes(container, episodes, currentPage) {
