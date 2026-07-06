@@ -2,7 +2,7 @@
 
 > 把喜欢的歌，拆成每天能练的任务。每天只有 20 分钟，也能离你的 cover 目标更近一步。
 
-![RiffCoach](https://asandstar.github.io/RiffCoach/about.html)
+![RiffCoach](https://asandstar.github.io/RiffCoach/riff-coach-showcase.html)
 
 ## 🏆 项目简介
 
@@ -47,7 +47,7 @@ npm run build
 
 **在线体验**: https://asandstar.github.io/RiffCoach/
 
-**创意介绍**: https://asandstar.github.io/RiffCoach/about.html
+**创意介绍**: https://asandstar.github.io/RiffCoach/riff-coach-showcase.html
 
 ## 🛠️ 技术架构
 
@@ -93,7 +93,7 @@ RiffCoach/
 │   ├── App.tsx              # 主应用组件
 │   ├── main.tsx             # 入口文件
 │   └── index.css            # 全局样式
-├── about.html               # 创意介绍页
+├── riff-coach-showcase.html # 创意展示页（Vite + React 重构版详解）
 ├── package.json
 ├── vite.config.ts
 ├── tailwind.config.js
