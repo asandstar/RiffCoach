@@ -5056,11 +5056,11 @@
             renderCalendar();
         });
 
-        document.getElementById('btn-export').addEventListener('click', exportData);
-        document.getElementById('btn-import').addEventListener('click', () => {
-            document.getElementById('import-file').click();
+        document.getElementById('btn-profile-export').addEventListener('click', exportData);
+        document.getElementById('btn-profile-import').addEventListener('click', () => {
+            document.getElementById('profile-import-file').click();
         });
-        document.getElementById('import-file').addEventListener('change', (e) => {
+        document.getElementById('profile-import-file').addEventListener('change', (e) => {
             if (e.target.files[0]) importData(e.target.files[0]);
             e.target.value = '';
         });
