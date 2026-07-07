@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, TrendingUp, AlertTriangle, Music, X, Edit2, Check, Sparkles, Lightbulb, Flame } from 'lucide-react';
+import { Calendar, TrendingUp, AlertTriangle, Music, X, Edit2, Check, Sparkles, Lightbulb, Flame, ArrowLeft } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { PracticeHeatmap } from '@/components/PracticeHeatmap';
 import { useAppStore } from '@/store/useAppStore';
@@ -99,7 +99,15 @@ export function ReviewPage({ onPageChange }: ReviewPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-text-primary">周复盘</h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onPageChange('me')}
+            className="p-2 hover:bg-primary-light rounded-full transition-colors"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-2xl font-bold text-text-primary">周复盘</h1>
+        </div>
         <div className="flex items-center gap-2 bg-primary-light rounded-full p-1">
           <button
             onClick={() => setSelectedWeek('this')}

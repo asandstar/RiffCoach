@@ -354,7 +354,7 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
           </div>
           <div className="flex gap-2 mt-4">
             <button onClick={() => onPageChange('video-study')} className="flex-1 btn-secondary">继续观看</button>
-            <button onClick={() => onPageChange('resource')} className="flex-1 btn-primary">加入今日计划</button>
+            <button onClick={() => onPageChange('resource')} className="flex-1 btn-primary">浏览更多视频</button>
           </div>
         </GlassCard>
       )}

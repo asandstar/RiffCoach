@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { BpmKnob } from '@/components/BpmKnob';
 import { useAppStore } from '@/store/useAppStore';
@@ -234,7 +234,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
           }}
           className="p-2 hover:bg-primary-light rounded-full transition-colors"
         >
-          <RotateCcw size={20} />
+          <ArrowLeft size={20} />
         </button>
         <h1 className="text-xl font-bold text-text-primary">练习</h1>
         <div className="w-8" />
@@ -270,6 +270,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         <div className="flex items-center justify-center gap-3 mb-6">
           <button
             onClick={skipBackward}
+            disabled={timeElapsed === 0}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft size={20} />

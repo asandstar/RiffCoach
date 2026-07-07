@@ -240,7 +240,15 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                     </button>
                   )}
                   <button
-                    onClick={() => onPageChange('video-study')}
+                    onClick={() => {
+                      const matchedVideo = material.bvid
+                        ? videoResources.find((v) => v.bvid === material.bvid)
+                        : videoResources[0];
+                      if (matchedVideo) {
+                        addRecentResource('video', matchedVideo.id);
+                      }
+                      onPageChange('video-study');
+                    }}
                     className="flex-1 btn-secondary flex items-center justify-center gap-2 text-sm"
                   >
                     <Play size={16} />
@@ -334,7 +342,7 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                     className="flex items-center gap-1 text-primary font-medium text-sm hover:underline"
                   >
                     <Play size={14} />
-                    练习
+                    去练习
                   </button>
                 </div>
               </GlassCard>

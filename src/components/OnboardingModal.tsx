@@ -216,7 +216,7 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
             )}
             <button
               onClick={handleNext}
-              disabled={step === 2 && !selectedInstrument || step === 3 && !selectedLevel}
+              disabled={(step === 2 && !selectedInstrument) || (step === 3 && !selectedLevel)}
               className={`flex-1 flex items-center justify-center gap-1 ${
                 (step === 2 && !selectedInstrument) || (step === 3 && !selectedLevel)
                   ? 'btn-secondary opacity-50 cursor-not-allowed'

@@ -180,10 +180,10 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
           className="w-full h-full"
           sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity pointer-events-none hover:pointer-events-auto">
-          <button className="p-3 bg-white/90 rounded-full shadow-lg hover:scale-110 transition-transform">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="p-3 bg-white/90 rounded-full shadow-lg">
             <Play size={24} className="text-primary" fill="currentColor" />
-          </button>
+          </div>
         </div>
       </div>
       <div className="p-4">

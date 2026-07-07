@@ -13,7 +13,6 @@ type TabType = 'profile' | 'calendar' | 'data';
 export function MePage({ onPageChange }: MePageProps) {
   const { sessions, coverProjects, loadDemoData, exportData, importData } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
-  const [importFile, setImportFile] = useState<HTMLInputElement | null>(null);
 
   const totalPracticeMinutes = Math.round(sessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60);
   const totalSessions = sessions.length;
@@ -296,7 +295,6 @@ export function MePage({ onPageChange }: MePageProps) {
                   accept=".json"
                   onChange={handleImport}
                   className="hidden"
-                  ref={setImportFile}
                 />
                 <span className="text-text-tertiary text-sm">选择文件</span>
               </label>

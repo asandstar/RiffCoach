@@ -251,7 +251,7 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
             <div className="flex gap-3">
               <button onClick={() => onPageChange('practice')} className="flex-1 btn-primary flex items-center justify-center gap-2">
                 <Play size={18} />
-                加入练习
+                去练习
               </button>
               <button onClick={() => onPageChange('resource')} className="flex-1 btn-secondary flex items-center justify-center gap-2">
                 <BookOpen size={18} />
