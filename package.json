@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run copy-showcase",
+    "copy-showcase": "cp riff-coach-showcase.html docs/riff-coach-showcase.html",
     "preview": "vite preview"
   },
   "dependencies": {
