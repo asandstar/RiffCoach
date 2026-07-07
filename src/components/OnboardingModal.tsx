@@ -74,33 +74,42 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
         </div>
 
         {step === 1 && (
-          <div className="text-center space-y-4 animate-fade-in">
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-glow">
-              <Sparkles size={40} className="text-white" />
+          <div className="text-center space-y-6 animate-fade-in-up">
+            <div className="relative">
+              <div className="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-primary via-mint to-amber-soft flex items-center justify-center shadow-glow animate-float">
+                <Sparkles size={48} className="text-white" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-amber-soft flex items-center justify-center animate-bounce">
+                <span className="text-white text-xs font-bold">AI</span>
+              </div>
             </div>
-            <h2 className="text-2xl font-extrabold text-text-primary">欢迎来到 RiffCoach</h2>
-            <p className="text-text-secondary">
-              把喜欢的歌，拆成每天能练的任务。
-            </p>
-            <p className="text-sm text-text-tertiary">
-              每天只有 20 分钟，也能离你的 cover 目标更近一步。
-            </p>
-            <div className="grid grid-cols-3 gap-3 pt-4">
-              <div className="text-center">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-soft/20 flex items-center justify-center">
-                  <Zap size={20} className="text-amber-soft" />
+            <div>
+              <h2 className="text-2xl font-extrabold bg-gradient-to-r from-primary via-mint to-amber-soft bg-clip-text text-transparent mb-2">
+                欢迎来到 RiffCoach
+              </h2>
+              <p className="text-text-secondary">
+                把喜欢的歌，拆成每天能练的任务。
+              </p>
+              <p className="text-sm text-text-tertiary mt-2">
+                每天只有 20 分钟，也能离你的 cover 目标更近一步。
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-4 pt-4">
+              <div className="text-center group">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-amber-soft/15 flex items-center justify-center group-hover:bg-amber-soft/25 transition-all duration-300 group-hover:scale-110">
+                  <Zap size={24} className="text-amber-soft" />
                 </div>
                 <p className="text-xs font-medium text-text-primary">AI 计划</p>
               </div>
-              <div className="text-center">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-mint/20 flex items-center justify-center">
-                  <Music size={20} className="text-mint" />
+              <div className="text-center group">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-mint/15 flex items-center justify-center group-hover:bg-mint/25 transition-all duration-300 group-hover:scale-110">
+                  <Music size={24} className="text-mint" />
                 </div>
                 <p className="text-xs font-medium text-text-primary">视频学习</p>
               </div>
-              <div className="text-center">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-lavender/20 flex items-center justify-center">
-                  <Star size={20} className="text-lavender" />
+              <div className="text-center group">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-lavender/15 flex items-center justify-center group-hover:bg-lavender/25 transition-all duration-300 group-hover:scale-110">
+                  <Star size={24} className="text-lavender" />
                 </div>
                 <p className="text-xs font-medium text-text-primary">周复盘</p>
               </div>
@@ -109,30 +118,38 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
         )}
 
         {step === 2 && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-6 animate-fade-in-up">
             <div className="text-center mb-4">
               <h2 className="text-xl font-bold text-text-primary mb-2">选择你的乐器</h2>
               <p className="text-sm text-text-tertiary">我们会为你推荐适合的练习内容</p>
             </div>
             <div className="space-y-3">
-              {instruments.map((inst) => (
+              {instruments.map((inst, idx) => (
                 <button
                   key={inst.id}
                   onClick={() => handleInstrumentSelect(inst.id)}
-                  className={`w-full p-4 rounded-xl text-left transition-all ${
+                  className={`w-full p-4 rounded-xl text-left transition-all duration-300 ${
                     selectedInstrument === inst.id
                       ? 'bg-primary text-white shadow-glow scale-[1.02]'
-                      : 'bg-primary-light hover:bg-primary-subtle text-text-secondary'
+                      : 'bg-primary-light hover:bg-primary-subtle text-text-secondary hover:scale-[1.01]'
                   }`}
+                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{inst.icon}</span>
-                    <div>
-                      <p className="font-bold">{inst.name}</p>
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">{inst.icon}</span>
+                    <div className="flex-1">
+                      <p className="font-bold text-lg">{inst.name}</p>
                       <p className={`text-xs ${selectedInstrument === inst.id ? 'text-white/80' : 'text-text-tertiary'}`}>
                         {inst.desc}
                       </p>
                     </div>
+                    {selectedInstrument === inst.id && (
+                      <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
                 </button>
               ))}
@@ -141,26 +158,38 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
         )}
 
         {step === 3 && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-6 animate-fade-in-up">
             <div className="text-center mb-4">
               <h2 className="text-xl font-bold text-text-primary mb-2">你的水平是？</h2>
               <p className="text-sm text-text-tertiary">AI 会根据你的水平调整练习难度</p>
             </div>
             <div className="space-y-3">
-              {levels.map((level) => (
+              {levels.map((level, idx) => (
                 <button
                   key={level.id}
                   onClick={() => handleLevelSelect(level.id)}
-                  className={`w-full p-4 rounded-xl text-left transition-all ${
+                  className={`w-full p-5 rounded-xl text-left transition-all duration-300 ${
                     selectedLevel === level.id
                       ? 'bg-primary text-white shadow-glow scale-[1.02]'
-                      : 'bg-primary-light hover:bg-primary-subtle text-text-secondary'
+                      : 'bg-primary-light hover:bg-primary-subtle text-text-secondary hover:scale-[1.01]'
                   }`}
+                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <p className="font-bold">{level.name}</p>
-                  <p className={`text-xs ${selectedLevel === level.id ? 'text-white/80' : 'text-text-tertiary'}`}>
-                    {level.desc}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-lg">{level.name}</p>
+                      <p className={`text-xs mt-1 ${selectedLevel === level.id ? 'text-white/80' : 'text-text-tertiary'}`}>
+                        {level.desc}
+                      </p>
+                    </div>
+                    {selectedLevel === level.id && (
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                 </button>
               ))}
             </div>
@@ -168,9 +197,14 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
         )}
 
         {step === 4 && (
-          <div className="text-center space-y-5 animate-fade-in">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-mint to-mint-dark flex items-center justify-center shadow-glow">
-              <Guitar size={40} className="text-white" />
+          <div className="text-center space-y-6 animate-fade-in-up">
+            <div className="relative">
+              <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-mint via-primary to-lavender flex items-center justify-center shadow-glow animate-pulse-slow">
+                <Guitar size={48} className="text-white" />
+              </div>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-soft text-white text-xs font-bold rounded-full shadow-lg">
+                Ready!
+              </div>
             </div>
             <div>
               <h2 className="text-xl font-bold text-text-primary mb-2">准备好开始了吗？</h2>
@@ -178,22 +212,40 @@ export function OnboardingModal({ isOpen, onClose, onLoadDemo, onSelectInstrumen
                 加载演示数据，一键体验完整功能
               </p>
             </div>
-            <div className="bg-primary-light rounded-xl p-4 text-left space-y-2">
-              <p className="text-sm font-medium text-text-primary">演示内容包括：</p>
-              <ul className="text-xs text-text-secondary space-y-1">
-                <li>• 1 首 Demo Song Cover 项目</li>
-                <li>• 12 个视频教程资源</li>
-                <li>• 7 天练习历史记录</li>
-                <li>• AI 练习计划生成</li>
-                <li>• 完整的练习工具和周复盘</li>
+            <div className="bg-gradient-to-r from-primary/5 via-mint/5 to-amber-soft/5 rounded-xl p-5 text-left space-y-3 border border-primary/10">
+              <p className="text-sm font-medium text-text-primary flex items-center gap-2">
+                <Sparkles size={16} className="text-amber-soft" />
+                演示内容包括：
+              </p>
+              <ul className="text-xs text-text-secondary space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 flex-shrink-0" />
+                  1 首 Demo Song Cover 项目
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                  12 个视频教程资源
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-lavender mt-1.5 flex-shrink-0" />
+                  7 天练习历史记录
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-soft mt-1.5 flex-shrink-0" />
+                  AI 练习计划生成
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 flex-shrink-0" />
+                  完整的练习工具和周复盘
+                </li>
               </ul>
             </div>
             <button
               onClick={handleStartDemo}
-              className="btn-primary w-full text-base py-3 flex items-center justify-center gap-2"
+              className="btn-primary w-full text-base py-4 flex items-center justify-center gap-2 animate-pulse-once"
             >
               开始体验
-              <ChevronRight size={18} />
+              <ChevronRight size={18} className="animate-bounce-right" />
             </button>
             <button
               onClick={onClose}

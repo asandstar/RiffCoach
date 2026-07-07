@@ -1,4 +1,4 @@
-import type { AppState, EfficientPracticePlan, Session, Lesson, CoverProject, AIFeedback, PainPoint } from '@/types';
+import type { AppState, EfficientPracticePlan, Session, Lesson, CoverProject, AIFeedback, PainPoint, AIRecommendation } from '@/types';
 
 export function generateEfficientPracticePlan(
   state: Partial<AppState>,
@@ -374,4 +374,128 @@ export function getLastWeekSessions(sessions: Session[]): Session[] {
   thisMonday.setHours(0, 0, 0, 0);
 
   return sessions.filter((s) => s.date >= lastMonday.getTime() && s.date < thisMonday.getTime());
+}
+
+export function generateAIRecommendations(state: Partial<AppState>): AIRecommendation[] {
+  const recommendations: AIRecommendation[] = [];
+  const sessions = state.sessions || [];
+  const videoResources = state.videoResources || [];
+  const knowledgeBase = state.knowledgeBase || { categories: [], items: [], videos: [], favorites: [] };
+  const userLevel = (state as { userLevel?: 'beginner' | 'intermediate' | 'advanced' }).userLevel || 'beginner';
+
+  const painCounts: Record<string, number> = {};
+  sessions.forEach((s) => {
+    (s.painPoints || []).forEach((p) => {
+      painCounts[p] = (painCounts[p] || 0) + 1;
+    });
+  });
+
+  const sortedPains = Object.entries(painCounts).sort((a, b) => b[1] - a[1]);
+  const topPains = sortedPains.slice(0, 2);
+
+  const recentSessions = [...sessions].sort((a, b) => b.date - a.date);
+  const totalMinutes = sessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60;
+  const avgBPM = sessions.length > 0
+    ? sessions.reduce((acc, s) => acc + s.bpm, 0) / sessions.length
+    : 70;
+
+  if (topPains.length > 0) {
+    recommendations.push({
+      id: `rec_pain_${topPains[0][0]}`,
+      title: `${topPains[0][0]}专项训练`,
+      type: 'exercise',
+      description: `针对「${topPains[0][0]}」进行专项练习，每天坚持10-15分钟`,
+      reason: `你最近${topPains[0][1]}次练习都遇到了「${topPains[0][0]}」，需要重点突破`,
+      priority: 'high',
+      durationMinutes: 15,
+      tags: ['专项', '卡点突破'],
+    });
+  }
+
+  const recentVideoIds = (state.recentResources || [])
+    .filter((r) => r.type === 'video')
+    .map((r) => r.id);
+
+  const unfinishedVideos = videoResources.filter((v) => {
+    const progress = (state.videoProgresses || []).find((p) => p.videoId === v.id);
+    return progress && progress.progress < 80;
+  });
+
+  if (unfinishedVideos.length > 0 && !recentVideoIds.includes(unfinishedVideos[0].id)) {
+    recommendations.push({
+      id: `rec_video_${unfinishedVideos[0].id}`,
+      title: unfinishedVideos[0].title,
+      type: 'video',
+      description: `继续学习「${unfinishedVideos[0].title}」，完成剩余内容`,
+      reason: '你上次观看了这个视频但还没看完，继续学习效果更好',
+      priority: 'medium',
+      durationMinutes: 20,
+      tags: ['继续学习', unfinishedVideos[0].stage],
+      videoId: unfinishedVideos[0].id,
+    });
+  }
+
+  if (recentSessions.length > 0 && recentSessions[0].date < Date.now() - 24 * 60 * 60 * 1000) {
+    recommendations.push({
+      id: 'rec_streak',
+      title: '保持练习节奏',
+      type: 'exercise',
+      description: '今天还没有练习，花10分钟保持手感',
+      reason: '保持连续练习对进步很重要，不要中断你的练习节奏',
+      priority: 'high',
+      durationMinutes: 10,
+      tags: ['日常练习', '节奏保持'],
+    });
+  }
+
+  if (totalMinutes < 60 && sessions.length < 3) {
+    recommendations.push({
+      id: 'rec_consistency',
+      title: '基础巩固练习',
+      type: 'exercise',
+      description: '今天练习时间较短，建议进行基础巩固练习',
+      reason: '基础巩固是进步的关键，每天至少保持15分钟练习',
+      priority: 'medium',
+      durationMinutes: 15,
+      tags: ['基础', '巩固'],
+    });
+  }
+
+  const knowledgeRecommendations = knowledgeBase.items.filter((item) => {
+    const userSkills = new Set<string>();
+    sessions.forEach((s) => {
+      s.painPoints?.forEach((p) => userSkills.add(p));
+    });
+    return item.relatedSkills.some((skill) => userSkills.has(skill));
+  });
+
+  if (knowledgeRecommendations.length > 0) {
+    recommendations.push({
+      id: `rec_knowledge_${knowledgeRecommendations[0].id}`,
+      title: knowledgeRecommendations[0].title,
+      type: 'knowledge',
+      description: `学习「${knowledgeRecommendations[0].title}」相关知识`,
+      reason: '了解相关乐理知识有助于更好地理解练习内容',
+      priority: 'low',
+      durationMinutes: 10,
+      tags: ['乐理', knowledgeRecommendations[0].category],
+      knowledgeId: knowledgeRecommendations[0].id,
+    });
+  }
+
+  if (avgBPM > 80 && userLevel === 'beginner') {
+    recommendations.push({
+      id: 'rec_slow',
+      title: '慢速精准练习',
+      type: 'exercise',
+      description: '以60-70 BPM慢速练习，确保每个音清晰准确',
+      reason: '当前练习速度偏快，建议降低速度，注重精准度',
+      priority: 'medium',
+      targetBPM: 70,
+      durationMinutes: 20,
+      tags: ['慢速', '精准'],
+    });
+  }
+
+  return recommendations.slice(0, 5);
 }

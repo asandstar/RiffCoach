@@ -845,4 +845,5 @@ export const defaultData = {
   hasCompletedOnboarding: false,
   selectedInstrument: 'electric' as const,
   userLevel: 'beginner' as const,
+  videoProgresses: [],
 }

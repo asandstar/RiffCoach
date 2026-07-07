@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { BookOpen, Download, Upload, RotateCcw, Info, Sparkles, Calendar } from 'lucide-react';
+import { BookOpen, Download, Upload, RotateCcw, Info, Sparkles, Calendar, Trophy, Star } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
+import { calculateAchievements } from '@/utils/achievements';
 import type { PageType } from '@/types';
 
 interface MePageProps {
@@ -11,11 +12,12 @@ interface MePageProps {
 type TabType = 'profile' | 'calendar' | 'data';
 
 export function MePage({ onPageChange }: MePageProps) {
-  const { sessions, coverProjects, loadDemoData, exportData, importData } = useAppStore();
+  const { sessions, coverProjects, loadDemoData, exportData, importData, videoProgresses } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
 
   const totalPracticeMinutes = Math.round(sessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60);
   const totalSessions = sessions.length;
+  const achievements = calculateAchievements(sessions, videoProgresses);
 
   const handleExport = () => {
     const dataStr = exportData();
@@ -132,9 +134,60 @@ export function MePage({ onPageChange }: MePageProps) {
                 <p className="text-xs text-text-tertiary">Cover 目标</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-mint">{sessions.length > 0 ? '有' : '无'}</p>
-                <p className="text-xs text-text-tertiary">本周练习</p>
+                <p className="text-3xl font-bold text-mint">{achievements.filter((a) => a.unlocked).length}</p>
+                <p className="text-xs text-text-tertiary">解锁成就</p>
               </div>
+            </div>
+          </GlassCard>
+
+          <GlassCard className="p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                <Trophy size={20} className="text-amber-soft" />
+                成就徽章
+              </h2>
+              <span className="text-sm text-text-tertiary">
+                {achievements.filter((a) => a.unlocked).length}/{achievements.length}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {achievements.map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className={`relative group cursor-pointer ${
+                    achievement.unlocked
+                      ? 'opacity-100'
+                      : 'opacity-40'
+                  }`}
+                >
+                  <div
+                    className={`w-14 h-14 rounded-xl ${
+                      achievement.unlocked
+                        ? `${achievement.color} shadow-md`
+                        : 'bg-gray-200'
+                    } flex items-center justify-center text-xl transition-all group-hover:scale-110`}
+                  >
+                    {achievement.icon}
+                  </div>
+                  {achievement.unlocked && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-soft rounded-full flex items-center justify-center">
+                      <Star size={12} className="text-white fill-white" />
+                    </div>
+                  )}
+                  <p className="text-xs text-text-primary text-center mt-2 truncate px-1">
+                    {achievement.title}
+                  </p>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-text-primary text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <p className="font-medium mb-1">{achievement.title}</p>
+                    <p className="text-white/80">{achievement.description}</p>
+                    {!achievement.unlocked && (
+                      <p className="text-white/60 mt-1">
+                        进度: {achievement.progress}/{achievement.threshold}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </GlassCard>
 

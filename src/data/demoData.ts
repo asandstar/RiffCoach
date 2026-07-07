@@ -146,5 +146,6 @@ export function generateDemoData(): AppState {
     videoSize: 'compact',
     painPointOptions: [...defaultData.painPointOptions],
     knowledgeBase: { ...defaultData.knowledgeBase },
+    videoProgresses: [],
   };
 }

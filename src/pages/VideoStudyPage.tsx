@@ -312,6 +312,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             onPageChange={setCurrentPage}
             title={video.title}
             customEpisodes={video.episodes?.map((e) => ({ page: e.page, title: e.title }))}
+            videoId={video.id}
           />
 
           {viewMode === 'info' && (

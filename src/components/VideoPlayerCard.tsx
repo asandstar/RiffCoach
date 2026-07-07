@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Play } from 'lucide-react';
+import { Play, Settings, ChevronDown } from 'lucide-react';
 import { fetchBiliEpisodes, buildBiliPlayerUrl, getBiliFallbackEpisodes, type BiliEpisode } from '@/utils/bilibili';
+import { useAppStore } from '@/store/useAppStore';
 
 interface VideoEpisodePickerProps {
   bvid: string;
@@ -164,10 +165,21 @@ interface VideoPlayerCardProps {
   onPageChange: (page: number) => void;
   title?: string;
   customEpisodes?: { page: number; title: string }[];
+  videoId?: string;
 }
 
-export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisodes }: VideoPlayerCardProps) {
+export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisodes, videoId }: VideoPlayerCardProps) {
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const { videoProgresses } = useAppStore();
+  
   const playerUrl = buildBiliPlayerUrl(bvid, page);
+
+  const speedOptions = [0.5, 0.75, 1, 1.25, 1.5];
+  
+  const currentProgress = videoProgresses.find(
+    (p) => p.videoId === videoId && p.page === page
+  )?.progress || 0;
 
   return (
     <div className="glass-card overflow-hidden">
@@ -183,6 +195,61 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
           <div className="p-3 bg-white/90 rounded-full shadow-lg">
             <Play size={24} className="text-primary" fill="currentColor" />
+          </div>
+        </div>
+        
+        {currentProgress > 0 && currentProgress < 95 && (
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5">
+              <span className="text-xs text-white">上次观看进度</span>
+              <div className="flex-1 h-1.5 bg-white/30 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-primary rounded-full transition-all duration-300"
+                  style={{ width: `${currentProgress}%` }}
+                />
+              </div>
+              <span className="text-xs text-white font-mono">{Math.round(currentProgress)}%</span>
+            </div>
+          </div>
+        )}
+
+        <div className="absolute bottom-4 right-4 flex items-center gap-2">
+          <div className="relative">
+            <button
+              onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+              className="flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium hover:bg-black/80 transition-colors"
+            >
+              <Settings size={14} />
+              <span>{playbackSpeed}x</span>
+              <ChevronDown size={14} />
+            </button>
+            
+            {showSpeedMenu && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowSpeedMenu(false)}
+                />
+                <div className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl overflow-hidden z-50">
+                  {speedOptions.map((speed) => (
+                    <button
+                      key={speed}
+                      onClick={() => {
+                        setPlaybackSpeed(speed);
+                        setShowSpeedMenu(false);
+                      }}
+                      className={`w-20 px-4 py-2 text-sm text-left transition-colors ${
+                        playbackSpeed === speed
+                          ? 'bg-primary text-white'
+                          : 'text-text-primary hover:bg-primary-light'
+                      }`}
+                    >
+                      {speed}x
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

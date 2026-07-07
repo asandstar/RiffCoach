@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource } from '@/types';
+import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation } from '@/types';
 import { defaultData } from '@/data/defaultData';
 import { generateDemoData } from '@/data/demoData';
 import { extractBvid } from '@/utils/bilibili';
@@ -94,6 +94,10 @@ function migrateData(data: Partial<AppState>): AppState {
     result.userLevel = defaultData.userLevel;
   }
 
+  if (!result.videoProgresses || !Array.isArray(result.videoProgresses)) {
+    result.videoProgresses = [];
+  }
+
   return result;
 }
 
@@ -121,6 +125,7 @@ interface AppStore extends AppState {
   completeOnboarding: () => void;
   setSelectedInstrument: (instrument: AppState['selectedInstrument']) => void;
   setUserLevel: (level: AppState['userLevel']) => void;
+  updateVideoProgress: (videoId: string, page: number, progress: number) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -271,6 +276,28 @@ export const useAppStore = create<AppStore>()(
       setSelectedInstrument: (instrument) => set({ selectedInstrument: instrument }),
 
       setUserLevel: (level) => set({ userLevel: level }),
+
+      updateVideoProgress: (videoId, page, progress) => set((state) => {
+        const key = `${videoId}_${page}`;
+        const existingIndex = state.videoProgresses.findIndex(
+          (p) => `${p.videoId}_${p.page}` === key
+        );
+        if (existingIndex >= 0) {
+          return {
+            videoProgresses: state.videoProgresses.map((p, idx) =>
+              idx === existingIndex
+                ? { ...p, progress, lastWatchedAt: Date.now() }
+                : p
+            ),
+          };
+        }
+        return {
+          videoProgresses: [
+            ...state.videoProgresses,
+            { videoId, page, progress, lastWatchedAt: Date.now() },
+          ],
+        };
+      }),
     }),
     {
       name: 'riffcoach-storage',

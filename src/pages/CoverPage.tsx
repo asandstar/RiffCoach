@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Play, ChevronRight, X, Sparkles, TrendingUp, AlertTriangle, Music } from 'lucide-react';
+import { Plus, Play, ChevronRight, X, Sparkles, TrendingUp, AlertTriangle, Music, Target, Calendar, Zap, Clock } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
 import type { PageType, Instrument } from '@/types';
@@ -123,35 +123,71 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
             const allPainPoints = [...new Set(project.sections.flatMap((s) => s.painPoints))];
 
             return (
-              <GlassCard key={project.id} elevated className="p-5 cursor-pointer hover:shadow-float transition-shadow" onClick={() => setSelectedProject(project.id)}>
+              <GlassCard key={project.id} elevated className="p-5 cursor-pointer hover:shadow-float transition-all duration-300 hover:-translate-y-1" onClick={() => setSelectedProject(project.id)}>
                 <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
-                    {project.title.charAt(0)}
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                      {project.title.charAt(0)}
+                    </div>
+                    <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-md ${
+                      avgProgress >= 100 ? 'bg-mint text-white' : avgProgress >= 50 ? 'bg-amber-soft text-white' : 'bg-primary text-white'
+                    }`}>
+                      {avgProgress}%
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-text-primary text-lg">{project.title}</h3>
-                    <p className="text-text-secondary text-sm">{project.artist} · {project.instrument === 'electric' ? '电吉他' : project.instrument === 'acoustic' ? '木吉他' : '尤克里里'}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-text-primary text-lg">{project.title}</h3>
+                      {allPainPoints.length > 0 && (
+                        <span className="px-2 py-0.5 bg-red-soft/10 text-red-soft text-xs rounded-full">
+                          {allPainPoints.length}个卡点
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-text-secondary text-sm mb-3">{project.artist} · {project.instrument === 'electric' ? '电吉他' : project.instrument === 'acoustic' ? '木吉他' : '尤克里里'}</p>
                     
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex items-center gap-4 mb-3">
                       <div className="flex-1">
                         <div className="flex items-center justify-between text-xs text-text-tertiary mb-1">
-                          <span>总进度</span>
-                          <span>{avgProgress}%</span>
+                          <span className="flex items-center gap-1">
+                            <Target size={12} />
+                            进度
+                          </span>
+                          <span className="font-medium text-text-primary">{avgProgress}%</span>
                         </div>
-                        <div className="h-2 bg-primary-subtle rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${avgProgress}%` }} />
+                        <div className="h-2.5 bg-primary-subtle rounded-full overflow-hidden">
+                          <div 
+                            className="h-full rounded-full transition-all duration-700 ease-out"
+                            style={{ 
+                              width: `${avgProgress}%`,
+                              background: avgProgress >= 100 
+                                ? 'linear-gradient(90deg, #22c55e, #16a34a)' 
+                                : avgProgress >= 50 
+                                ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)'
+                                : 'linear-gradient(90deg, #f59e0b, #d97706)'
+                            }}
+                          />
                         </div>
                       </div>
-                      <div className="text-center">
-                        <p className="text-xl font-bold text-text-primary">{maxCleanBPM}</p>
-                        <p className="text-xs text-text-tertiary">最高 BPM</p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1.5">
+                        <Zap size={14} className="text-amber-soft" />
+                        <span className="text-sm text-text-primary font-medium">{maxCleanBPM}</span>
+                        <span className="text-xs text-text-tertiary">BPM</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock size={14} className="text-mint" />
+                        <span className="text-sm text-text-primary font-medium">{project.aiPlan?.estimatedDays}</span>
+                        <span className="text-xs text-text-tertiary">天</span>
                       </div>
                     </div>
 
                     {allPainPoints.length > 0 && (
                       <div className="flex items-center gap-2 mt-3">
-                        <AlertTriangle size={14} className="text-amber-soft" />
-                        <div className="flex flex-wrap gap-1">
+                        <AlertTriangle size={14} className="text-amber-soft flex-shrink-0" />
+                        <div className="flex flex-wrap gap-1.5">
                           {allPainPoints.slice(0, 3).map((pain) => (
                             <span key={pain} className="text-xs chip chip-warning">{pain}</span>
                           ))}
@@ -159,7 +195,7 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
                       </div>
                     )}
                   </div>
-                  <ChevronRight size={20} className="text-text-tertiary" />
+                  <ChevronRight size={24} className="text-text-tertiary flex-shrink-0" />
                 </div>
               </GlassCard>
             );
@@ -238,13 +274,25 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
             </div>
 
             <div className="glass-card p-4 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-text-secondary">目标</span>
-                <span className="text-text-primary font-medium">{selectedProjectData.goal}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-text-secondary">预计天数</span>
-                <span className="text-text-primary font-medium">{selectedProjectData.aiPlan?.estimatedDays} 天</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Target size={16} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-text-tertiary">练习目标</p>
+                    <p className="text-sm text-text-primary font-medium">{selectedProjectData.goal}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-soft/15 flex items-center justify-center">
+                    <Calendar size={16} className="text-amber-soft" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-text-tertiary">预计天数</p>
+                    <p className="text-sm text-text-primary font-medium">{selectedProjectData.aiPlan?.estimatedDays} 天</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -252,27 +300,59 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
               <h3 className="text-lg font-semibold text-text-primary mb-4">段落进度</h3>
               <div className="space-y-3">
                 {selectedProjectData.sections.map((section) => (
-                  <GlassCard key={section.id} className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-text-primary">{section.name}</h4>
-                        <span className="text-xs chip chip-primary">{section.targetBPM} BPM</span>
+                  <GlassCard key={section.id} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          section.progress >= 100 ? 'bg-mint/15' : section.progress >= 50 ? 'bg-primary/10' : 'bg-primary-subtle'
+                        }`}>
+                          <span className={`text-lg font-bold ${
+                            section.progress >= 100 ? 'text-mint' : section.progress >= 50 ? 'text-primary' : 'text-text-tertiary'
+                          }`}>
+                            {section.name.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-text-primary">{section.name}</h4>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs chip chip-primary">{section.targetBPM} BPM</span>
+                            <span className="text-xs text-text-tertiary">目标</span>
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-sm font-semibold text-primary">{section.progress}%</span>
+                      <div className="text-right">
+                        <span className={`text-xl font-bold ${
+                          section.progress >= 100 ? 'text-mint' : section.progress >= 50 ? 'text-primary' : 'text-text-primary'
+                        }`}>{section.progress}%</span>
+                        <p className="text-xs text-text-tertiary">完成度</p>
+                      </div>
                     </div>
                     
-                    <div className="h-2 bg-primary-subtle rounded-full overflow-hidden mb-3">
-                      <div className="h-full bg-primary rounded-full" style={{ width: `${section.progress}%` }} />
+                    <div className="h-3 bg-primary-subtle rounded-full overflow-hidden mb-3">
+                      <div 
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{ 
+                          width: `${section.progress}%`,
+                          background: section.progress >= 100 
+                            ? 'linear-gradient(90deg, #22c55e, #16a34a)' 
+                            : section.progress >= 50 
+                            ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)'
+                            : 'linear-gradient(90deg, #f59e0b, #d97706)'
+                        }}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1">
-                        <TrendingUp size={14} className="text-mint" />
-                        <span className="text-text-tertiary">最高干净 BPM: {section.currentCleanBPM}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-amber-soft/15 flex items-center justify-center">
+                          <TrendingUp size={12} className="text-amber-soft" />
+                        </div>
+                        <span className="text-text-tertiary">最高干净 BPM:</span>
+                        <span className="font-medium text-amber-soft">{section.currentCleanBPM}</span>
                       </div>
                       <button
                         onClick={() => handleStartSectionPractice(selectedProjectData.id, section.id)}
-                        className="flex items-center gap-1 text-primary font-medium hover:underline"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-colors"
                       >
                         <Play size={14} />
                         练习
@@ -280,10 +360,13 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
                     </div>
 
                     {section.painPoints.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {section.painPoints.map((pain) => (
-                          <span key={pain} className="text-xs chip chip-warning">{pain}</span>
-                        ))}
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border-default">
+                        <AlertTriangle size={14} className="text-amber-soft flex-shrink-0" />
+                        <div className="flex flex-wrap gap-1.5">
+                          {section.painPoints.map((pain) => (
+                            <span key={pain} className="text-xs chip chip-warning">{pain}</span>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </GlassCard>

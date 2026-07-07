@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, Play, Plus, BookOpen, Zap, Clock, Target, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Play, Plus, BookOpen, Zap, Clock, Target, CheckCircle2, Video, FileText, Dumbbell, AlertCircle } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { AILoading } from '@/components/AILoading';
 import { useAppStore } from '@/store/useAppStore';
-import { generateEfficientPracticePlan } from '@/utils/aiMock';
+import { generateEfficientPracticePlan, generateAIRecommendations } from '@/utils/aiMock';
 import type { PageType } from '@/types';
 
 interface TodayPageProps {
@@ -15,7 +15,7 @@ const timeOptions = [10, 20, 30, 45];
 const energyOptions = ['精力很好', '一般', '很累', '手指酸', '只想轻松复习'];
 
 export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
-  const { coverProjects, sessions, currentEfficientPlan, setCurrentEfficientPlan, videoResources, recentResources, loadDemoData } = useAppStore();
+  const { coverProjects, sessions, currentEfficientPlan, setCurrentEfficientPlan, videoResources, recentResources, loadDemoData, knowledgeBase, videoProgresses, userLevel } = useAppStore();
   
   const [selectedTime, setSelectedTime] = useState(20);
   const [selectedEnergy, setSelectedEnergy] = useState('一般');
@@ -382,6 +382,60 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
           </div>
         </GlassCard>
       )}
+
+      <GlassCard className="p-5">
+        <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+          <Sparkles size={20} className="text-lavender" />
+          AI 智能推荐
+        </h2>
+        <div className="space-y-3">
+          {generateAIRecommendations({ coverProjects, sessions, videoResources, knowledgeBase, recentResources, videoProgresses, userLevel }).map((rec) => (
+            <div
+              key={rec.id}
+              className={`p-4 rounded-xl border transition-all hover:shadow-md cursor-pointer ${
+                rec.priority === 'high'
+                  ? 'border-red-soft/30 bg-red-soft/5 hover:bg-red-soft/10'
+                  : rec.priority === 'medium'
+                  ? 'border-amber-soft/30 bg-amber-soft/5 hover:bg-amber-soft/10'
+                  : 'border-primary-subtle bg-primary-subtle/50 hover:bg-primary-subtle'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                  rec.priority === 'high' ? 'bg-red-soft' : rec.priority === 'medium' ? 'bg-amber-soft' : 'bg-lavender'
+                }`}>
+                  {rec.type === 'video' && <Video size={20} className="text-white" />}
+                  {rec.type === 'exercise' && <Dumbbell size={20} className="text-white" />}
+                  {rec.type === 'knowledge' && <FileText size={20} className="text-white" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold text-text-primary truncate">{rec.title}</h3>
+                    {rec.priority === 'high' && (
+                      <AlertCircle size={14} className="text-red-soft flex-shrink-0" />
+                    )}
+                  </div>
+                  <p className="text-sm text-text-secondary mb-2">{rec.description}</p>
+                  <p className="text-xs text-text-tertiary mb-2">{rec.reason}</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap gap-1">
+                      {rec.tags.slice(0, 2).map((tag) => (
+                        <span key={tag} className="text-xs chip chip-secondary">{tag}</span>
+                      ))}
+                    </div>
+                    {rec.durationMinutes && (
+                      <span className="text-xs text-text-tertiary">{rec.durationMinutes}分钟</span>
+                    )}
+                    {rec.targetBPM && (
+                      <span className="text-xs chip chip-primary">{rec.targetBPM} BPM</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </GlassCard>
     </div>
   );
 }

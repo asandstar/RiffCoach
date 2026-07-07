@@ -192,6 +192,13 @@ export interface EfficientPracticePlan {
   lessonId: string | null
 }
 
+export interface VideoProgress {
+  videoId: string;
+  page: number;
+  progress: number;
+  lastWatchedAt: number;
+}
+
 export interface AppState {
   instruments: { id: Instrument; name: string; gradient: string }[]
   sources: Source[]
@@ -213,6 +220,33 @@ export interface AppState {
   hasCompletedOnboarding: boolean
   selectedInstrument: Instrument
   userLevel: 'beginner' | 'intermediate' | 'advanced'
+  videoProgresses: VideoProgress[]
+}
+
+export interface AIRecommendation {
+  id: string;
+  title: string;
+  type: 'video' | 'exercise' | 'knowledge';
+  description: string;
+  reason: string;
+  priority: 'high' | 'medium' | 'low';
+  targetBPM?: number;
+  durationMinutes?: number;
+  tags: string[];
+  videoId?: string;
+  knowledgeId?: string;
+}
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  threshold: number;
+  metric: 'minutes' | 'sessions' | 'streak' | 'bpm' | 'videos';
+  unlocked: boolean;
+  progress: number;
 }
 
 export type PageType = 

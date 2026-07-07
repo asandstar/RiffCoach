@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Target, Trophy } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { BpmKnob } from '@/components/BpmKnob';
 import { useAppStore } from '@/store/useAppStore';
@@ -34,6 +34,8 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   const [painPointDetailsMap, setPainPointDetailsMap] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState('');
   const [showDetailCard, setShowDetailCard] = useState<string | null>(null);
+  const [beatCount, setBeatCount] = useState(0);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const timerRef = useRef<number | null>(null);
   const metronomeRef = useRef<number | null>(null);
@@ -76,6 +78,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   useEffect(() => {
     if (isMetronomeOn) {
       const interval = (60 / bpm) * 1000;
+      let beatCounter = 0;
       
       const playClick = () => {
         const ctx = audioContextRef.current;
@@ -83,18 +86,23 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         if (ctx.state === 'suspended') {
           ctx.resume();
         }
+        
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
         
         oscillator.connect(gainNode);
         gainNode.connect(ctx.destination);
         
-        oscillator.frequency.value = 800;
-        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+        const isDownbeat = beatCounter % 4 === 0;
+        oscillator.frequency.value = isDownbeat ? 1200 : 800;
+        gainNode.gain.setValueAtTime(isDownbeat ? 0.15 : 0.1, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
         
         oscillator.start(ctx.currentTime);
         oscillator.stop(ctx.currentTime + 0.05);
+        
+        beatCounter++;
+        setBeatCount(beatCounter);
       };
 
       metronomeRef.current = window.setInterval(playClick, interval);
@@ -170,57 +178,64 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       return;
     }
 
-    const cleanBPM = selfRating <= 2 ? bpm - 10 : selfRating <= 3 ? bpm - 5 : bpm;
-
-    const sessionData = {
-      lessonId: currentLesson?.id || null,
-      instrument: 'electric' as const,
-      date: Date.now(),
-      durationSeconds: timeElapsed,
-      bpm: bpm,
-      currentBPM: bpm,
-      repetitions: repetitions,
-      selfRating: selfRating,
-      painPoints: selectedPainPoints,
-      painPointDetails: Object.entries(painPointDetailsMap).map(([painPoint, detail]) => ({ painPoint, detail })),
-      notes: notes,
-      cleanBPM: Math.max(40, cleanBPM),
-    };
-
-    addSession(sessionData);
-
-    const feedback = generateAIFeedback({ ...sessionData, id: 'temp' }, currentLesson, recentSessions, currentProject);
+    setShowCelebration(true);
 
     setTimeout(() => {
-      const { sessions: updatedSessions } = useAppStore.getState();
-      const newSession = [...updatedSessions].sort((a, b) => b.date - a.date)[0];
-      if (newSession) {
-        setSessionFeedback(newSession.id, feedback);
+      const cleanBPM = selfRating <= 2 ? bpm - 10 : selfRating <= 3 ? bpm - 5 : bpm;
+
+      const sessionData = {
+        lessonId: currentLesson?.id || null,
+        instrument: 'electric' as const,
+        date: Date.now(),
+        durationSeconds: timeElapsed,
+        bpm: bpm,
+        currentBPM: bpm,
+        repetitions: repetitions,
+        selfRating: selfRating,
+        painPoints: selectedPainPoints,
+        painPointDetails: Object.entries(painPointDetailsMap).map(([painPoint, detail]) => ({ painPoint, detail })),
+        notes: notes,
+        cleanBPM: Math.max(40, cleanBPM),
+      };
+
+      addSession(sessionData);
+
+      const feedback = generateAIFeedback({ ...sessionData, id: 'temp' }, currentLesson, recentSessions, currentProject);
+
+      setTimeout(() => {
+        const { sessions: updatedSessions } = useAppStore.getState();
+        const newSession = [...updatedSessions].sort((a, b) => b.date - a.date)[0];
+        if (newSession) {
+          setSessionFeedback(newSession.id, feedback);
+        }
+      }, 0);
+
+      if (currentProject && currentLesson?.projectId && currentLesson?.sectionId) {
+        const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
+          coverProjects,
+          sessions: [...sessions, { ...sessionData, id: 'temp' }],
+          sources,
+          knowledgeBase: { categories: [], items: [], videos: [], favorites: [] },
+          materialInbox: [],
+          videoResources: [],
+          recentResources: [],
+          favoriteResources: [],
+          instruments: [],
+          painPointOptions: [],
+          currentEfficientPlan: null,
+          videoSize: 'compact',
+        });
+
+        if (updatedProject) {
+          updateCoverProject(currentProject.id, updatedProject);
+        }
       }
-    }, 0);
 
-    if (currentProject && currentLesson?.projectId && currentLesson?.sectionId) {
-      const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
-        coverProjects,
-        sessions: [...sessions, { ...sessionData, id: 'temp' }],
-        sources,
-        knowledgeBase: { categories: [], items: [], videos: [], favorites: [] },
-        materialInbox: [],
-        videoResources: [],
-        recentResources: [],
-        favoriteResources: [],
-        instruments: [],
-        painPointOptions: [],
-        currentEfficientPlan: null,
-        videoSize: 'compact',
-      });
-
-      if (updatedProject) {
-        updateCoverProject(currentProject.id, updatedProject);
-      }
-    }
-
-    onPageChange('ai-feedback');
+      setTimeout(() => {
+        setShowCelebration(false);
+        onPageChange('ai-feedback');
+      }, 2000);
+    }, 500);
   };
 
   return (
@@ -265,7 +280,36 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       )}
 
       <GlassCard elevated className="p-6 text-center">
-        <div className="text-5xl font-bold text-primary font-mono mb-4 tabular-nums">{formatTime(timeElapsed)}</div>
+        <div className="relative inline-flex items-center justify-center mb-4">
+          <svg className="w-32 h-32 transform -rotate-90">
+            <circle
+              cx="64"
+              cy="64"
+              r="56"
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="8"
+            />
+            <circle
+              cx="64"
+              cy="64"
+              r="56"
+              fill="none"
+              stroke="#8b5cf6"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray={`${(timeElapsed / 3600) * 352} 352`}
+              className="transition-all duration-500"
+              style={{
+                strokeDasharray: `${(Math.min(timeElapsed, 3600) / 3600) * 352} 352`,
+              }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="text-4xl font-bold text-primary font-mono tabular-nums">{formatTime(timeElapsed)}</div>
+            <span className="text-xs text-text-tertiary">累计练习</span>
+          </div>
+        </div>
         
         <div className="flex items-center justify-center gap-3 mb-6">
           <button
@@ -294,11 +338,16 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={toggleMetronome}
-            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+            className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${
               isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
             }`}
           >
             <span className="text-xl">♪</span>
+            {isMetronomeOn && (
+              <div className={`absolute inset-0 rounded-full border-2 ${
+                beatCount % 4 === 0 ? 'border-white animate-ping' : 'border-mint/50'
+              }`} />
+            )}
           </button>
           <button
             onClick={resetTimer}
@@ -448,6 +497,32 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         <Check size={18} />
         完成练习
       </button>
+
+      {showCelebration && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 text-center animate-scale-in shadow-2xl max-w-sm mx-4">
+            <div className="relative inline-block mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-amber-soft to-amber-500 rounded-full flex items-center justify-center shadow-lg">
+                <Trophy size={40} className="text-white" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-mint rounded-full flex items-center justify-center text-white text-xs font-bold animate-bounce">
+                +1
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">练习完成！</h2>
+            <p className="text-text-secondary">已保存练习记录</p>
+            <div className="mt-4 flex justify-center gap-2">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-3 h-3 bg-primary rounded-full animate-bounce"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
