@@ -44,18 +44,20 @@ body {
   font-weight: 600;
   padding: 12px 24px;
   border-radius: 12px;
-  transition: all 300ms ease-out;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(184, 156, 212, 0.20);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(184, 156, 212, 0.30);
+  box-shadow: 0 6px 20px rgba(184, 156, 212, 0.30);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 8px rgba(184, 156, 212, 0.20);
 }
 
 .btn-secondary {
@@ -64,14 +66,22 @@ body {
   font-weight: 600;
   padding: 12px 24px;
   border-radius: 12px;
-  transition: all 300ms ease-out;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(184, 156, 212, 0.20);
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(74, 63, 92, 0.04);
 }
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(184, 156, 212, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 63, 92, 0.06);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 1px 3px rgba(74, 63, 92, 0.04);
 }
 
 .chip {
@@ -166,6 +176,37 @@ body {
 
 .fade-in {
   animation: fadeIn 300ms ease-out;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: slideUpFade 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover {
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 63, 92, 0.10);
+  border-color: rgba(184, 156, 212, 0.30);
+}
+
+.glass-card-hover:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
 }
 
 /* 隐藏 number 输入框的上下箭头 */

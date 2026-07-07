@@ -19,7 +19,7 @@ export function BottomNav({ currentPage, onPageChange, show }: BottomNavProps) {
   if (!show) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-border-default z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-border-default z-50 pb-safe">
       <div className="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -28,12 +28,14 @@ export function BottomNav({ currentPage, onPageChange, show }: BottomNavProps) {
             <button
               key={item.id}
               onClick={() => onPageChange(item.id)}
-              className={`flex flex-col items-center justify-center w-14 h-full transition-all duration-base ${
+              className={`flex flex-col items-center justify-center w-14 h-full transition-all duration-200 ease-out ${
                 isActive ? 'text-primary' : 'text-text-tertiary hover:text-text-secondary'
               }`}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-              <span className={`text-xs mt-1 font-medium ${isActive ? 'font-semibold' : ''}`}>
+              <div className={`transition-all duration-200 ease-out ${isActive ? 'scale-110' : 'scale-100'}`}>
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              </div>
+              <span className={`text-xs mt-1 font-medium transition-all duration-200 ${isActive ? 'font-semibold scale-105' : ''}`}>
                 {item.label}
               </span>
             </button>

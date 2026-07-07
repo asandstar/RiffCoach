@@ -62,7 +62,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg-base">
       <PageShell title={getPageTitle()} showBottomNav={showBottomNav}>
-        {renderPage()}
+        <div key={currentPage} className="page-enter">
+          {renderPage()}
+        </div>
       </PageShell>
       <BottomNav currentPage={currentPage} onPageChange={setCurrentPage} show={showBottomNav} />
       <QuickAddMaterialSheet isOpen={showQuickAdd} onClose={() => setShowQuickAdd(false)} />
