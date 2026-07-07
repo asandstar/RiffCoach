@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageShell } from '@/components/PageShell';
 import { QuickAddMaterialSheet } from '@/components/QuickAddMaterialSheet';
+import { OnboardingModal } from '@/components/OnboardingModal';
 import { TodayPage } from '@/pages/TodayPage';
 import { CoverPage } from '@/pages/CoverPage';
 import { ResourcePage } from '@/pages/ResourcePage';
@@ -11,11 +12,41 @@ import { VideoStudyPage } from '@/pages/VideoStudyPage';
 import { KnowledgePage } from '@/pages/KnowledgePage';
 import { PracticePage } from '@/pages/PracticePage';
 import { AIFeedbackPage } from '@/pages/AIFeedbackPage';
-import type { PageType } from '@/types';
+import { useAppStore } from '@/store/useAppStore';
+import type { PageType, Instrument } from '@/types';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('today');
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { hasCompletedOnboarding, loadDemoData, setSelectedInstrument, setUserLevel, completeOnboarding } = useAppStore();
+
+  useEffect(() => {
+    if (!hasCompletedOnboarding) {
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasCompletedOnboarding]);
+
+  const handleLoadDemo = () => {
+    loadDemoData();
+    completeOnboarding();
+  };
+
+  const handleSelectInstrument = (instrument: string) => {
+    setSelectedInstrument(instrument as Instrument);
+  };
+
+  const handleSelectLevel = (level: string) => {
+    setUserLevel(level as 'beginner' | 'intermediate' | 'advanced');
+  };
+
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    completeOnboarding();
+  };
 
   const showBottomNav = !['practice', 'ai-feedback', 'video-study', 'review'].includes(currentPage);
 
@@ -68,6 +99,13 @@ export default function App() {
       </PageShell>
       <BottomNav currentPage={currentPage} onPageChange={setCurrentPage} show={showBottomNav} />
       <QuickAddMaterialSheet isOpen={showQuickAdd} onClose={() => setShowQuickAdd(false)} />
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={handleCloseOnboarding}
+        onLoadDemo={handleLoadDemo}
+        onSelectInstrument={handleSelectInstrument}
+        onSelectLevel={handleSelectLevel}
+      />
     </div>
   );
 }

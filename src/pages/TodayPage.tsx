@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Sparkles, Play, Plus, BookOpen, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Play, Plus, BookOpen, Zap, Clock, Target, CheckCircle2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
+import { AILoading } from '@/components/AILoading';
 import { useAppStore } from '@/store/useAppStore';
 import { generateEfficientPracticePlan } from '@/utils/aiMock';
 import type { PageType } from '@/types';
@@ -19,6 +20,10 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
   const [selectedTime, setSelectedTime] = useState(20);
   const [selectedEnergy, setSelectedEnergy] = useState('一般');
   const [showPlan, setShowPlan] = useState(!!currentEfficientPlan);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [displayTarget, setDisplayTarget] = useState('');
+  const [displayReason, setDisplayReason] = useState('');
+  const [typedStep, setTypedStep] = useState(0);
 
   const currentProject = coverProjects[0];
   const recentSession = sessions.sort((a, b) => b.date - a.date)[0];
@@ -29,27 +34,106 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
     .filter(Boolean)[0];
 
   const handleGeneratePlan = () => {
-    const plan = generateEfficientPracticePlan(
-      { coverProjects, sessions, sources: [], knowledgeBase: { categories: [], items: [], videos: [], favorites: [] }, materialInbox: [], videoResources, recentResources, favoriteResources: [], instruments: [], painPointOptions: [], currentEfficientPlan: null, videoSize: 'compact' },
-      selectedTime,
-      selectedEnergy
-    );
-    setCurrentEfficientPlan(plan);
-    setShowPlan(true);
+    setIsGenerating(true);
+    setShowPlan(false);
+    setDisplayTarget('');
+    setDisplayReason('');
+    setTypedStep(0);
+
+    setTimeout(() => {
+      const plan = generateEfficientPracticePlan(
+        { coverProjects, sessions, sources: [], knowledgeBase: { categories: [], items: [], videos: [], favorites: [] }, materialInbox: [], videoResources, recentResources, favoriteResources: [], instruments: [], painPointOptions: [], currentEfficientPlan: null, videoSize: 'compact' },
+        selectedTime,
+        selectedEnergy
+      );
+      setCurrentEfficientPlan(plan);
+      setIsGenerating(false);
+      setShowPlan(true);
+
+      let targetIdx = 0;
+      const targetInterval = setInterval(() => {
+        if (targetIdx <= plan.target.length) {
+          setDisplayTarget(plan.target.slice(0, targetIdx));
+          targetIdx++;
+        } else {
+          clearInterval(targetInterval);
+        }
+      }, 40);
+
+      setTimeout(() => {
+        let reasonIdx = 0;
+        const reasonInterval = setInterval(() => {
+          if (reasonIdx <= plan.reason.length) {
+            setDisplayReason(plan.reason.slice(0, reasonIdx));
+            reasonIdx++;
+          } else {
+            clearInterval(reasonInterval);
+          }
+        }, 25);
+      }, 600);
+
+      setTimeout(() => {
+        let stepIdx = 0;
+        const stepInterval = setInterval(() => {
+          if (stepIdx <= plan.steps.length) {
+            setTypedStep(stepIdx);
+            stepIdx++;
+          } else {
+            clearInterval(stepInterval);
+          }
+        }, 300);
+      }, 1200);
+    }, 1500);
   };
 
   const handleStartPractice = () => {
     onPageChange('practice');
   };
 
+  useEffect(() => {
+    if (currentEfficientPlan && showPlan) {
+      setDisplayTarget(currentEfficientPlan.target);
+      setDisplayReason(currentEfficientPlan.reason);
+      setTypedStep(currentEfficientPlan.steps.length);
+    }
+  }, []);
+
   return (
     <div className="space-y-6">
-      <GlassCard elevated className="p-6 text-center">
-        <h1 className="text-2xl font-extrabold text-text-primary mb-2">RiffCoach</h1>
-        <p className="text-text-secondary mb-4">从喜欢的歌，到第一支 cover</p>
-        <p className="text-sm text-text-tertiary mb-6">
-          AI 会根据你的 cover 目标、今日可用时间、练习历史和反复卡点，生成最小有效练习计划
+      <GlassCard elevated className="p-6 text-center overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-mint to-amber-soft" />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-glow animate-float">
+          <Sparkles size={32} className="text-white" />
+        </div>
+        <h1 className="text-2xl font-extrabold bg-gradient-to-r from-primary via-mint to-amber-soft bg-clip-text text-transparent mb-2">
+          RiffCoach
+        </h1>
+        <p className="text-text-secondary mb-3 font-medium">每天 20 分钟，离你的 cover 更近一步</p>
+        <p className="text-sm text-text-tertiary mb-5">
+          AI 智能分析你的目标、时间和卡点，生成最小有效练习计划
         </p>
+        
+        <div className="grid grid-cols-3 gap-2 mb-5">
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Clock size={16} className="text-primary" />
+            </div>
+            <p className="text-xs text-text-secondary">选时间</p>
+          </div>
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-mint/15 flex items-center justify-center">
+              <Sparkles size={16} className="text-mint" />
+            </div>
+            <p className="text-xs text-text-secondary">AI 生成</p>
+          </div>
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-amber-soft/15 flex items-center justify-center">
+              <CheckCircle2 size={16} className="text-amber-soft" />
+            </div>
+            <p className="text-xs text-text-secondary">开练</p>
+          </div>
+        </div>
+
         <button
           onClick={() => {
             if (confirm('加载演示数据将覆盖当前数据，确定继续吗？')) {
@@ -58,13 +142,13 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
           }}
           className="btn-primary w-full mb-3"
         >
-          加载演示数据
+          加载演示数据，一键体验
         </button>
         <button
           onClick={() => onPageChange('resource')}
           className="btn-secondary w-full"
         >
-          开始 20 分钟高效练习
+          浏览视频教程
         </button>
       </GlassCard>
 
@@ -115,21 +199,40 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
         </button>
       </GlassCard>
 
-      {showPlan && currentEfficientPlan && (
-        <GlassCard elevated className="p-5 fade-in">
-          <h2 className="text-lg font-bold text-text-primary mb-3">今日最小有效目标</h2>
-          <p className="text-primary font-semibold mb-4">{currentEfficientPlan.target}</p>
+      {isGenerating && (
+        <GlassCard elevated className="p-8">
+          <AILoading text="AI 正在为你定制练习计划..." size="lg" />
+        </GlassCard>
+      )}
+
+      {showPlan && currentEfficientPlan && !isGenerating && (
+        <GlassCard elevated className="p-5 animate-fade-in">
+          <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+            <Sparkles size={18} className="text-primary animate-pulse" />
+            今日最小有效目标
+          </h2>
+          <p className="text-primary font-semibold mb-4 min-h-[1.5rem]">
+            {displayTarget}
+            {displayTarget.length < currentEfficientPlan.target.length && (
+              <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-pulse" />
+            )}
+          </p>
           
           <div className="mb-4">
             <h3 className="text-sm font-medium text-text-secondary mb-2">为什么今天练这个</h3>
-            <p className="text-sm text-text-primary">{currentEfficientPlan.reason}</p>
+            <p className="text-sm text-text-primary min-h-[2.5rem]">
+              {displayReason}
+              {displayReason.length < currentEfficientPlan.reason.length && displayReason.length > 0 && (
+                <span className="inline-block w-0.5 h-3 bg-primary ml-0.5 animate-pulse" />
+              )}
+            </p>
           </div>
 
           <div className="mb-4">
             <h3 className="text-sm font-medium text-text-secondary mb-2">练习步骤</h3>
             <div className="space-y-2">
-              {currentEfficientPlan.steps.map((step, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-2 bg-primary-subtle rounded-lg">
+              {currentEfficientPlan.steps.slice(0, typedStep).map((step, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-2 bg-primary-subtle rounded-lg animate-fade-in">
                   <span className="w-6 h-6 flex items-center justify-center bg-primary text-white text-xs rounded-full font-semibold">
                     {idx + 1}
                   </span>

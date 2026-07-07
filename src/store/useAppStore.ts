@@ -82,6 +82,18 @@ function migrateData(data: Partial<AppState>): AppState {
     result.instruments = defaultData.instruments;
   }
 
+  if (result.hasCompletedOnboarding === undefined) {
+    result.hasCompletedOnboarding = false;
+  }
+
+  if (!result.selectedInstrument) {
+    result.selectedInstrument = defaultData.selectedInstrument;
+  }
+
+  if (!result.userLevel) {
+    result.userLevel = defaultData.userLevel;
+  }
+
   return result;
 }
 
@@ -106,6 +118,9 @@ interface AppStore extends AppState {
   loadDemoData: () => void;
   exportData: () => string;
   importData: (data: unknown) => boolean;
+  completeOnboarding: () => void;
+  setSelectedInstrument: (instrument: AppState['selectedInstrument']) => void;
+  setUserLevel: (level: AppState['userLevel']) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -250,6 +265,12 @@ export const useAppStore = create<AppStore>()(
           return false;
         }
       },
+
+      completeOnboarding: () => set({ hasCompletedOnboarding: true }),
+
+      setSelectedInstrument: (instrument) => set({ selectedInstrument: instrument }),
+
+      setUserLevel: (level) => set({ userLevel: level }),
     }),
     {
       name: 'riffcoach-storage',

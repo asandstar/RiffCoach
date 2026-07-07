@@ -1,12 +1,12 @@
 import type { AppState, EfficientPracticePlan, Session, Lesson, CoverProject, AIFeedback, PainPoint } from '@/types';
 
 export function generateEfficientPracticePlan(
-  state: AppState,
+  state: Partial<AppState>,
   availableMinutes: number,
   energyState: string
 ): EfficientPracticePlan {
   const projects = state.coverProjects || [];
-  const recentSessions = [...state.sessions].sort((a, b) => b.date - a.date).slice(0, 7);
+  const recentSessions = [...(state.sessions || [])].sort((a, b) => b.date - a.date).slice(0, 7);
   const painCounts: Record<string, number> = {};
   
   recentSessions.forEach((s) => {
@@ -236,7 +236,7 @@ export function generateAIFeedback(
 
 export function analyzeMaterial(
   material: { title: string; type: string; note?: string },
-  state: AppState
+  state: Partial<AppState>
 ) {
   const title = material.title.toLowerCase();
   const note = (material.note || '').toLowerCase();
@@ -325,9 +325,10 @@ export function analyzeMaterial(
 export function updateCoverProgressFromSession(
   session: Session,
   lesson: Lesson | undefined,
-  state: AppState
+  state: Partial<AppState>
 ): Partial<CoverProject> | null {
   if (!lesson?.projectId || !lesson?.sectionId) return null;
+  if (!state.coverProjects) return null;
 
   const project = state.coverProjects.find((p) => p.id === lesson.projectId);
   if (!project) return null;

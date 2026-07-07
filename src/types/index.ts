@@ -210,6 +210,9 @@ export interface AppState {
   recentResources: { type: string; id: string; timestamp: number }[]
   favoriteResources: string[]
   videoSize: 'compact' | 'normal' | 'full'
+  hasCompletedOnboarding: boolean
+  selectedInstrument: Instrument
+  userLevel: 'beginner' | 'intermediate' | 'advanced'
 }
 
 export type PageType = 

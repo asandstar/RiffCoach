@@ -842,4 +842,7 @@ export const defaultData = {
   recentResources: [],
   favoriteResources: [],
   videoSize: 'compact' as const,
+  hasCompletedOnboarding: false,
+  selectedInstrument: 'electric' as const,
+  userLevel: 'beginner' as const,
 }

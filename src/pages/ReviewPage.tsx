@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Calendar, TrendingUp, AlertTriangle, Music, X, Edit2, Check } from 'lucide-react';
+import { Calendar, TrendingUp, AlertTriangle, Music, X, Edit2, Check, Sparkles, Lightbulb, Flame } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
+import { PracticeHeatmap } from '@/components/PracticeHeatmap';
 import { useAppStore } from '@/store/useAppStore';
 import { getThisWeekSessions, getLastWeekSessions } from '@/utils/aiMock';
 import { formatDate } from '@/utils/date';
@@ -35,6 +36,19 @@ export function ReviewPage({ onPageChange }: ReviewPageProps) {
     });
   });
   const repeatedPains = Object.entries(painCounts).filter(([, c]) => c >= 2);
+  const sortedPains = Object.entries(painCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const maxPainCount = sortedPains.length > 0 ? sortedPains[0][1] : 1;
+
+  const painAdvice: Record<string, string> = {
+    '节奏不稳': '建议使用节拍器从慢速开始练习，逐步提升速度。每天花5分钟做节奏专项训练。',
+    '换和弦慢': '建议单独练习和弦转换，使用20-20-20法则：每个和弦按20秒，换20次，休息20秒。',
+    '手指僵硬': '练习前一定要做5-10分钟的热身和手指拉伸。可以尝试蜘蛛爬练习。',
+    '大横按切换慢': '从简化版大横按开始，先练半横按，再逐步过渡到全横按。',
+    '高把位音准偏差': '放慢速度，用耳朵仔细听每个音。可以配合调音器一起练习。',
+    '拨弦力度不均': '使用空弦练习拨弦力度控制，注意alternate picking的上下拨均衡。',
+    '换弦慢': '单独练习换弦动作，保持右手拨弦角度一致，注意经济拨弦。',
+    '其他': '建议记录具体的卡点细节，方便后续针对性练习。',
+  };
 
   const skillProgress = currentSessions.length > 1 
     ? '整体呈上升趋势' 
@@ -131,6 +145,14 @@ export function ReviewPage({ onPageChange }: ReviewPageProps) {
             </GlassCard>
           </div>
 
+          <GlassCard className="p-5">
+            <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+              <Flame size={20} className="text-amber-soft" />
+              练习热力图
+            </h2>
+            <PracticeHeatmap sessions={sessions} days={35} />
+          </GlassCard>
+
           {coverProjects.length > 0 && (
             <GlassCard className="p-5">
               <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
@@ -198,15 +220,69 @@ export function ReviewPage({ onPageChange }: ReviewPageProps) {
                 反复卡点
               </h2>
               <div className="flex flex-wrap gap-2">
-                {repeatedPains.map(([pain, count]) => (
+                {repeatedPains.length > 0 ? repeatedPains.map(([pain, count]) => (
                   <span key={pain} className="chip chip-warning">{pain} ({count}次)</span>
+                )) : (
+                  <span className="text-sm text-text-tertiary">本周暂无反复卡点，继续保持！</span>
+                )}
+              </div>
+            </GlassCard>
+          )}
+
+          {sortedPains.length > 0 && (
+            <GlassCard elevated className="p-5">
+              <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                <Sparkles size={20} className="text-primary animate-pulse" />
+                AI 卡点智能分析
+              </h2>
+              
+              <div className="space-y-4 mb-5">
+                {sortedPains.map(([pain, count], idx) => (
+                  <div key={pain} className="animate-fade-in" style={{ animationDelay: `${idx * 150}ms` }}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-text-primary flex items-center gap-2">
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
+                          idx === 0 ? 'bg-amber-soft text-white' :
+                          idx === 1 ? 'bg-primary text-white' :
+                          'bg-mint text-white'
+                        }`}>
+                          {idx + 1}
+                        </span>
+                        {pain}
+                      </span>
+                      <span className="text-sm text-text-tertiary">{count} 次</span>
+                    </div>
+                    <div className="h-2 bg-primary-subtle rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${
+                          idx === 0 ? 'bg-amber-soft' :
+                          idx === 1 ? 'bg-primary' :
+                          'bg-mint'
+                        }`}
+                        style={{ width: `${(count / maxPainCount) * 100}%` }}
+                      />
+                    </div>
+                  </div>
                 ))}
+              </div>
+
+              <div className="bg-primary-light rounded-xl p-4">
+                <h3 className="text-sm font-bold text-text-primary mb-2 flex items-center gap-2">
+                  <Lightbulb size={16} className="text-amber-soft" />
+                  AI 改进建议
+                </h3>
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {sortedPains.length > 0 ? (painAdvice[sortedPains[0][0]] || painAdvice['其他']) : '继续保持良好的练习习惯！'}
+                </p>
               </div>
             </GlassCard>
           )}
 
           <GlassCard className="p-5">
-            <h2 className="text-lg font-bold text-text-primary mb-4">AI 下周建议</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+              <Sparkles size={18} className="text-primary" />
+              AI 下周建议
+            </h2>
             <p className="text-text-secondary">{aiSuggestion}</p>
           </GlassCard>
         </>
