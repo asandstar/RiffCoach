@@ -88,7 +88,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
       ) : (
         <div className="space-y-2">
           {episodes.length > 0 ? (
-            <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
+            <div className="max-h-72 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
               {episodes.map((ep) => (
                 <button
                   key={ep.page}

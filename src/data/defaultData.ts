@@ -524,6 +524,13 @@ export const defaultVideoResources = [
       targetBPM: 100,
       steps: ['推弦练习', '揉弦练习', '泛音练习', '组合技巧练习'],
     },
+    episodes: [
+      { page: 1, title: '推弦基础与音准控制', skills: ['推弦'], summary: '学习推弦的基本方法和音准控制', suggestedTaskTitle: '推弦练习' },
+      { page: 2, title: '揉弦技巧详解', skills: ['揉弦'], summary: '学习不同类型的揉弦技巧', suggestedTaskTitle: '揉弦练习' },
+      { page: 3, title: '自然泛音与人工泛音', skills: ['泛音'], summary: '学习泛音技巧', suggestedTaskTitle: '泛音练习' },
+      { page: 4, title: '点弦技巧入门', skills: ['点弦'], summary: '学习点弦技巧', suggestedTaskTitle: '点弦练习' },
+      { page: 5, title: '技巧组合练习', skills: ['综合'], summary: '将各种技巧组合起来练习', suggestedTaskTitle: '综合技巧练习' },
+    ],
   },
   {
     id: 'vid_e3',
@@ -657,6 +664,18 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['持琴练习', '和弦练习', '扫弦练习', '简单弹唱'],
     },
+    episodes: [
+      { page: 1, title: '认识尤克里里与持琴姿势', skills: ['持琴'], summary: '了解尤克里里结构和正确持琴姿势', suggestedTaskTitle: '持琴练习' },
+      { page: 2, title: '基本和弦入门', skills: ['和弦'], summary: '学习常用的基本和弦', suggestedTaskTitle: '和弦练习' },
+      { page: 3, title: '扫弦节奏技巧', skills: ['扫弦', '节奏'], summary: '学习扫弦节奏型', suggestedTaskTitle: '扫弦练习' },
+      { page: 4, title: '调音方法与技巧', skills: ['调音'], summary: '学习GCEA标准调音', suggestedTaskTitle: '调音练习' },
+      { page: 5, title: '简单弹唱入门', skills: ['弹唱'], summary: '学习简单歌曲的弹唱', suggestedTaskTitle: '弹唱练习' },
+      { page: 6, title: '和弦转换技巧', skills: ['和弦', '转换'], summary: '学习和弦之间的快速转换', suggestedTaskTitle: '和弦转换练习' },
+      { page: 7, title: '分解和弦练习', skills: ['分解', '和弦'], summary: '学习分解和弦伴奏', suggestedTaskTitle: '分解和弦练习' },
+      { page: 8, title: '节奏型变化', skills: ['节奏'], summary: '学习不同的节奏型', suggestedTaskTitle: '节奏练习' },
+      { page: 9, title: '常用技巧入门', skills: ['技巧'], summary: '学习切音等常用技巧', suggestedTaskTitle: '技巧练习' },
+      { page: 10, title: '完整曲目练习', skills: ['曲目'], summary: '综合练习完整曲目', suggestedTaskTitle: '完整练习' },
+    ],
   },
   {
     id: 'vid_u2',
