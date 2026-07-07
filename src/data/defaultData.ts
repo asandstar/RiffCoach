@@ -550,6 +550,12 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['慢速练习', '分段练习', '完整练习', '录制回放'],
     },
+    episodes: [
+      { page: 1, title: '经典摇滚Riff练习', skills: ['Riff'], summary: '学习经典摇滚Riff', suggestedTaskTitle: 'Riff练习' },
+      { page: 2, title: '节奏型练习', skills: ['节奏'], summary: '学习摇滚节奏型', suggestedTaskTitle: '节奏练习' },
+      { page: 3, title: 'Solo片段练习', skills: ['Solo'], summary: '学习摇滚Solo片段', suggestedTaskTitle: 'Solo练习' },
+      { page: 4, title: '完整曲目练习', skills: ['综合'], summary: '完整曲目练习', suggestedTaskTitle: '完整练习' },
+    ],
   },
   {
     id: 'vid_e4',
@@ -569,6 +575,13 @@ export const defaultVideoResources = [
       targetBPM: 110,
       steps: ['音阶练习', '模仿练习', '简单即兴', '完整Solo'],
     },
+    episodes: [
+      { page: 1, title: '音阶基础练习', skills: ['音阶'], summary: '学习基础音阶', suggestedTaskTitle: '音阶练习' },
+      { page: 2, title: '旋律构造方法', skills: ['旋律'], summary: '学习如何构造旋律', suggestedTaskTitle: '旋律练习' },
+      { page: 3, title: '节奏变化技巧', skills: ['节奏'], summary: '学习节奏变化', suggestedTaskTitle: '节奏练习' },
+      { page: 4, title: '即兴演奏入门', skills: ['即兴'], summary: '学习即兴演奏', suggestedTaskTitle: '即兴练习' },
+      { page: 5, title: '完整Solo练习', skills: ['综合'], summary: '完整Solo练习', suggestedTaskTitle: 'Solo练习' },
+    ],
   },
   {
     id: 'vid_a1',
@@ -588,6 +601,12 @@ export const defaultVideoResources = [
       targetBPM: 80,
       steps: ['持琴练习', '和弦练习', '扫弦练习', '简单弹唱'],
     },
+    episodes: [
+      { page: 1, title: '持琴姿势与坐姿', skills: ['持琴'], summary: '学习正确的持琴姿势和坐姿', suggestedTaskTitle: '持琴姿势练习' },
+      { page: 2, title: '基础和弦练习', skills: ['和弦'], summary: '学习基础和弦', suggestedTaskTitle: '和弦练习' },
+      { page: 3, title: '扫弦节奏技巧', skills: ['扫弦'], summary: '学习扫弦节奏', suggestedTaskTitle: '扫弦练习' },
+      { page: 4, title: '标准调音方法', skills: ['调音'], summary: '学习标准调音', suggestedTaskTitle: '调音练习' },
+    ],
   },
   {
     id: 'vid_a2',
@@ -607,6 +626,14 @@ export const defaultVideoResources = [
       targetBPM: 80,
       steps: ['拇指练习', '手指配合', '简单曲目', '完整练习'],
     },
+    episodes: [
+      { page: 1, title: '指弹基础与持琴姿势', skills: ['指弹'], summary: '学习指弹的基本持琴姿势', suggestedTaskTitle: '持琴练习' },
+      { page: 2, title: '拇指低音线练习', skills: ['拇指'], summary: '学习拇指弹奏低音线', suggestedTaskTitle: '拇指练习' },
+      { page: 3, title: '手指配合技巧', skills: ['和弦'], summary: '学习手指之间的配合', suggestedTaskTitle: '手指配合练习' },
+      { page: 4, title: '简单指弹曲目', skills: ['旋律'], summary: '学习简单的指弹曲目', suggestedTaskTitle: '曲目练习' },
+      { page: 5, title: '节奏型变化', skills: ['节奏'], summary: '学习不同的节奏型', suggestedTaskTitle: '节奏练习' },
+      { page: 6, title: '综合练习', skills: ['综合'], summary: '综合练习所有技巧', suggestedTaskTitle: '综合练习' },
+    ],
   },
   {
     id: 'vid_a3',
@@ -626,6 +653,13 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['单独练习吉他', '单独练习唱歌', '慢速配合', '完整弹唱'],
     },
+    episodes: [
+      { page: 1, title: '弹唱基础与节奏', skills: ['弹唱'], summary: '学习弹唱的基础节奏', suggestedTaskTitle: '节奏练习' },
+      { page: 2, title: '和弦转换技巧', skills: ['和弦'], summary: '学习和弦快速转换', suggestedTaskTitle: '和弦转换练习' },
+      { page: 3, title: '歌声与吉他配合', skills: ['配合'], summary: '学习歌声与吉他的配合', suggestedTaskTitle: '配合练习' },
+      { page: 4, title: '简单弹唱曲目', skills: ['曲目'], summary: '学习简单弹唱曲目', suggestedTaskTitle: '弹唱练习' },
+      { page: 5, title: '情感表达技巧', skills: ['表达'], summary: '学习弹唱中的情感表达', suggestedTaskTitle: '表达练习' },
+    ],
   },
   {
     id: 'vid_a4',
@@ -645,6 +679,13 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['打板练习', '泛音练习', '特殊调弦练习', '综合练习'],
     },
+    episodes: [
+      { page: 1, title: '打板技巧入门', skills: ['打板'], summary: '学习木吉他打板技巧', suggestedTaskTitle: '打板练习' },
+      { page: 2, title: '自然泛音技巧', skills: ['泛音'], summary: '学习自然泛音', suggestedTaskTitle: '泛音练习' },
+      { page: 3, title: '特殊调弦方法', skills: ['调弦'], summary: '学习特殊调弦', suggestedTaskTitle: '调弦练习' },
+      { page: 4, title: '效果器使用入门', skills: ['效果器'], summary: '学习效果器的基本使用', suggestedTaskTitle: '效果器练习' },
+      { page: 5, title: '综合技巧练习', skills: ['综合'], summary: '综合练习所有技巧', suggestedTaskTitle: '综合练习' },
+    ],
   },
   {
     id: 'vid_u1',
@@ -695,6 +736,13 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['单独练习尤克里里', '单独练习唱歌', '慢速配合', '完整弹唱'],
     },
+    episodes: [
+      { page: 1, title: '弹唱基础节奏', skills: ['弹唱'], summary: '学习弹唱的基础节奏', suggestedTaskTitle: '节奏练习' },
+      { page: 2, title: '和弦转换技巧', skills: ['和弦'], summary: '学习和弦快速转换', suggestedTaskTitle: '和弦转换练习' },
+      { page: 3, title: '歌声与乐器配合', skills: ['配合'], summary: '学习歌声与乐器的配合', suggestedTaskTitle: '配合练习' },
+      { page: 4, title: '简单弹唱曲目', skills: ['曲目'], summary: '学习简单弹唱曲目', suggestedTaskTitle: '弹唱练习' },
+      { page: 5, title: '情感表达技巧', skills: ['表达'], summary: '学习弹唱中的情感表达', suggestedTaskTitle: '表达练习' },
+    ],
   },
   {
     id: 'vid_u3',
@@ -714,6 +762,14 @@ export const defaultVideoResources = [
       targetBPM: 85,
       steps: ['拇指练习', '手指配合', '简单曲目', '完整练习'],
     },
+    episodes: [
+      { page: 1, title: '指弹基础与持琴姿势', skills: ['指弹'], summary: '学习尤克里里指弹的基本持琴姿势和右手手指分配', suggestedTaskTitle: '持琴与手指分配练习' },
+      { page: 2, title: '拇指低音线练习', skills: ['拇指'], summary: '学习拇指弹奏低音线的方法', suggestedTaskTitle: '拇指低音练习' },
+      { page: 3, title: '食指与中指配合', skills: ['和弦'], summary: '学习食指和中指的拨弦配合技巧', suggestedTaskTitle: '手指配合练习' },
+      { page: 4, title: '简单指弹曲目练习', skills: ['旋律'], summary: '学习简单的指弹曲目', suggestedTaskTitle: '简单曲目练习' },
+      { page: 5, title: '节奏型变化', skills: ['节奏'], summary: '学习不同的指弹节奏型', suggestedTaskTitle: '节奏型练习' },
+      { page: 6, title: '综合练习', skills: ['综合'], summary: '综合练习所有指弹技巧', suggestedTaskTitle: '综合指弹练习' },
+    ],
   },
   {
     id: 'vid_u4',
@@ -733,6 +789,13 @@ export const defaultVideoResources = [
       targetBPM: 90,
       steps: ['切音练习', '泛音练习', '特殊调弦练习', '综合练习'],
     },
+    episodes: [
+      { page: 1, title: '切音技巧详解', skills: ['切音'], summary: '学习尤克里里切音技巧', suggestedTaskTitle: '切音练习' },
+      { page: 2, title: '自然泛音技巧', skills: ['泛音'], summary: '学习自然泛音', suggestedTaskTitle: '泛音练习' },
+      { page: 3, title: '特殊调弦方法', skills: ['调弦'], summary: '学习特殊调弦', suggestedTaskTitle: '调弦练习' },
+      { page: 4, title: '节奏变化技巧', skills: ['节奏'], summary: '学习节奏变化', suggestedTaskTitle: '节奏练习' },
+      { page: 5, title: '综合技巧练习', skills: ['综合'], summary: '综合练习所有技巧', suggestedTaskTitle: '综合练习' },
+    ],
   },
   {
     id: 'vid_u5',
@@ -752,6 +815,12 @@ export const defaultVideoResources = [
       targetBPM: 85,
       steps: ['慢速练习', '分段练习', '完整练习', '录制回放'],
     },
+    episodes: [
+      { page: 1, title: '入门曲目练习', skills: ['曲目'], summary: '学习入门曲目', suggestedTaskTitle: '入门曲目练习' },
+      { page: 2, title: '弹唱曲目练习', skills: ['弹唱'], summary: '学习弹唱曲目', suggestedTaskTitle: '弹唱练习' },
+      { page: 3, title: '指弹曲目练习', skills: ['指弹'], summary: '学习指弹曲目', suggestedTaskTitle: '指弹练习' },
+      { page: 4, title: '表演技巧', skills: ['表演'], summary: '学习表演技巧', suggestedTaskTitle: '表演练习' },
+    ],
   },
 ]
 

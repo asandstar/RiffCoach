@@ -14,7 +14,7 @@ const instrumentCategories: { id: string; name: string; icon: string }[] = [
   { id: 'all', name: '全部', icon: '🎸' },
   { id: 'electric', name: '电吉他', icon: '⚡' },
   { id: 'acoustic', name: '木吉他', icon: '🌲' },
-  { id: 'ukulele', name: '尤克里里', icon: '�' },
+  { id: 'ukulele', name: '尤克里里', icon: '🎵' },
 ];
 
 const subCategories: { id: string; name: string; icon: string }[] = [

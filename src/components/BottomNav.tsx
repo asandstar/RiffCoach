@@ -20,7 +20,7 @@ export function BottomNav({ currentPage, onPageChange, show }: BottomNavProps) {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-border-default z-50 pb-safe">
-      <div className="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
+      <div className="max-w-5xl mx-auto flex justify-around items-center h-16 px-2 lg:px-8">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;

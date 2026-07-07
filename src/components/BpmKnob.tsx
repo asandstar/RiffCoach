@@ -111,10 +111,10 @@ export function BpmKnob({ value, onChange, min = MIN_BPM, max = MAX_BPM }: BpmKn
   }, [value]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 z-10 relative">
       <div
         ref={knobRef}
-        className={`relative w-32 h-32 rounded-full cursor-pointer select-none transition-shadow ${
+        className={`relative w-32 h-32 rounded-full cursor-pointer select-none transition-shadow z-20 ${
           isDragging ? 'shadow-glow' : 'hover:shadow-elevated'
         }`}
         style={{
@@ -180,16 +180,16 @@ export function BpmKnob({ value, onChange, min = MIN_BPM, max = MAX_BPM }: BpmKn
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 z-10 relative">
         <button
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all"
+          className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all z-10 relative"
         >
           <span className="text-xl font-bold text-text-secondary">-</span>
         </button>
         <button
           onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all"
+          className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all z-10 relative"
         >
           <span className="text-xl font-bold text-text-secondary">+</span>
         </button>

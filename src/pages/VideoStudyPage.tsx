@@ -438,10 +438,10 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   <p className="text-xs text-text-tertiary mb-1">练习时长</p>
                   <p className="text-2xl font-bold text-text-primary font-mono tabular-nums">{formatTime(timeElapsed)}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 z-10">
                   <button
                     onClick={toggleTimer}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
                       isTimerRunning ? 'bg-amber-soft text-white shadow-glow' : 'bg-primary-light text-text-secondary'
                     }`}
                   >
@@ -449,13 +449,13 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   </button>
                   <button
                     onClick={resetPractice}
-                    className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                    className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
                   >
                     <RotateCcw size={18} />
                   </button>
                   <button
                     onClick={toggleMetronome}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
                       isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
                     }`}
                     title="节拍器"
@@ -497,16 +497,16 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
               <GlassCard elevated className="p-6 text-center">
                 <div className="text-5xl font-bold text-primary font-mono mb-4 tabular-nums">{formatTime(timeElapsed)}</div>
                 
-                <div className="flex items-center justify-center gap-3 mb-6">
+                <div className="flex items-center justify-center gap-3 mb-6 z-10 relative">
                   <button
                     onClick={skipBackward}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
                   >
                     <ChevronLeft size={20} />
                   </button>
                   <button
                     onClick={toggleTimer}
-                    className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-16 h-16 rounded-full flex items-center justify-center transition-all z-20 relative ${
                       isTimerRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
                     }`}
                   >
@@ -514,16 +514,16 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   </button>
                   <button
                     onClick={skipForward}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
                   >
                     <ChevronRight size={20} />
                   </button>
                 </div>
 
-                <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center justify-center gap-4 z-10 relative">
                   <button
                     onClick={toggleMetronome}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
                       isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
                     }`}
                   >
@@ -531,7 +531,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   </button>
                   <button
                     onClick={resetPractice}
-                    className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                    className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
                   >
                     <RotateCcw size={18} />
                   </button>
