@@ -481,6 +481,143 @@
 </section>
 
 <section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">视频练习模式（新增）</h2>
+    <div class="glass-elevated" style="padding:32px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#D4C4E8,#B89CD4);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">🎬</div>
+            <div><h3 style="font-size:1.25rem;font-weight:800;margin-bottom:6px;">边看边练，无缝切换</h3><p style="font-size:0.875rem;color:var(--text-secondary);">视频学习页新增练习模式，保留视频窗口的同时，将课程介绍区域替换为完整练习工具面板</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+            <div><h4 style="font-size:0.9375rem;font-weight:700;margin-bottom:8px;">核心特性</h4><ul style="font-size:0.8125rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;"><li>视频窗口始终可见，支持选集切换</li><li>练习工具完整集成：计时器、节拍器、BPM旋钮</li><li>显示当前分集标题，方便追踪学习进度</li><li>练习记录自动保存，支持自评和卡点标记</li><li>一键完成练习，AI自动生成反馈</li></ul></div>
+            <div><h4 style="font-size:0.9375rem;font-weight:700;margin-bottom:8px;">使用场景</h4><ul style="font-size:0.8125rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;"><li>跟着视频教程练习，边看边模仿</li><li>针对特定分集进行专项训练</li><li>在视频指导下逐步提升BPM</li><li>记录练习中的卡点，方便后续复盘</li></ul></div>
+        </div>
+        <div style="background:#F0EEF5;border-radius:16px;padding:16px;border:1px solid rgba(184,156,212,0.15);">
+            <div style="display:flex;gap:12px;margin-bottom:12px;">
+                <div style="flex:1;background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-primary);">00:25</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">练习时长</div></div>
+                <div style="flex:1;background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-amber);">75</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">当前 BPM</div></div>
+                <div style="flex:1;background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--color-mint);">♪ ON</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">节拍器</div></div>
+                <div style="flex:1;background:rgba(255,255,255,0.6);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:#4A3F5C;">P3</div><div style="font-size:0.6875rem;color:var(--text-tertiary);">当前分集</div></div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <div style="flex:1;padding:10px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;color:white;background:var(--gradient-primary);text-align:center;">▶ 开始练习</div>
+                <div style="flex:1;padding:10px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;color:var(--text-primary);background:rgba(255,255,255,0.6);text-align:center;">✓ 完成练习</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">已修复问题</h2>
+    <div class="glass" style="padding:32px;">
+        <div style="display:grid;gap:16px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;flex-shrink:0;">✓</span>
+                <div>
+                    <div style="font-size:0.9375rem;font-weight:700;color:var(--text-primary);">节拍器无声音</div>
+                    <div style="font-size:0.8125rem;color:var(--text-tertiary);">修复 AudioContext 创建时机问题，在用户交互事件中创建并恢复</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;flex-shrink:0;">✓</span>
+                <div>
+                    <div style="font-size:0.9375rem;font-weight:700;color:var(--text-primary);">计时器开始按钮无响应</div>
+                    <div style="font-size:0.8125rem;color:var(--text-tertiary);">修正 toggleTimer 函数，确保状态正确切换</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;flex-shrink:0;">✓</span>
+                <div>
+                    <div style="font-size:0.9375rem;font-weight:700;color:var(--text-primary);">切换选集时标题不更新</div>
+                    <div style="font-size:0.8125rem;color:var(--text-tertiary);">添加 currentEpisode 计算，显示当前分集标题</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;flex-shrink:0;">✓</span>
+                <div>
+                    <div style="font-size:0.9375rem;font-weight:700;color:var(--text-primary);">B站API代理请求失败</div>
+                    <div style="font-size:0.8125rem;color:var(--text-tertiary);">减少代理尝试次数，优先使用预置分集数据，优化错误处理</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;flex-shrink:0;">✓</span>
+                <div>
+                    <div style="font-size:0.9375rem;font-weight:700;color:var(--text-primary);">按钮点击无响应</div>
+                    <div style="font-size:0.8125rem;color:var(--text-tertiary);">修复今日页、知识库页多处按钮缺少 onClick 事件的问题</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">UI 设计改进建议</h2>
+    <div class="glass" style="padding:32px;">
+        <div style="display:grid;gap:24px;">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="width:24px;height:24px;border-radius:8px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">1</span>
+                    <h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);">视觉层次优化</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.8125rem;color:var(--text-secondary);">
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">增强卡片阴影层次，区分主内容和次要信息</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">优化字体大小梯度，建立清晰的信息层级</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">增加留白，减少视觉拥挤感</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">统一间距系统，提升整体一致性</div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#7EBCA6,#B8D8C8);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">2</span>
+                    <h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);">交互体验提升</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.8125rem;color:var(--text-secondary);">
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">添加按钮悬停/点击微动画，增强反馈感</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">页面切换添加过渡动画，提升流畅度</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">练习完成添加庆祝动画，增强成就感</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">BPM旋钮旋转添加惯性效果，更真实</div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#F0D8A8,#E8C87A);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">3</span>
+                    <h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);">移动端适配优化</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.8125rem;color:var(--text-secondary);">
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">增大触摸目标区域（按钮≥44px）</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">优化横屏模式布局</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">底部导航适配刘海屏</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">减少页面滚动，优化信息密度</div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#8BA4C7,#B8D8C8);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">4</span>
+                    <h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);">练习沉浸模式</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.8125rem;color:var(--text-secondary);">
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">全屏练习界面，隐藏导航栏</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">视频画中画模式，边练边看</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">深色模式支持，夜间练习护眼</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">快捷键支持，无需触碰屏幕</div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#E8B8C4,#F0D8E8);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">5</span>
+                    <h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);">数据可视化增强</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.8125rem;color:var(--text-secondary);">
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">练习时长趋势图（周/月）</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">BPM 提升曲线可视化</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">卡点分布热力图</div>
+                    <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.4);">Cover 进度环形图展示</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="max-width:800px;margin:0 auto;padding:40px 24px;">
     <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:28px;">功能路线图</h2>
     <div class="glass" style="padding:32px;">
         <div style="display:grid;gap:14px;">
@@ -490,9 +627,11 @@
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);"><strong>BPM 旋转旋钮</strong>（270° 拖拽调节 + 手动输入）</span></div>
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);"><strong>目录式知识库</strong>（可折叠导航 + 双层分类）</span></div>
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);">AI 练后反馈（尝试 BPM / 最高干净 BPM）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(126,188,166,0.2);color:#7EBCA6;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</span><span style="font-size:0.9375rem;color:var(--text-secondary);"><strong>视频练习模式</strong>（保留视频窗口 + 练习工具集成）</span></div>
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">练习录音 + 波形可视化</span></div>
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">社交分享（练习打卡 / Cover 成果）</span></div>
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">PWA 支持（离线使用 / 推送提醒）</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:24px;height:24px;border-radius:50%;background:rgba(184,156,212,0.2);color:#B89CD4;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">◯</span><span style="font-size:0.9375rem;color:var(--text-secondary);">练习沉浸模式（全屏 + 深色主题 + 快捷键）</span></div>
         </div>
     </div>
 </section>

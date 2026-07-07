@@ -1,4 +1,4 @@
-import { Calendar, Home, Music, ClipboardList, User, BookOpen } from 'lucide-react';
+import { Home, Music, ClipboardList, User, BookOpen } from 'lucide-react';
 import type { PageType } from '@/types';
 
 interface BottomNavProps {

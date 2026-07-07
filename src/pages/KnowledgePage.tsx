@@ -61,15 +61,7 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
         }`}
       >
         <div className="flex items-center gap-2 mb-4">
-          <button
-            onClick={() => onPageChange('me')}
-            className="p-2 hover:bg-primary-light rounded-full transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          {!isNavCollapsed && (
-            <h1 className="text-xl font-bold text-text-primary">知识库</h1>
-          )}
+          <h1 className="text-xl font-bold text-text-primary">知识库</h1>
           <button
             onClick={toggleNav}
             className="ml-auto p-2 hover:bg-primary-light rounded-full transition-colors"
@@ -257,11 +249,11 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
             )}
 
             <div className="flex gap-3">
-              <button className="flex-1 btn-primary flex items-center justify-center gap-2">
+              <button onClick={() => onPageChange('practice')} className="flex-1 btn-primary flex items-center justify-center gap-2">
                 <Play size={18} />
                 加入练习
               </button>
-              <button className="flex-1 btn-secondary flex items-center justify-center gap-2">
+              <button onClick={() => onPageChange('resource')} className="flex-1 btn-secondary flex items-center justify-center gap-2">
                 <BookOpen size={18} />
                 相关视频
               </button>
