@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation } from '@/types';
+import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation, KnowledgeReadHistory } from '@/types';
 import { defaultData } from '@/data/defaultData';
 import { generateDemoData } from '@/data/demoData';
 import { extractBvid } from '@/utils/bilibili';
@@ -74,6 +74,10 @@ function migrateData(data: Partial<AppState>): AppState {
     result.knowledgeBase = { ...defaultData.knowledgeBase };
   }
 
+  if (!result.knowledgeBase.readHistory || !Array.isArray(result.knowledgeBase.readHistory)) {
+    result.knowledgeBase.readHistory = [];
+  }
+
   if (!result.painPointOptions || !Array.isArray(result.painPointOptions)) {
     result.painPointOptions = [...defaultData.painPointOptions];
   }
@@ -126,6 +130,9 @@ interface AppStore extends AppState {
   setSelectedInstrument: (instrument: AppState['selectedInstrument']) => void;
   setUserLevel: (level: AppState['userLevel']) => void;
   updateVideoProgress: (videoId: string, page: number, progress: number) => void;
+  toggleKnowledgeFavorite: (knowledgeId: string) => void;
+  markKnowledgeRead: (knowledgeId: string) => void;
+  updateKnowledgeReadProgress: (knowledgeId: string, progress: number) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -296,6 +303,72 @@ export const useAppStore = create<AppStore>()(
             ...state.videoProgresses,
             { videoId, page, progress, lastWatchedAt: Date.now() },
           ],
+        };
+      }),
+
+      toggleKnowledgeFavorite: (knowledgeId) => set((state) => {
+        const isFav = state.knowledgeBase.favorites.includes(knowledgeId);
+        return {
+          knowledgeBase: {
+            ...state.knowledgeBase,
+            favorites: isFav
+              ? state.knowledgeBase.favorites.filter((id) => id !== knowledgeId)
+              : [...state.knowledgeBase.favorites, knowledgeId],
+          },
+        };
+      }),
+
+      markKnowledgeRead: (knowledgeId) => set((state) => {
+        const existingIndex = state.knowledgeBase.readHistory.findIndex(
+          (h) => h.id === knowledgeId
+        );
+        if (existingIndex >= 0) {
+          return {
+            knowledgeBase: {
+              ...state.knowledgeBase,
+              readHistory: state.knowledgeBase.readHistory.map((h, idx) =>
+                idx === existingIndex
+                  ? { ...h, readAt: Date.now(), progress: 100 }
+                  : h
+              ),
+            },
+          };
+        }
+        return {
+          knowledgeBase: {
+            ...state.knowledgeBase,
+            readHistory: [
+              ...state.knowledgeBase.readHistory,
+              { id: knowledgeId, readAt: Date.now(), progress: 100 },
+            ],
+          },
+        };
+      }),
+
+      updateKnowledgeReadProgress: (knowledgeId, progress) => set((state) => {
+        const existingIndex = state.knowledgeBase.readHistory.findIndex(
+          (h) => h.id === knowledgeId
+        );
+        if (existingIndex >= 0) {
+          return {
+            knowledgeBase: {
+              ...state.knowledgeBase,
+              readHistory: state.knowledgeBase.readHistory.map((h, idx) =>
+                idx === existingIndex
+                  ? { ...h, readAt: Date.now(), progress }
+                  : h
+              ),
+            },
+          };
+        }
+        return {
+          knowledgeBase: {
+            ...state.knowledgeBase,
+            readHistory: [
+              ...state.knowledgeBase.readHistory,
+              { id: knowledgeId, readAt: Date.now(), progress },
+            ],
+          },
         };
       }),
     }),

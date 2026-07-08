@@ -42,7 +42,7 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
 
     setTimeout(() => {
       const plan = generateEfficientPracticePlan(
-        { coverProjects, sessions, sources: [], knowledgeBase: { categories: [], items: [], videos: [], favorites: [] }, materialInbox: [], videoResources, recentResources, favoriteResources: [], instruments: [], painPointOptions: [], currentEfficientPlan: null, videoSize: 'compact' },
+        { coverProjects, sessions, sources: [], knowledgeBase: { categories: [], items: [], videos: [], favorites: [], readHistory: [] }, materialInbox: [], videoResources, recentResources, favoriteResources: [], instruments: [], painPointOptions: [], currentEfficientPlan: null, videoSize: 'compact' },
         selectedTime,
         selectedEnergy
       );

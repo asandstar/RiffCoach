@@ -158,6 +158,19 @@ export interface VideoResource {
   favorite?: boolean
 }
 
+export interface KnowledgeSource {
+  type: 'book' | 'video' | 'website' | 'tutorial' | 'manual' | 'course'
+  title: string
+  author?: string
+  url?: string
+}
+
+export interface KnowledgeReadHistory {
+  id: string
+  readAt: number
+  progress: number // 0-100
+}
+
 export interface KnowledgeBaseItem {
   id: string
   category: string
@@ -171,6 +184,10 @@ export interface KnowledgeBaseItem {
   commonMistakes: string[]
   practiceSuggestions: string[]
   content: { type: string; text?: string; items?: string[] }[]
+  sources?: KnowledgeSource[]
+  readingTime?: number // 预计阅读时间(分钟)
+  relatedKnowledgeIds?: string[]
+  relatedVideoIds?: string[]
 }
 
 export interface KnowledgeCategory {
@@ -209,6 +226,7 @@ export interface AppState {
     items: KnowledgeBaseItem[]
     videos: VideoResource[]
     favorites: string[]
+    readHistory: KnowledgeReadHistory[]
   }
   coverProjects: CoverProject[]
   currentEfficientPlan: EfficientPracticePlan | null

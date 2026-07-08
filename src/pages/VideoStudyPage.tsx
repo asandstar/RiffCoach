@@ -278,7 +278,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
         coverProjects,
         sessions: [...sessions, { ...sessionData, id: 'temp' }],
         sources,
-        knowledgeBase: { categories: [], items: [], videos: [], favorites: [] },
+        knowledgeBase: { categories: [], items: [], videos: [], favorites: [], readHistory: [] },
         materialInbox: [],
         videoResources: [],
         recentResources: [],

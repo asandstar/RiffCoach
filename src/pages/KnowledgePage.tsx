@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, TrendingUp, AlertTriangle, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { ArrowLeft, BookOpen, TrendingUp, AlertTriangle, Play, ChevronLeft, ChevronRight, Search, Star, Clock, ExternalLink, Heart, CheckCircle } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
-import type { PageType, KnowledgeBaseItem } from '@/types';
+import type { PageType, KnowledgeBaseItem, KnowledgeSource } from '@/types';
 
 const STORAGE_KEY = 'knowledge_nav_collapsed';
 
@@ -25,11 +25,45 @@ const subCategories: { id: string; name: string; icon: string }[] = [
 ];
 
 export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
-  const { knowledgeBase } = useAppStore();
+  const { knowledgeBase, toggleKnowledgeFavorite, markKnowledgeRead, videoResources } = useAppStore();
   const [selectedInstrument, setSelectedInstrument] = useState('all');
   const [selectedSubCategory, setSelectedSubCategory] = useState('basics');
   const [selectedItem, setSelectedItem] = useState<KnowledgeBaseItem | null>(null);
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  // 搜索过滤逻辑
+  const searchFilteredItems = useMemo(() => {
+    if (!searchQuery.trim()) return knowledgeBase.items;
+    const query = searchQuery.toLowerCase();
+    return knowledgeBase.items.filter((item) => {
+      return (
+        item.title.toLowerCase().includes(query) ||
+        item.summary.toLowerCase().includes(query) ||
+        item.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+        item.relatedSkills.some((skill) => skill.toLowerCase().includes(query))
+      );
+    });
+  }, [searchQuery, knowledgeBase.items]);
+
+  // 判断是否已收藏
+  const isFavorite = (id: string) => knowledgeBase.favorites.includes(id);
+
+  // 判断是否已读
+  const isRead = (id: string) => knowledgeBase.readHistory.some((h) => h.id === id);
+
+  // 获取阅读时间
+  const getReadTime = (id: string) => {
+    const history = knowledgeBase.readHistory.find((h) => h.id === id);
+    return history?.readAt;
+  };
+
+  // 处理文章点击
+  const handleItemClick = (item: KnowledgeBaseItem) => {
+    setSelectedItem(item);
+    markKnowledgeRead(item.id);
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -46,12 +80,17 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
     setIsNavCollapsed((prev) => !prev);
   };
 
-  const filteredItems = knowledgeBase.items.filter((item) => {
+  const filteredItems = searchFilteredItems.filter((item) => {
     if (selectedInstrument === 'all') return true;
     return item.instrument === selectedInstrument || item.instrument === 'all';
   });
 
-  const currentItems = filteredItems.filter((item) => item.category === selectedSubCategory);
+  // 收藏筛选
+  const displayItems = showFavoritesOnly 
+    ? filteredItems.filter((item) => isFavorite(item.id))
+    : filteredItems;
+
+  const currentItems = displayItems.filter((item) => item.category === selectedSubCategory);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4">
@@ -148,22 +187,79 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
       </div>
 
       <div className="flex-1">
+        {/* 搜索栏 */}
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" size={18} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索知识点（标题、摘要、标签）..."
+              className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-sm rounded-xl border border-primary-light/30 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-text-primary placeholder:text-text-tertiary"
+            />
+          </div>
+          <button
+            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+            className={`p-2 rounded-xl transition-all ${
+              showFavoritesOnly
+                ? 'bg-primary text-white'
+                : 'bg-white/50 text-text-secondary hover:bg-primary-light'
+            }`}
+            title={showFavoritesOnly ? '显示全部' : '只显示收藏'}
+          >
+            <Heart size={20} fill={showFavoritesOnly ? 'currentColor' : 'none'} />
+          </button>
+        </div>
+
+        {/* 搜索结果提示 */}
+        {searchQuery && (
+          <div className="mb-3 text-sm text-text-secondary">
+            找到 {searchFilteredItems.length} 个相关知识点
+          </div>
+        )}
+
         {selectedItem ? (
           <GlassCard elevated className="p-6">
-            <button
-              onClick={() => setSelectedItem(null)}
-              className="flex items-center gap-2 text-text-secondary hover:text-text-primary mb-4"
-            >
-              <ArrowLeft size={16} />
-              返回列表
-            </button>
-            
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() => setSelectedItem(null)}
+                className="flex items-center gap-2 text-text-secondary hover:text-text-primary"
+              >
+                <ArrowLeft size={16} />
+                返回列表
+              </button>
+              <button
+                onClick={() => toggleKnowledgeFavorite(selectedItem.id)}
+                className={`p-2 rounded-full transition-all ${
+                  isFavorite(selectedItem.id)
+                    ? 'bg-primary text-white'
+                    : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                }`}
+                title={isFavorite(selectedItem.id) ? '取消收藏' : '收藏'}
+              >
+                <Star size={20} fill={isFavorite(selectedItem.id) ? 'currentColor' : 'none'} />
+              </button>
+            </div>
+
             <h2 className="text-2xl font-bold text-text-primary mb-2">{selectedItem.title}</h2>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <span className="chip chip-primary">{selectedItem.stage}</span>
               <span className="text-sm text-text-tertiary">
                 难度 {'★'.repeat(selectedItem.difficulty)}{'☆'.repeat(5 - selectedItem.difficulty)}
               </span>
+              {selectedItem.readingTime && (
+                <span className="text-sm text-text-tertiary flex items-center gap-1">
+                  <Clock size={14} />
+                  {selectedItem.readingTime}分钟
+                </span>
+              )}
+              {isRead(selectedItem.id) && (
+                <span className="text-xs chip chip-success flex items-center gap-1">
+                  <CheckCircle size={12} />
+                  已读
+                </span>
+              )}
               <div className="flex gap-1">
                 {selectedItem.tags.map((tag) => (
                   <span key={tag} className="text-xs chip chip-primary">{tag}</span>
@@ -248,6 +344,87 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
               </div>
             )}
 
+            {/* 资料来源 */}
+            {selectedItem.sources && selectedItem.sources.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+                  <BookOpen size={18} className="text-primary" />
+                  资料来源
+                </h3>
+                <div className="space-y-2">
+                  {selectedItem.sources.map((source, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-text-secondary">
+                      <span className="text-xs chip chip-primary">{source.type}</span>
+                      <span className="text-sm">{source.title}</span>
+                      {source.author && <span className="text-xs text-text-tertiary">- {source.author}</span>}
+                      {source.url && (
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary-dark"
+                        >
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 相关知识点推荐 */}
+            {selectedItem.relatedKnowledgeIds && selectedItem.relatedKnowledgeIds.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-text-primary mb-3">相关知识点</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedItem.relatedKnowledgeIds.map((id) => {
+                    const relatedItem = knowledgeBase.items.find((item) => item.id === id);
+                    if (!relatedItem) return null;
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => setSelectedItem(relatedItem)}
+                        className="chip chip-primary hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                      >
+                        {relatedItem.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 相关视频推荐 */}
+            {selectedItem.relatedVideoIds && selectedItem.relatedVideoIds.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-text-primary mb-3">推荐视频教程</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {selectedItem.relatedVideoIds.map((id) => {
+                    const video = videoResources.find((v) => v.id === id);
+                    if (!video) return null;
+                    return (
+                      <GlassCard
+                        key={id}
+                        className="p-3 cursor-pointer hover:shadow-elevated transition-shadow"
+                        onClick={() => onPageChange('video-study')}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center">
+                            <Play size={20} className="text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-text-primary truncate">{video.title}</h4>
+                            <p className="text-xs text-text-tertiary mt-1">{video.stage} · {video.instrument}</p>
+                          </div>
+                        </div>
+                      </GlassCard>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-3">
               <button onClick={() => onPageChange('practice')} className="flex-1 btn-primary flex items-center justify-center gap-2">
                 <Play size={18} />
@@ -268,16 +445,46 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
             {currentItems.length === 0 ? (
               <GlassCard className="p-8 text-center">
                 <BookOpen size={32} className="text-text-tertiary mx-auto mb-4" />
-                <p className="text-text-secondary">该分类下暂无内容</p>
+                <p className="text-text-secondary">
+                  {showFavoritesOnly ? '暂无收藏的知识点' : searchQuery ? '未找到相关知识点' : '该分类下暂无内容'}
+                </p>
               </GlassCard>
             ) : (
               currentItems.map((item) => (
                 <GlassCard
                   key={item.id}
-                  className="p-5 cursor-pointer hover:shadow-elevated transition-shadow"
-                  onClick={() => setSelectedItem(item)}
+                  className={`p-5 cursor-pointer hover:shadow-elevated transition-shadow relative ${
+                    isRead(item.id) ? 'bg-white/40' : ''
+                  }`}
+                  onClick={() => handleItemClick(item)}
                 >
-                  <div className="flex items-start justify-between">
+                  {/* 已读标记 */}
+                  {isRead(item.id) && (
+                    <div className="absolute top-3 left-3">
+                      <span className="text-xs chip chip-success flex items-center gap-1 opacity-70">
+                        <CheckCircle size={10} />
+                        已读
+                      </span>
+                    </div>
+                  )}
+
+                  {/* 收藏按钮 */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleKnowledgeFavorite(item.id);
+                    }}
+                    className={`absolute top-3 right-3 p-1.5 rounded-full transition-all ${
+                      isFavorite(item.id)
+                        ? 'bg-primary text-white'
+                        : 'bg-white/50 text-text-tertiary hover:bg-primary-light hover:text-primary'
+                    }`}
+                    title={isFavorite(item.id) ? '取消收藏' : '收藏'}
+                  >
+                    <Star size={16} fill={isFavorite(item.id) ? 'currentColor' : 'none'} />
+                  </button>
+
+                  <div className="flex items-start justify-between pr-8">
                     <div className="flex-1">
                       <h3 className="font-bold text-text-primary text-lg">{item.title}</h3>
                       <p className="text-text-secondary text-sm mt-1 line-clamp-2">{item.summary}</p>
@@ -287,6 +494,12 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
                         {'★'.repeat(item.difficulty)}{'☆'.repeat(5 - item.difficulty)}
                       </span>
                       <span className="text-xs chip chip-primary">{item.stage}</span>
+                      {item.readingTime && (
+                        <span className="text-xs text-text-tertiary flex items-center gap-1">
+                          <Clock size={12} />
+                          {item.readingTime}分钟
+                        </span>
+                      )}
                     </div>
                   </div>
                   
