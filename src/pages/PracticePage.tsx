@@ -40,6 +40,8 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   const timerRef = useRef<number | null>(null);
   const metronomeRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const bpmRef = useRef(bpm);
+  const beatCounterRef = useRef(0);
 
   const currentProject = coverProjects[0];
   const currentSection = currentProject?.sections.find((s) => s.progress < 100);
@@ -52,86 +54,136 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    setIsRunning(false);
+    // 不再在这里设置 isRunning，由 toggleTimer 统一管理状态
   }, []);
 
   const stopMetronome = useCallback(() => {
     if (metronomeRef.current) {
-      clearInterval(metronomeRef.current);
+      clearTimeout(metronomeRef.current);
       metronomeRef.current = null;
     }
     setIsMetronomeOn(false);
+    beatCounterRef.current = 0;
   }, []);
 
+  // 同步 bpmRef，确保节拍器始终使用最新 BPM
+  useEffect(() => {
+    bpmRef.current = bpm;
+  }, [bpm]);
+
+  // 计时器 effect
   useEffect(() => {
     if (isRunning) {
       timerRef.current = window.setInterval(() => {
         setTimeElapsed((prev) => prev + 1);
       }, 1000);
     } else {
-      stopTimer();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
 
-    return () => stopTimer();
-  }, [isRunning, stopTimer]);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [isRunning]);
 
+  // 节拍器 effect - 使用 setTimeout 递归，只监听 isMetronomeOn
+  // BPM 变化通过 bpmRef 动态读取，不需要重启节拍器
   useEffect(() => {
     if (isMetronomeOn) {
-      const interval = (60 / bpm) * 1000;
-      let beatCounter = 0;
-      
       const playClick = () => {
-        const ctx = audioContextRef.current;
-        if (!ctx) return;
-        if (ctx.state === 'suspended') {
-          ctx.resume();
+        try {
+          const ctx = audioContextRef.current;
+          if (!ctx) return;
+
+          // 自动恢复 suspended 状态的 AudioContext
+          if (ctx.state === 'suspended') {
+            ctx.resume().catch((err) => {
+              console.warn('AudioContext resume failed:', err);
+            });
+          }
+
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+
+          const isDownbeat = beatCounterRef.current % 4 === 0;
+          const volume = isDownbeat ? 0.4 : 0.3;
+          const frequency = isDownbeat ? 1200 : 800;
+
+          // Attack: 0 -> volume in 0.01s（淡入，避免爆音）
+          gainNode.gain.setValueAtTime(0, ctx.currentTime);
+          gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.01);
+          // Decay: volume -> 0.001 in 0.14s（总时长 0.15s）
+          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+
+          oscillator.frequency.value = frequency;
+
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.15);
+
+          beatCounterRef.current++;
+          setBeatCount(beatCounterRef.current);
+
+          // 使用 setTimeout 递归，动态读取最新 BPM
+          const nextInterval = (60 / bpmRef.current) * 1000;
+          metronomeRef.current = window.setTimeout(playClick, nextInterval);
+        } catch (err) {
+          console.warn('Metronome sound error:', err);
         }
-        
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        const isDownbeat = beatCounter % 4 === 0;
-        oscillator.frequency.value = isDownbeat ? 1200 : 800;
-        gainNode.gain.setValueAtTime(isDownbeat ? 0.15 : 0.1, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-        
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.05);
-        
-        beatCounter++;
-        setBeatCount(beatCounter);
       };
 
-      metronomeRef.current = window.setInterval(playClick, interval);
+      // 立即播放第一下
+      playClick();
     } else {
-      stopMetronome();
+      if (metronomeRef.current) {
+        clearTimeout(metronomeRef.current);
+        metronomeRef.current = null;
+      }
+      beatCounterRef.current = 0;
     }
 
-    return () => stopMetronome();
-  }, [isMetronomeOn, bpm, stopMetronome]);
-
-  useEffect(() => {
-    if (isMetronomeOn) {
-      stopMetronome();
-      setIsMetronomeOn(true);
-    }
-  }, [bpm, stopMetronome]);
+    return () => {
+      if (metronomeRef.current) {
+        clearTimeout(metronomeRef.current);
+        metronomeRef.current = null;
+      }
+    };
+  }, [isMetronomeOn]);
 
   const toggleTimer = () => {
     setIsRunning((prev) => !prev);
   };
 
   const toggleMetronome = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+    try {
+      if (!audioContextRef.current) {
+        const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!AudioContextClass) {
+          alert('您的浏览器不支持音频功能，请使用现代浏览器（Chrome、Firefox、Safari等）');
+          return;
+        }
+        audioContextRef.current = new AudioContextClass();
+      }
+
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume().catch((err) => {
+          console.warn('AudioContext resume failed:', err);
+        });
+      }
+
+      setIsMetronomeOn((prev) => !prev);
+    } catch (err) {
+      console.error('Failed to create AudioContext:', err);
+      alert('音频功能初始化失败，请检查浏览器设置或尝试刷新页面');
     }
-    if (audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume();
-    }
-    setIsMetronomeOn((prev) => !prev);
   };
 
   const resetTimer = () => {
@@ -377,7 +429,18 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       <GlassCard className="p-6">
         <h3 className="text-sm font-medium text-text-secondary mb-4 text-center">BPM 调节</h3>
         <div className="flex items-center justify-center">
-          <BpmKnob value={bpm} onChange={setBpm} min={40} max={200} />
+          <BpmKnob
+            value={bpm}
+            onChange={setBpm}
+            onChangeEnd={(finalBpm) => {
+              // 拖动结束时，确保 AudioContext 恢复
+              if (audioContextRef.current?.state === 'suspended') {
+                audioContextRef.current.resume().catch(() => {});
+              }
+            }}
+            min={40}
+            max={200}
+          />
         </div>
       </GlassCard>
 

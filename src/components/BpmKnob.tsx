@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 interface BpmKnobProps {
   value: number;
   onChange: (value: number) => void;
+  onChangeEnd?: (value: number) => void;
   min?: number;
   max?: number;
 }
@@ -12,7 +13,7 @@ const MAX_BPM = 200;
 const ROTATION_RANGE = 270;
 const START_ANGLE = -135;
 
-export function BpmKnob({ value, onChange, min = MIN_BPM, max = MAX_BPM }: BpmKnobProps) {
+export function BpmKnob({ value, onChange, onChangeEnd, min = MIN_BPM, max = MAX_BPM }: BpmKnobProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [inputValue, setInputValue] = useState(value.toString());
   const [showError, setShowError] = useState(false);
@@ -55,7 +56,9 @@ export function BpmKnob({ value, onChange, min = MIN_BPM, max = MAX_BPM }: BpmKn
 
   const handleEnd = useCallback(() => {
     setIsDragging(false);
-  }, []);
+    // 拖动结束时通知父组件最终值
+    onChangeEnd?.(value);
+  }, [onChangeEnd, value]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
