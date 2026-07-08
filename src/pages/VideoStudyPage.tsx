@@ -43,6 +43,8 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const metronomeRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<number | null>(null);
+  const bpmRef = useRef(bpm);
+  const beatCounterRef = useRef(0);
 
   const recentVideo = recentResources
     .filter((r) => r.type === 'video')
@@ -74,10 +76,11 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
   const stopMetronome = useCallback(() => {
     if (metronomeRef.current) {
-      clearInterval(metronomeRef.current);
+      clearTimeout(metronomeRef.current);
       metronomeRef.current = null;
     }
     setIsMetronomeOn(false);
+    beatCounterRef.current = 0;
   }, []);
 
   const stopTimer = useCallback(() => {
@@ -85,47 +88,69 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    setIsTimerRunning(false);
   }, []);
 
   useEffect(() => {
-    if (isMetronomeOn) {
-      const interval = (60 / bpm) * 1000;
-      
-      const playClick = () => {
-        const ctx = audioContextRef.current;
-        if (!ctx) return;
-        if (ctx.state === 'suspended') {
-          ctx.resume();
-        }
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.frequency.value = 800;
-        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-        
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.05);
-      };
-
-      metronomeRef.current = window.setInterval(playClick, interval);
-    } else {
-      stopMetronome();
-    }
-
-    return () => stopMetronome();
-  }, [isMetronomeOn, bpm, stopMetronome]);
+    bpmRef.current = bpm;
+  }, [bpm]);
 
   useEffect(() => {
     if (isMetronomeOn) {
-      stopMetronome();
-      setIsMetronomeOn(true);
+      const playClick = () => {
+        try {
+          const ctx = audioContextRef.current;
+          if (!ctx) return;
+
+          if (ctx.state === 'suspended') {
+            ctx.resume().catch((err) => {
+              console.warn('AudioContext resume failed:', err);
+            });
+          }
+
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+
+          const isDownbeat = beatCounterRef.current % 4 === 0;
+          const volume = isDownbeat ? 0.4 : 0.3;
+          const frequency = isDownbeat ? 1200 : 800;
+
+          gainNode.gain.setValueAtTime(0, ctx.currentTime);
+          gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+
+          oscillator.frequency.value = frequency;
+
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.15);
+
+          beatCounterRef.current++;
+
+          const nextInterval = (60 / bpmRef.current) * 1000;
+          metronomeRef.current = window.setTimeout(playClick, nextInterval);
+        } catch (err) {
+          console.warn('Metronome sound error:', err);
+        }
+      };
+
+      playClick();
+    } else {
+      if (metronomeRef.current) {
+        clearTimeout(metronomeRef.current);
+        metronomeRef.current = null;
+      }
+      beatCounterRef.current = 0;
     }
-  }, [bpm, stopMetronome]);
+
+    return () => {
+      if (metronomeRef.current) {
+        clearTimeout(metronomeRef.current);
+        metronomeRef.current = null;
+      }
+    };
+  }, [isMetronomeOn]);
 
   useEffect(() => {
     if (isTimerRunning) {
@@ -133,20 +158,42 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
         setTimeElapsed((prev) => prev + 1);
       }, 1000);
     } else {
-      stopTimer();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
 
-    return () => stopTimer();
-  }, [isTimerRunning, stopTimer]);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [isTimerRunning]);
 
   const toggleMetronome = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+    try {
+      if (!audioContextRef.current) {
+        const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!AudioContextClass) {
+          alert('您的浏览器不支持音频功能，请使用现代浏览器（Chrome、Firefox、Safari等）');
+          return;
+        }
+        audioContextRef.current = new AudioContextClass();
+      }
+
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume().catch((err) => {
+          console.warn('AudioContext resume failed:', err);
+        });
+      }
+
+      setIsMetronomeOn((prev) => !prev);
+    } catch (err) {
+      console.error('Failed to create AudioContext:', err);
+      alert('音频功能初始化失败，请检查浏览器设置或尝试刷新页面');
     }
-    if (audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume();
-    }
-    setIsMetronomeOn((prev) => !prev);
   };
 
   const toggleTimer = () => {

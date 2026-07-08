@@ -173,7 +173,7 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const { videoProgresses } = useAppStore();
   
-  const playerUrl = buildBiliPlayerUrl(bvid, page);
+  const playerUrl = buildBiliPlayerUrl(bvid, page, playbackSpeed);
 
   const speedOptions = [0.5, 0.75, 1, 1.25, 1.5];
   
@@ -185,6 +185,7 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
     <div className="glass-card overflow-hidden">
       <div className="relative aspect-video bg-gray-900">
         <iframe
+          key={`${bvid}-${page}-${playbackSpeed}`}
           src={playerUrl}
           title={title || '视频'}
           frameBorder="0"
