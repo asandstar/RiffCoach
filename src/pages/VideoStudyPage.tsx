@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, Play, BookOpen, TrendingUp, AlertTriangle, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { ArrowLeft, Play, BookOpen, TrendingUp, AlertTriangle, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Clock, Music, Save, X, FolderOpen, Trash2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { VideoPlayerCard } from '@/components/VideoPlayerCard';
 import { BpmKnob } from '@/components/BpmKnob';
 import { useAppStore } from '@/store/useAppStore';
 import { generateAIFeedback, updateCoverProgressFromSession } from '@/utils/aiMock';
 import { formatTime } from '@/utils/date';
+import { usePractice } from '@/hooks/usePractice';
+import { timeSignatureConfigs, metronomeToneConfigs } from '@/utils/practice';
 import type { PageType, PainPoint } from '@/types';
 
 interface VideoStudyPageProps {
@@ -29,22 +31,62 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<ViewMode>('info');
   
-  const [bpm, setBpm] = useState(70);
-  const [isMetronomeOn, setIsMetronomeOn] = useState(false);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [timeElapsed, setTimeElapsed] = useState(0);
   const [repetitions, setRepetitions] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
   const [selectedPainPoints, setSelectedPainPoints] = useState<PainPoint[]>([]);
   const [painPointDetailsMap, setPainPointDetailsMap] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState('');
   const [showDetailCard, setShowDetailCard] = useState<string | null>(null);
+  const [newTemplateName, setNewTemplateName] = useState('');
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
 
-  const metronomeRef = useRef<number | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const timerRef = useRef<number | null>(null);
-  const bpmRef = useRef(bpm);
-  const beatCounterRef = useRef(0);
+  const practice = usePractice({
+    initialBpm: 70,
+  });
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          practice.toggleTimer();
+          break;
+        case 'KeyB':
+          e.preventDefault();
+          practice.toggleMetronome();
+          break;
+        case 'KeyR':
+          e.preventDefault();
+          practice.reset();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          practice.skipBackward();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          practice.skipForward();
+          break;
+        case 'Equal':
+        case 'Plus':
+          e.preventDefault();
+          practice.setBpm((prev) => Math.min(200, prev + 5));
+          break;
+        case 'Minus':
+        case 'NumpadSubtract':
+          e.preventDefault();
+          practice.setBpm((prev) => Math.max(40, prev - 5));
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [practice]);
 
   const recentVideo = recentResources
     .filter((r) => r.type === 'video')
@@ -74,155 +116,6 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
 
-  const stopMetronome = useCallback(() => {
-    if (metronomeRef.current) {
-      clearTimeout(metronomeRef.current);
-      metronomeRef.current = null;
-    }
-    setIsMetronomeOn(false);
-    beatCounterRef.current = 0;
-  }, []);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-
-  useEffect(() => {
-    if (isMetronomeOn) {
-      const playClick = () => {
-        try {
-          const ctx = audioContextRef.current;
-          if (!ctx) return;
-
-          if (ctx.state === 'suspended') {
-            ctx.resume().catch((err) => {
-              console.warn('AudioContext resume failed:', err);
-            });
-          }
-
-          const oscillator = ctx.createOscillator();
-          const gainNode = ctx.createGain();
-
-          oscillator.connect(gainNode);
-          gainNode.connect(ctx.destination);
-
-          const isDownbeat = beatCounterRef.current % 4 === 0;
-          const volume = isDownbeat ? 0.4 : 0.3;
-          const frequency = isDownbeat ? 1200 : 800;
-
-          gainNode.gain.setValueAtTime(0, ctx.currentTime);
-          gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.01);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-
-          oscillator.frequency.value = frequency;
-
-          oscillator.start(ctx.currentTime);
-          oscillator.stop(ctx.currentTime + 0.15);
-
-          beatCounterRef.current++;
-
-          const nextInterval = (60 / bpmRef.current) * 1000;
-          metronomeRef.current = window.setTimeout(playClick, nextInterval);
-        } catch (err) {
-          console.warn('Metronome sound error:', err);
-        }
-      };
-
-      playClick();
-    } else {
-      if (metronomeRef.current) {
-        clearTimeout(metronomeRef.current);
-        metronomeRef.current = null;
-      }
-      beatCounterRef.current = 0;
-    }
-
-    return () => {
-      if (metronomeRef.current) {
-        clearTimeout(metronomeRef.current);
-        metronomeRef.current = null;
-      }
-    };
-  }, [isMetronomeOn]);
-
-  useEffect(() => {
-    if (isTimerRunning) {
-      timerRef.current = window.setInterval(() => {
-        setTimeElapsed((prev) => prev + 1);
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [isTimerRunning]);
-
-  const toggleMetronome = () => {
-    try {
-      if (!audioContextRef.current) {
-        const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (!AudioContextClass) {
-          alert('您的浏览器不支持音频功能，请使用现代浏览器（Chrome、Firefox、Safari等）');
-          return;
-        }
-        audioContextRef.current = new AudioContextClass();
-      }
-
-      if (audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume().catch((err) => {
-          console.warn('AudioContext resume failed:', err);
-        });
-      }
-
-      setIsMetronomeOn((prev) => !prev);
-    } catch (err) {
-      console.error('Failed to create AudioContext:', err);
-      alert('音频功能初始化失败，请检查浏览器设置或尝试刷新页面');
-    }
-  };
-
-  const toggleTimer = () => {
-    setIsTimerRunning((prev) => !prev);
-  };
-
-  const resetPractice = () => {
-    stopTimer();
-    stopMetronome();
-    setTimeElapsed(0);
-    setRepetitions(0);
-    setSelfRating(0);
-    setSelectedPainPoints([]);
-    setPainPointDetailsMap({});
-    setNotes('');
-  };
-
-  const skipBackward = () => {
-    setTimeElapsed((prev) => Math.max(0, prev - 60));
-  };
-
-  const skipForward = () => {
-    setTimeElapsed((prev) => prev + 60);
-  };
-
-  const setTimePoint = (minutes: number) => {
-    setTimeElapsed(minutes * 60);
-  };
-
   const togglePainPoint = (painPoint: PainPoint) => {
     setSelectedPainPoints((prev) =>
       prev.includes(painPoint)
@@ -237,22 +130,22 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   };
 
   const handleCompletePractice = () => {
-    stopTimer();
-    stopMetronome();
+    practice.stopTimer();
+    practice.stopMetronome();
 
-    if (timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
+    if (practice.timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
       return;
     }
 
-    const cleanBPM = selfRating <= 2 ? bpm - 10 : selfRating <= 3 ? bpm - 5 : bpm;
+    const cleanBPM = selfRating <= 2 ? practice.bpm - 10 : selfRating <= 3 ? practice.bpm - 5 : practice.bpm;
 
     const sessionData = {
       lessonId: currentLesson?.id || null,
       instrument: video.instrument,
       date: Date.now(),
-      durationSeconds: timeElapsed,
-      bpm: bpm,
-      currentBPM: bpm,
+      durationSeconds: practice.timeElapsed,
+      bpm: practice.bpm,
+      currentBPM: practice.bpm,
       repetitions: repetitions,
       selfRating: selfRating,
       painPoints: selectedPainPoints,
@@ -300,9 +193,11 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const handleSwitchToPractice = () => {
     setViewMode('practice');
     if (video.suggestedPractice.startBPM) {
-      setBpm(video.suggestedPractice.startBPM);
+      practice.setBpm(video.suggestedPractice.startBPM);
     }
   };
+
+  const beatConfig = timeSignatureConfigs[practice.timeSignature];
 
   return (
     <div className="space-y-6">
@@ -484,27 +379,27 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
               <div className="flex items-center justify-between mb-6">
                 <div className="text-center">
                   <p className="text-xs text-text-tertiary mb-1">练习时长</p>
-                  <p className="text-2xl font-bold text-text-primary font-mono tabular-nums">{formatTime(timeElapsed)}</p>
+                  <p className="text-2xl font-bold text-text-primary font-mono tabular-nums">{formatTime(practice.displayTime)}</p>
                 </div>
                 <div className="flex gap-2 z-10">
                   <button
-                    onClick={toggleTimer}
+                    onClick={practice.toggleTimer}
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
-                      isTimerRunning ? 'bg-amber-soft text-white shadow-glow' : 'bg-primary-light text-text-secondary'
+                      practice.isRunning ? 'bg-amber-soft text-white shadow-glow' : 'bg-primary-light text-text-secondary'
                     }`}
                   >
-                    {isTimerRunning ? <Pause size={20} /> : <Play size={20} />}
+                    {practice.isRunning ? <Pause size={20} /> : <Play size={20} />}
                   </button>
                   <button
-                    onClick={resetPractice}
+                    onClick={practice.reset}
                     className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
                   >
                     <RotateCcw size={18} />
                   </button>
                   <button
-                    onClick={toggleMetronome}
+                    onClick={practice.toggleMetronome}
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
-                      isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
+                      practice.isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
                     }`}
                     title="节拍器"
                   >
@@ -515,7 +410,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
               <div className="flex items-center justify-center">
                 <div className="text-center">
-                  <BpmKnob value={bpm} onChange={setBpm} min={40} max={200} />
+                  <BpmKnob value={practice.bpm} onChange={practice.setBpm} min={40} max={200} />
                   <p className="text-xs text-text-tertiary mt-3">
                     推荐: {video.suggestedPractice.startBPM} - {video.suggestedPractice.targetBPM} BPM
                   </p>
@@ -526,9 +421,9 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                 {[60, 80, 100, 120, 140, 160].map((targetBpm) => (
                   <button
                     key={targetBpm}
-                    onClick={() => setBpm(targetBpm)}
+                    onClick={() => practice.setBpm(targetBpm)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      bpm === targetBpm
+                      practice.bpm === targetBpm
                         ? 'bg-primary text-white'
                         : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                     }`}
@@ -542,91 +437,258 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
           {viewMode === 'practice' && (
             <>
-              <GlassCard elevated className="p-6 text-center">
-                <div className="text-5xl font-bold text-primary font-mono mb-4 tabular-nums">{formatTime(timeElapsed)}</div>
-                
-                <div className="flex items-center justify-center gap-3 mb-6 z-10 relative">
-                  <button
-                    onClick={skipBackward}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={toggleTimer}
-                    className={`w-16 h-16 rounded-full flex items-center justify-center transition-all z-20 relative ${
-                      isTimerRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
-                    }`}
-                  >
-                    {isTimerRunning ? <Pause size={28} /> : <Play size={28} />}
-                  </button>
-                  <button
-                    onClick={skipForward}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-center gap-4 z-10 relative">
-                  <button
-                    onClick={toggleMetronome}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all z-10 relative ${
-                      isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
-                    }`}
-                  >
-                    <span className="text-xl">♪</span>
-                  </button>
-                  <button
-                    onClick={resetPractice}
-                    className="w-12 h-12 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all z-10 relative"
-                  >
-                    <RotateCcw size={18} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
-                  {[5, 10, 15, 20, 30, 45, 60].map((mins) => (
+              <GlassCard elevated className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-text-primary">练习工具</h3>
+                  <div className="flex gap-2">
                     <button
-                      key={mins}
-                      onClick={() => setTimePoint(mins)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                        Math.floor(timeElapsed / 60) === mins
-                          ? 'bg-primary text-white'
-                          : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
-                      }`}
+                      onClick={() => practice.setShowTemplates(!practice.showTemplates)}
+                      className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+                      title="练习模板"
                     >
-                      {mins}分
+                      <FolderOpen size={16} />
                     </button>
-                  ))}
+                    <button
+                      onClick={() => setShowSaveTemplate(true)}
+                      className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+                      title="保存模板"
+                    >
+                      <Save size={16} />
+                    </button>
+                    <button
+                      onClick={practice.reset}
+                      className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+                      title="重置"
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {practice.showTemplates && (
+                  <div className="mb-4 p-3 bg-primary-subtle rounded-xl max-h-48 overflow-y-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-text-secondary">练习模板</span>
+                      <button onClick={() => practice.setShowTemplates(false)} className="text-text-tertiary hover:text-text-secondary">
+                        <X size={16} />
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      {practice.templates.map((template) => (
+                        <div
+                          key={template.id}
+                          className="flex items-center justify-between p-2 bg-white rounded-lg hover:bg-primary-light transition-all"
+                        >
+                          <button
+                            onClick={() => practice.loadTemplate(template)}
+                            className="flex-1 text-left"
+                          >
+                            <p className="text-sm font-medium text-text-primary">{template.name}</p>
+                            <p className="text-xs text-text-tertiary">
+                              {template.bpm} BPM · {template.timeSignature} · {template.timerMode === 'count-up' ? '正计时' : '倒计时'}
+                            </p>
+                          </button>
+                          <button
+                            onClick={() => practice.deleteTemplate(template.id)}
+                            className="p-1 text-text-tertiary hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex flex-col items-center justify-center md:w-2/5">
+                    <div className="relative inline-flex items-center justify-center mb-3">
+                      <svg className="w-32 h-32 transform -rotate-90">
+                        <circle cx="64" cy="64" r="56" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+                        <circle
+                          cx="64" cy="64" r="56" fill="none" stroke="#8b5cf6" strokeWidth="8"
+                          strokeLinecap="round"
+                          className="transition-all duration-500"
+                          style={{ strokeDasharray: `${practice.progressRatio * 352} 352` }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <div className="text-3xl font-bold text-primary font-mono tabular-nums">
+                          {formatTime(practice.displayTime)}
+                        </div>
+                        <span className="text-xs text-text-tertiary mt-1">
+                          {practice.timerMode === 'count-up' ? '累计练习' : `倒计时 / ${formatTime(practice.targetTime)}`}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center bg-primary-light rounded-full p-1">
+                      <button
+                        onClick={() => practice.switchTimerMode('count-up')}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                          practice.timerMode === 'count-up'
+                            ? 'bg-primary text-white shadow-sm'
+                            : 'text-text-secondary hover:text-text-primary'
+                        }`}
+                      >
+                        <Clock size={12} className="inline mr-1" />正计时
+                      </button>
+                      <button
+                        onClick={() => practice.switchTimerMode('count-down')}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                          practice.timerMode === 'count-down'
+                            ? 'bg-primary text-white shadow-sm'
+                            : 'text-text-secondary hover:text-text-primary'
+                        }`}
+                      >
+                        <Clock size={12} className="inline mr-1" />倒计时
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center justify-center gap-3">
+                      <button
+                        onClick={practice.skipBackward}
+                        disabled={practice.timeElapsed === 0}
+                        className="w-9 h-9 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+                      <button
+                        onClick={practice.toggleTimer}
+                        className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+                          practice.isRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
+                        }`}
+                      >
+                        {practice.isRunning ? <Pause size={24} /> : <Play size={24} />}
+                      </button>
+                      <button
+                        onClick={practice.skipForward}
+                        className="w-9 h-9 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                      <button
+                        onClick={practice.toggleMetronome}
+                        className={`relative w-11 h-11 rounded-full flex items-center justify-center transition-all ${
+                          practice.isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary'
+                        }`}
+                        title="节拍器"
+                      >
+                        <span className="text-lg">♪</span>
+                        {practice.isMetronomeOn && (
+                          <div className={`absolute inset-0 rounded-full border-2 ${
+                            practice.currentBeat === 0 ? 'border-white animate-ping' : 'border-mint/50'
+                          }`} />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 flex-wrap">
+                      {[5, 10, 15, 20, 30, 45, 60].map((mins) => (
+                        <button
+                          key={mins}
+                          onClick={() => practice.setTimePoint(mins)}
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                            practice.timerMode === 'count-down' && Math.floor(practice.targetTime / 60) === mins
+                              ? 'bg-primary text-white'
+                              : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                          }`}
+                        >
+                          {mins}分
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 px-2">
+                      <div className="flex items-center gap-2">
+                        <Music size={14} className="text-text-secondary" />
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: beatConfig.beats }).map((_, i) => {
+                            const isDownbeat = beatConfig.downbeats.includes(i);
+                            const isActive = practice.isMetronomeOn && practice.currentBeat === i;
+                            return (
+                              <div
+                                key={i}
+                                className={`rounded-full transition-all duration-100 ${
+                                  isDownbeat ? 'w-3 h-3' : 'w-2.5 h-2.5'
+                                } ${
+                                  isActive
+                                    ? isDownbeat
+                                      ? 'bg-primary shadow-lg shadow-primary/50 scale-125'
+                                      : 'bg-primary/80 scale-110'
+                                    : isDownbeat
+                                    ? 'bg-primary/30'
+                                    : 'bg-text-tertiary/30'
+                                }`}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {(Object.keys(timeSignatureConfigs) as Array<keyof typeof timeSignatureConfigs>).map((sig) => (
+                          <button
+                            key={sig}
+                            onClick={() => practice.changeTimeSignature(sig)}
+                            className={`px-2 py-0.5 rounded text-xs font-medium transition-all ${
+                              practice.timeSignature === sig
+                                ? 'bg-primary text-white'
+                                : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                            }`}
+                          >
+                            {sig}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="text-center">
+                        <p className="text-xs text-text-tertiary">BPM</p>
+                        <p className="text-xl font-bold text-text-primary font-mono">{practice.bpm}</p>
+                      </div>
+                      <BpmKnob value={practice.bpm} onChange={practice.setBpm} min={40} max={200} />
+                      <div className="flex flex-col gap-1">
+                        <button onClick={() => practice.setBpm((prev) => Math.min(200, prev + 5))} className="w-7 h-7 rounded bg-primary-light flex items-center justify-center hover:bg-primary-subtle text-text-secondary">
+                          <Plus size={12} />
+                        </button>
+                        <button onClick={() => practice.setBpm((prev) => Math.max(40, prev - 5))} className="w-7 h-7 rounded bg-primary-light flex items-center justify-center hover:bg-primary-subtle text-text-secondary">
+                          <Minus size={12} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-xs text-text-tertiary">音色</span>
+                      {(Object.keys(metronomeToneConfigs) as Array<keyof typeof metronomeToneConfigs>).map((tone) => (
+                        <button
+                          key={tone}
+                          onClick={() => practice.setMetronomeTone(tone)}
+                          className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                            practice.metronomeTone === tone
+                              ? 'bg-primary text-white'
+                              : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                          }`}
+                        >
+                          {metronomeToneConfigs[tone].label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </GlassCard>
 
-              <GlassCard className="p-6">
-                <h3 className="text-sm font-medium text-text-secondary mb-4 text-center">BPM 调节</h3>
-                <div className="flex items-center justify-center">
-                  <BpmKnob value={bpm} onChange={setBpm} min={40} max={200} />
-                </div>
-                <p className="text-xs text-text-tertiary text-center mt-3">
-                  推荐: {video.suggestedPractice.startBPM} - {video.suggestedPractice.targetBPM} BPM
-                </p>
-              </GlassCard>
-
-              <GlassCard className="p-5">
-                <h3 className="text-sm font-medium text-text-secondary mb-4">重复次数</h3>
-                <div className="flex items-center justify-center gap-6">
-                  <button
-                    onClick={() => setRepetitions((prev) => Math.max(0, prev - 1))}
-                    className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all"
-                  >
-                    <Minus size={20} />
+              <GlassCard className="p-4">
+                <div className="flex items-center justify-center gap-4">
+                  <span className="text-sm text-text-secondary">重复次数</span>
+                  <button onClick={() => setRepetitions((prev) => Math.max(0, prev - 1))} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle">
+                    <Minus size={14} />
                   </button>
-                  <span className="text-3xl font-bold text-text-primary font-mono">{repetitions}</span>
-                  <button
-                    onClick={() => setRepetitions((prev) => prev + 1)}
-                    className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all"
-                  >
-                    <Plus size={20} />
+                  <span className="text-xl font-bold text-text-primary font-mono w-10 text-center">{repetitions}</span>
+                  <button onClick={() => setRepetitions((prev) => prev + 1)} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle">
+                    <Plus size={14} />
                   </button>
                 </div>
               </GlassCard>
@@ -721,10 +783,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                 />
               </GlassCard>
 
-              <button
-                onClick={handleCompletePractice}
-                className="btn-primary w-full flex items-center justify-center gap-2"
-              >
+              <button onClick={handleCompletePractice} className="btn-primary w-full flex items-center justify-center gap-2">
                 <Check size={18} />
                 完成练习
               </button>
@@ -744,10 +803,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                       <h3 className="font-semibold text-text-primary">{relatedProject.title}</h3>
                       <p className="text-sm text-text-tertiary">{relatedProject.artist}</p>
                     </div>
-                    <button
-                      onClick={() => onPageChange('cover')}
-                      className="btn-secondary text-sm"
-                    >
+                    <button onClick={() => onPageChange('cover')} className="btn-secondary text-sm">
                       查看
                     </button>
                   </div>
@@ -755,17 +811,11 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
               )}
 
               <div className="flex gap-3">
-                <button
-                  onClick={handleSwitchToPractice}
-                  className="flex-1 btn-primary flex items-center justify-center gap-2"
-                >
+                <button onClick={handleSwitchToPractice} className="flex-1 btn-primary flex items-center justify-center gap-2">
                   <Play size={18} />
                   开始练习
                 </button>
-                <button
-                  onClick={() => onPageChange('knowledge')}
-                  className="flex-1 btn-secondary flex items-center justify-center gap-2"
-                >
+                <button onClick={() => onPageChange('knowledge')} className="flex-1 btn-secondary flex items-center justify-center gap-2">
                   <BookOpen size={18} />
                   相关知识
                 </button>
@@ -774,6 +824,41 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
           )}
         </div>
       </div>
+
+      {showSaveTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-text-primary">保存练习模板</h3>
+              <button onClick={() => setShowSaveTemplate(false)} className="text-text-tertiary hover:text-text-secondary">
+                <X size={20} />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={newTemplateName}
+              onChange={(e) => setNewTemplateName(e.target.value)}
+              placeholder="输入模板名称..."
+              className="w-full px-4 py-3 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30 mb-4"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <button onClick={() => setShowSaveTemplate(false)} className="flex-1 btn-secondary">取消</button>
+              <button
+                onClick={() => {
+                  if (newTemplateName.trim()) {
+                    practice.saveTemplate(newTemplateName.trim());
+                    setNewTemplateName('');
+                  }
+                }}
+                className="flex-1 btn-primary"
+              >
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

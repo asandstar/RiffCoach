@@ -1,14 +1,13 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Target, Trophy } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Target, Trophy, Clock, Music, Save, X, FolderOpen, Trash2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { BpmKnob } from '@/components/BpmKnob';
 import { useAppStore } from '@/store/useAppStore';
 import { generateAIFeedback, updateCoverProgressFromSession } from '@/utils/aiMock';
 import { formatTime } from '@/utils/date';
+import { usePractice } from '@/hooks/usePractice';
+import { timeSignatureConfigs, metronomeToneConfigs } from '@/utils/practice';
 import type { PageType, PainPoint } from '@/types';
-
-type TimerMode = 'count-up' | 'count-down';
-type TimeSignature = '2/4' | '3/4' | '4/4' | '6/8';
 
 interface PracticePageProps {
   onPageChange: (page: PageType) => void;
@@ -24,243 +23,72 @@ const painPointDetails: Record<string, string[]> = {
   '大横按切换慢': ['按不响', '切换慢', '手酸', '食指压不住'],
 };
 
-const timeSignatureConfigs: Record<TimeSignature, { beats: number; downbeats: number[]; label: string }> = {
-  '2/4': { beats: 2, downbeats: [0], label: '2/4' },
-  '3/4': { beats: 3, downbeats: [0], label: '3/4' },
-  '4/4': { beats: 4, downbeats: [0], label: '4/4' },
-  '6/8': { beats: 6, downbeats: [0, 3], label: '6/8' },
-};
-
 export function PracticePage({ onPageChange }: PracticePageProps) {
   const { coverProjects, sessions, sources, addSession, updateCoverProject, setSessionFeedback, currentEfficientPlan } = useAppStore();
   
-  const [isRunning, setIsRunning] = useState(false);
-  const [timeElapsed, setTimeElapsed] = useState(0);
-  const [bpm, setBpm] = useState(70);
-  const [isMetronomeOn, setIsMetronomeOn] = useState(false);
   const [repetitions, setRepetitions] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
   const [selectedPainPoints, setSelectedPainPoints] = useState<PainPoint[]>([]);
   const [painPointDetailsMap, setPainPointDetailsMap] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState('');
   const [showDetailCard, setShowDetailCard] = useState<string | null>(null);
-  const [beatCount, setBeatCount] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState('');
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
 
-  const [timerMode, setTimerMode] = useState<TimerMode>('count-up');
-  const [targetTime, setTargetTime] = useState(30 * 60);
-  const [timeSignature, setTimeSignature] = useState<TimeSignature>('4/4');
-  const [currentBeat, setCurrentBeat] = useState(0);
+  const practice = usePractice({
+    initialBpm: 70,
+  });
 
-  const timerRef = useRef<number | null>(null);
-  const metronomeRef = useRef<number | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const bpmRef = useRef(bpm);
-  const beatCounterRef = useRef(0);
-  const timeSignatureRef = useRef(timeSignature);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          practice.toggleTimer();
+          break;
+        case 'KeyB':
+          e.preventDefault();
+          practice.toggleMetronome();
+          break;
+        case 'KeyR':
+          e.preventDefault();
+          practice.reset();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          practice.skipBackward();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          practice.skipForward();
+          break;
+        case 'Equal':
+        case 'Plus':
+          e.preventDefault();
+          practice.setBpm((prev) => Math.min(200, prev + 5));
+          break;
+        case 'Minus':
+        case 'NumpadSubtract':
+          e.preventDefault();
+          practice.setBpm((prev) => Math.max(40, prev - 5));
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [practice]);
 
   const currentProject = coverProjects[0];
   const currentSection = currentProject?.sections.find((s) => s.progress < 100);
   const allLessons = sources.flatMap((s) => s.lessons);
   const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
-
-  const displayTime = timerMode === 'count-up'
-    ? timeElapsed
-    : Math.max(0, targetTime - timeElapsed);
-
-  const progressRatio = timerMode === 'count-up'
-    ? Math.min(timeElapsed, 3600) / 3600
-    : Math.min(timeElapsed, targetTime) / targetTime;
-
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-
-  useEffect(() => {
-    timeSignatureRef.current = timeSignature;
-  }, [timeSignature]);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  const stopMetronome = useCallback(() => {
-    if (metronomeRef.current) {
-      clearTimeout(metronomeRef.current);
-      metronomeRef.current = null;
-    }
-    setIsMetronomeOn(false);
-    beatCounterRef.current = 0;
-    setCurrentBeat(0);
-  }, []);
-
-  useEffect(() => {
-    if (isRunning) {
-      timerRef.current = window.setInterval(() => {
-        setTimeElapsed((prev) => prev + 1);
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [isRunning]);
-
-  useEffect(() => {
-    if (timerMode === 'count-down' && timeElapsed >= targetTime && isRunning) {
-      setIsRunning(false);
-    }
-  }, [timeElapsed, targetTime, timerMode, isRunning]);
-
-  useEffect(() => {
-    if (isMetronomeOn) {
-      const playClick = () => {
-        try {
-          const ctx = audioContextRef.current;
-          if (!ctx) return;
-
-          if (ctx.state === 'suspended') {
-            ctx.resume().catch((err) => {
-              console.warn('AudioContext resume failed:', err);
-            });
-          }
-
-          const oscillator = ctx.createOscillator();
-          const gainNode = ctx.createGain();
-
-          oscillator.connect(gainNode);
-          gainNode.connect(ctx.destination);
-
-          const config = timeSignatureConfigs[timeSignatureRef.current];
-          const beatIndex = beatCounterRef.current % config.beats;
-          const isDownbeat = config.downbeats.includes(beatIndex);
-          const isSubDownbeat = timeSignatureRef.current === '6/8' && beatIndex === 3;
-
-          let volume = 0.3;
-          let frequency = 800;
-          if (isDownbeat) {
-            volume = 0.4;
-            frequency = 1200;
-          } else if (isSubDownbeat) {
-            volume = 0.35;
-            frequency = 1000;
-          }
-
-          gainNode.gain.setValueAtTime(0, ctx.currentTime);
-          gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.01);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-
-          oscillator.frequency.value = frequency;
-
-          oscillator.start(ctx.currentTime);
-          oscillator.stop(ctx.currentTime + 0.15);
-
-          beatCounterRef.current++;
-          setBeatCount(beatCounterRef.current);
-          setCurrentBeat(beatIndex);
-
-          const nextInterval = (60 / bpmRef.current) * 1000;
-          metronomeRef.current = window.setTimeout(playClick, nextInterval);
-        } catch (err) {
-          console.warn('Metronome sound error:', err);
-        }
-      };
-
-      playClick();
-    } else {
-      if (metronomeRef.current) {
-        clearTimeout(metronomeRef.current);
-        metronomeRef.current = null;
-      }
-      beatCounterRef.current = 0;
-      setCurrentBeat(0);
-    }
-
-    return () => {
-      if (metronomeRef.current) {
-        clearTimeout(metronomeRef.current);
-        metronomeRef.current = null;
-      }
-    };
-  }, [isMetronomeOn]);
-
-  const toggleTimer = () => {
-    setIsRunning((prev) => !prev);
-  };
-
-  const toggleMetronome = () => {
-    try {
-      if (!audioContextRef.current) {
-        const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (!AudioContextClass) {
-          alert('您的浏览器不支持音频功能，请使用现代浏览器（Chrome、Firefox、Safari等）');
-          return;
-        }
-        audioContextRef.current = new AudioContextClass();
-      }
-
-      if (audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume().catch((err) => {
-          console.warn('AudioContext resume failed:', err);
-        });
-      }
-
-      setIsMetronomeOn((prev) => !prev);
-    } catch (err) {
-      console.error('Failed to create AudioContext:', err);
-      alert('音频功能初始化失败，请检查浏览器设置或尝试刷新页面');
-    }
-  };
-
-  const resetTimer = () => {
-    stopTimer();
-    stopMetronome();
-    setTimeElapsed(0);
-    setRepetitions(0);
-    setSelfRating(0);
-    setSelectedPainPoints([]);
-    setPainPointDetailsMap({});
-    setNotes('');
-  };
-
-  const skipBackward = () => {
-    setTimeElapsed((prev) => Math.max(0, prev - 60));
-  };
-
-  const skipForward = () => {
-    setTimeElapsed((prev) => prev + 60);
-  };
-
-  const setTimePoint = (minutes: number) => {
-    setTimerMode('count-down');
-    setTargetTime(minutes * 60);
-    if (isRunning) {
-      setTimeElapsed(0);
-    }
-  };
-
-  const switchTimerMode = (mode: TimerMode) => {
-    setTimerMode(mode);
-    setTimeElapsed(0);
-  };
-
-  const changeTimeSignature = (sig: TimeSignature) => {
-    setTimeSignature(sig);
-    beatCounterRef.current = 0;
-    setCurrentBeat(0);
-  };
 
   const togglePainPoint = (painPoint: PainPoint) => {
     setSelectedPainPoints((prev) =>
@@ -276,25 +104,25 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   };
 
   const handleCompletePractice = () => {
-    stopTimer();
-    stopMetronome();
+    practice.stopTimer();
+    practice.stopMetronome();
 
-    if (timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
+    if (practice.timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
       return;
     }
 
     setShowCelebration(true);
 
     setTimeout(() => {
-      const cleanBPM = selfRating <= 2 ? bpm - 10 : selfRating <= 3 ? bpm - 5 : bpm;
+      const cleanBPM = selfRating <= 2 ? practice.bpm - 10 : selfRating <= 3 ? practice.bpm - 5 : practice.bpm;
 
       const sessionData = {
         lessonId: currentLesson?.id || null,
         instrument: 'electric' as const,
         date: Date.now(),
-        durationSeconds: timeElapsed,
-        bpm: bpm,
-        currentBPM: bpm,
+        durationSeconds: practice.timeElapsed,
+        bpm: practice.bpm,
+        currentBPM: practice.bpm,
         repetitions: repetitions,
         selfRating: selfRating,
         painPoints: selectedPainPoints,
@@ -343,15 +171,15 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
     }, 500);
   };
 
-  const beatConfig = timeSignatureConfigs[timeSignature];
+  const beatConfig = timeSignatureConfigs[practice.timeSignature];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => {
-            stopTimer();
-            stopMetronome();
+            practice.stopTimer();
+            practice.stopMetronome();
             onPageChange('today');
           }}
           className="p-2 hover:bg-primary-light rounded-full transition-colors"
@@ -389,71 +217,108 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
       <GlassCard elevated className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-text-primary">练习工具</h3>
-          <button
-            onClick={resetTimer}
-            className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
-            title="重置"
-          >
-            <RotateCcw size={18} />
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => practice.setShowTemplates(!practice.showTemplates)}
+              className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+              title="练习模板"
+            >
+              <FolderOpen size={16} />
+            </button>
+            <button
+              onClick={() => setShowSaveTemplate(true)}
+              className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+              title="保存模板"
+            >
+              <Save size={16} />
+            </button>
+            <button
+              onClick={practice.reset}
+              className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
+              title="重置"
+            >
+              <RotateCcw size={16} />
+            </button>
+          </div>
         </div>
+
+        {practice.showTemplates && (
+          <div className="mb-4 p-3 bg-primary-subtle rounded-xl max-h-48 overflow-y-auto">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-text-secondary">练习模板</span>
+              <button onClick={() => practice.setShowTemplates(false)} className="text-text-tertiary hover:text-text-secondary">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="space-y-2">
+              {practice.templates.map((template) => (
+                <div
+                  key={template.id}
+                  className="flex items-center justify-between p-2 bg-white rounded-lg hover:bg-primary-light transition-all"
+                >
+                  <button
+                    onClick={() => practice.loadTemplate(template)}
+                    className="flex-1 text-left"
+                  >
+                    <p className="text-sm font-medium text-text-primary">{template.name}</p>
+                    <p className="text-xs text-text-tertiary">
+                      {template.bpm} BPM · {template.timeSignature} · {template.timerMode === 'count-up' ? '正计时' : '倒计时'}
+                    </p>
+                  </button>
+                  <button
+                    onClick={() => practice.deleteTemplate(template.id)}
+                    className="p-1 text-text-tertiary hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex flex-col items-center justify-center md:w-2/5">
             <div className="relative inline-flex items-center justify-center mb-3">
               <svg className="w-36 h-36 transform -rotate-90">
+                <circle cx="72" cy="72" r="60" fill="none" stroke="#e5e7eb" strokeWidth="8" />
                 <circle
-                  cx="72"
-                  cy="72"
-                  r="60"
-                  fill="none"
-                  stroke="#e5e7eb"
-                  strokeWidth="8"
-                />
-                <circle
-                  cx="72"
-                  cy="72"
-                  r="60"
-                  fill="none"
-                  stroke="#8b5cf6"
-                  strokeWidth="8"
+                  cx="72" cy="72" r="60" fill="none" stroke="#8b5cf6" strokeWidth="8"
                   strokeLinecap="round"
                   className="transition-all duration-500"
-                  style={{
-                    strokeDasharray: `${progressRatio * 377} 377`,
-                  }}
+                  style={{ strokeDasharray: `${practice.progressRatio * 377} 377` }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="text-3xl font-bold text-primary font-mono tabular-nums">
-                  {formatTime(displayTime)}
+                  {formatTime(practice.displayTime)}
                 </div>
                 <span className="text-xs text-text-tertiary mt-1">
-                  {timerMode === 'count-up' ? '累计练习' : `倒计时 / ${formatTime(targetTime)}`}
+                  {practice.timerMode === 'count-up' ? '累计练习' : `倒计时 / ${formatTime(practice.targetTime)}`}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center bg-primary-light rounded-full p-1">
               <button
-                onClick={() => switchTimerMode('count-up')}
+                onClick={() => practice.switchTimerMode('count-up')}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  timerMode === 'count-up'
+                  practice.timerMode === 'count-up'
                     ? 'bg-primary text-white shadow-sm'
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                正计时
+                <Clock size={12} className="inline mr-1" />正计时
               </button>
               <button
-                onClick={() => switchTimerMode('count-down')}
+                onClick={() => practice.switchTimerMode('count-down')}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  timerMode === 'count-down'
+                  practice.timerMode === 'count-down'
                     ? 'bg-primary text-white shadow-sm'
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                倒计时
+                <Clock size={12} className="inline mr-1" />倒计时
               </button>
             </div>
           </div>
@@ -461,37 +326,37 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
           <div className="flex-1 space-y-4">
             <div className="flex items-center justify-center gap-3">
               <button
-                onClick={skipBackward}
-                disabled={timeElapsed === 0}
+                onClick={practice.skipBackward}
+                disabled={practice.timeElapsed === 0}
                 className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
-                onClick={toggleTimer}
+                onClick={practice.toggleTimer}
                 className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
-                  isRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
+                  practice.isRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
                 }`}
               >
-                {isRunning ? <Pause size={28} /> : <Play size={28} />}
+                {practice.isRunning ? <Pause size={28} /> : <Play size={28} />}
               </button>
               <button
-                onClick={skipForward}
+                onClick={practice.skipForward}
                 className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
               >
                 <ChevronRight size={20} />
               </button>
               <button
-                onClick={toggleMetronome}
+                onClick={practice.toggleMetronome}
                 className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                  isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                  practice.isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                 }`}
                 title="节拍器"
               >
                 <span className="text-xl">♪</span>
-                {isMetronomeOn && (
+                {practice.isMetronomeOn && (
                   <div className={`absolute inset-0 rounded-full border-2 ${
-                    currentBeat === 0 ? 'border-white animate-ping' : 'border-mint/50'
+                    practice.currentBeat === 0 ? 'border-white animate-ping' : 'border-mint/50'
                   }`} />
                 )}
               </button>
@@ -501,9 +366,9 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               {[5, 10, 15, 20, 30, 45, 60].map((mins) => (
                 <button
                   key={mins}
-                  onClick={() => setTimePoint(mins)}
+                  onClick={() => practice.setTimePoint(mins)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    timerMode === 'count-down' && Math.floor(targetTime / 60) === mins
+                    practice.timerMode === 'count-down' && Math.floor(practice.targetTime / 60) === mins
                       ? 'bg-primary text-white'
                       : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                   }`}
@@ -517,11 +382,11 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
 
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-text-secondary">节拍</span>
+                <Music size={14} className="text-text-secondary" />
                 <div className="flex items-center gap-1.5">
                   {Array.from({ length: beatConfig.beats }).map((_, i) => {
                     const isDownbeat = beatConfig.downbeats.includes(i);
-                    const isActive = isMetronomeOn && currentBeat === i;
+                    const isActive = practice.isMetronomeOn && practice.currentBeat === i;
                     return (
                       <div
                         key={i}
@@ -542,12 +407,12 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {(Object.keys(timeSignatureConfigs) as TimeSignature[]).map((sig) => (
+                {(Object.keys(timeSignatureConfigs) as Array<keyof typeof timeSignatureConfigs>).map((sig) => (
                   <button
                     key={sig}
-                    onClick={() => changeTimeSignature(sig)}
+                    onClick={() => practice.changeTimeSignature(sig)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                      timeSignature === sig
+                      practice.timeSignature === sig
                         ? 'bg-primary text-white'
                         : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                     }`}
@@ -562,14 +427,17 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <p className="text-xs text-text-tertiary mb-1">BPM</p>
-                  <p className="text-2xl font-bold text-text-primary font-mono">{bpm}</p>
+                  <p className="text-2xl font-bold text-text-primary font-mono">{practice.bpm}</p>
                 </div>
                 <BpmKnob
-                  value={bpm}
-                  onChange={setBpm}
+                  value={practice.bpm}
+                  onChange={practice.setBpm}
                   onChangeEnd={(finalBpm) => {
-                    if (audioContextRef.current?.state === 'suspended') {
-                      audioContextRef.current.resume().catch(() => {});
+                    if (practice.isMetronomeOn) {
+                      const audioContext = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+                      if (audioContext.state === 'suspended') {
+                        audioContext.resume().catch(() => {});
+                      }
                     }
                   }}
                   min={40}
@@ -577,19 +445,36 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                 />
                 <div className="flex flex-col gap-1">
                   <button
-                    onClick={() => setBpm((prev) => Math.min(200, prev + 5))}
+                    onClick={() => practice.setBpm((prev) => Math.min(200, prev + 5))}
                     className="w-8 h-8 rounded-lg bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all text-text-secondary"
                   >
                     <Plus size={14} />
                   </button>
                   <button
-                    onClick={() => setBpm((prev) => Math.max(40, prev - 5))}
+                    onClick={() => practice.setBpm((prev) => Math.max(40, prev - 5))}
                     className="w-8 h-8 rounded-lg bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-all text-text-secondary"
                   >
                     <Minus size={14} />
                   </button>
                 </div>
               </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-xs text-text-tertiary">音色</span>
+              {(Object.keys(metronomeToneConfigs) as Array<keyof typeof metronomeToneConfigs>).map((tone) => (
+                <button
+                  key={tone}
+                  onClick={() => practice.setMetronomeTone(tone)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                    practice.metronomeTone === tone
+                      ? 'bg-primary text-white'
+                      : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
+                  }`}
+                >
+                  {metronomeToneConfigs[tone].label}
+                </button>
+              ))}
             </div>
 
             <hr className="border-border-subtle" />
@@ -733,6 +618,41 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                   style={{ animationDelay: `${i * 100}ms` }}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSaveTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-text-primary">保存练习模板</h3>
+              <button onClick={() => setShowSaveTemplate(false)} className="text-text-tertiary hover:text-text-secondary">
+                <X size={20} />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={newTemplateName}
+              onChange={(e) => setNewTemplateName(e.target.value)}
+              placeholder="输入模板名称..."
+              className="w-full px-4 py-3 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30 mb-4"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <button onClick={() => setShowSaveTemplate(false)} className="flex-1 btn-secondary">取消</button>
+              <button
+                onClick={() => {
+                  if (newTemplateName.trim()) {
+                    practice.saveTemplate(newTemplateName.trim());
+                    setNewTemplateName('');
+                  }
+                }}
+                className="flex-1 btn-primary"
+              >
+                保存
+              </button>
             </div>
           </div>
         </div>
