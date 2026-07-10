@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Play, Settings, ChevronDown } from 'lucide-react';
 import { fetchBiliEpisodes, buildBiliPlayerUrl, getBiliFallbackEpisodes, type BiliEpisode } from '@/utils/bilibili';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -16,6 +15,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
   const [fetchFailed, setFetchFailed] = useState(false);
   const [customPage, setCustomPage] = useState(currentPage.toString());
   const [showManualInput, setShowManualInput] = useState(false);
+  const [sourceType, setSourceType] = useState<'api' | 'custom' | 'fallback'>('fallback');
 
   useEffect(() => {
     if (!bvid) return;
@@ -24,25 +24,30 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
       setEpisodes(customEpisodes);
       setFetchFailed(false);
       setLoading(false);
+      setSourceType('custom');
       return;
     }
 
     setLoading(true);
     setFetchFailed(false);
+    setSourceType('fallback');
 
     fetchBiliEpisodes(bvid)
       .then((data) => {
         if (data && data.length > 0) {
           setEpisodes(data);
           setFetchFailed(false);
+          setSourceType('api');
         } else {
           setEpisodes(getBiliFallbackEpisodes(10));
           setFetchFailed(true);
+          setSourceType('fallback');
         }
       })
       .catch(() => {
         setEpisodes(getBiliFallbackEpisodes(10));
         setFetchFailed(true);
+        setSourceType('fallback');
       })
       .finally(() => {
         setLoading(false);
@@ -70,7 +75,24 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-text-secondary">选集</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-text-secondary">选集</h3>
+          {sourceType === 'api' && (
+            <span className="text-xs text-mint bg-mint/10 px-2 py-0.5 rounded-full">
+              实时获取
+            </span>
+          )}
+          {sourceType === 'custom' && (
+            <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+              预设分集
+            </span>
+          )}
+          {sourceType === 'fallback' && (
+            <span className="text-xs text-amber-soft bg-amber-soft/10 px-2 py-0.5 rounded-full">
+              预估选集
+            </span>
+          )}
+        </div>
         {fetchFailed && (
           <button
             onClick={() => setShowManualInput(!showManualInput)}
@@ -169,14 +191,10 @@ interface VideoPlayerCardProps {
 }
 
 export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisodes, videoId }: VideoPlayerCardProps) {
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const { videoProgresses } = useAppStore();
   
-  const playerUrl = buildBiliPlayerUrl(bvid, page, playbackSpeed);
+  const playerUrl = buildBiliPlayerUrl(bvid, page);
 
-  const speedOptions = [0.5, 0.75, 1, 1.25, 1.5];
-  
   const currentProgress = videoProgresses.find(
     (p) => p.videoId === videoId && p.page === page
   )?.progress || 0;
@@ -185,7 +203,7 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
     <div className="glass-card overflow-hidden">
       <div className="relative aspect-video bg-gray-900">
         <iframe
-          key={`${bvid}-${page}-${playbackSpeed}`}
+          key={`${bvid}-${page}`}
           src={playerUrl}
           title={title || '视频'}
           frameBorder="0"
@@ -193,11 +211,6 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
           className="w-full h-full"
           sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
-          <div className="p-3 bg-white/90 rounded-full shadow-lg">
-            <Play size={24} className="text-primary" fill="currentColor" />
-          </div>
-        </div>
         
         {currentProgress > 0 && currentProgress < 95 && (
           <div className="absolute bottom-4 left-4 right-4">
@@ -213,46 +226,6 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, customEpisode
             </div>
           </div>
         )}
-
-        <div className="absolute bottom-4 right-4 flex items-center gap-2">
-          <div className="relative">
-            <button
-              onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-              className="flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium hover:bg-black/80 transition-colors"
-            >
-              <Settings size={14} />
-              <span>{playbackSpeed}x</span>
-              <ChevronDown size={14} />
-            </button>
-            
-            {showSpeedMenu && (
-              <>
-                <div 
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowSpeedMenu(false)}
-                />
-                <div className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl overflow-hidden z-50">
-                  {speedOptions.map((speed) => (
-                    <button
-                      key={speed}
-                      onClick={() => {
-                        setPlaybackSpeed(speed);
-                        setShowSpeedMenu(false);
-                      }}
-                      className={`w-20 px-4 py-2 text-sm text-left transition-colors ${
-                        playbackSpeed === speed
-                          ? 'bg-primary text-white'
-                          : 'text-text-primary hover:bg-primary-light'
-                      }`}
-                    >
-                      {speed}x
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
       </div>
       <div className="p-4">
         <VideoEpisodePicker

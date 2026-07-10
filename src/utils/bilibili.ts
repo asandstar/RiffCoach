@@ -37,8 +37,8 @@ export function parseVideoUrl(url: string): { platform: 'bilibili' | 'youtube'; 
   return null;
 }
 
-export function buildBiliPlayerUrl(bvid: string, page: number = 1, playbackSpeed: number = 1): string {
-  return `https://player.bilibili.com/player.html?bvid=${bvid}&page=${page}&high_quality=1&speed=${playbackSpeed}`;
+export function buildBiliPlayerUrl(bvid: string, page: number = 1): string {
+  return `https://player.bilibili.com/player.html?bvid=${bvid}&page=${page}&high_quality=1`;
 }
 
 export interface BiliEpisode {
