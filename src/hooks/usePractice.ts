@@ -261,6 +261,11 @@ export function usePractice(options: UsePracticeOptions = {}) {
     setTemplates((prev) => prev.filter((t) => t.id !== templateId));
   };
 
+  const setCustomTargetTime = (minutes: number) => {
+    const validatedMinutes = Math.max(1, Math.min(180, minutes));
+    setTargetTime(validatedMinutes * 60);
+  };
+
   return {
     isRunning,
     timeElapsed,
@@ -291,5 +296,6 @@ export function usePractice(options: UsePracticeOptions = {}) {
     saveTemplate,
     loadTemplate,
     deleteTemplate,
+    setCustomTargetTime,
   };
 }
