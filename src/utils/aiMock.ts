@@ -1,4 +1,13 @@
 import type { AppState, EfficientPracticePlan, Session, Lesson, CoverProject, AIFeedback, PainPoint, AIRecommendation } from '@/types';
+import {
+  painPointKnowledgeMap,
+  feedbackTemplates,
+  encouragementTemplates,
+  weeklyGoalTemplates,
+  getSeverityFromRating,
+  pickByDate,
+  pickRandom,
+} from './aiKnowledge';
 
 export function generateEfficientPracticePlan(
   state: Partial<AppState>,
@@ -131,8 +140,6 @@ export function generateAIFeedback(
   const durationMin = Math.round(duration / 60);
   const triedBPM = session.currentBPM || session.bpm || 80;
   const selfRating = session.selfRating || 0;
-  const painDetails = Array.isArray(session.painPointDetails) ? session.painPointDetails : [];
-  const notes = session.notes || '';
 
   let cleanBPM = session.cleanBPM || 0;
   if (cleanBPM <= 0) {
@@ -145,53 +152,49 @@ export function generateAIFeedback(
     }
   }
 
-  const repeatedPains: string[] = [];
-  if (recentSessions && recentSessions.length > 1) {
-    const painCounts: Record<string, number> = {};
-    recentSessions.forEach((s) => {
-      (s.painPoints || []).forEach((p) => {
-        painCounts[p] = (painCounts[p] || 0) + 1;
-      });
-    });
-    Object.entries(painCounts).forEach(([p, c]) => {
-      if (c >= 3) repeatedPains.push(p);
-    });
-  }
+  // --- 趋势分析 ---
+  const trend = analyzeProgressTrend(session, recentSessions, cleanBPM);
 
+  // --- 生成 summary ---
   let summary = `你今天练习了「${lessonTitle}」，时长 ${durationMin} 分钟，尝试速度 ${triedBPM} BPM，最高干净速度 ${cleanBPM} BPM。`;
   
   if (durationMin < 10) {
-    summary += ' 练习时间偏短，建议下次保证至少 15 分钟。';
+    summary += ` ${pickByDate(feedbackTemplates.shortPractice)}`;
   }
 
   if (painPoints.length > 0) {
     const painStr = painPoints.join('、');
     summary += ` 主要卡点：${painStr}。`;
     
+    const repeatedPains = getRepeatedPains(recentSessions);
     if (repeatedPains.length > 0) {
       summary += ` ${repeatedPains.join('、')} 是反复出现的卡点，需要重点关注。`;
     }
+
+    summary += ` ${pickByDate(feedbackTemplates.withPainPoints)}`;
   } else {
-    summary += ' 没有记录卡点，建议记录更具体的练习感受。';
+    summary += ` ${pickByDate(feedbackTemplates.noPainPoints)}`;
   }
 
+  // --- 生成 reason（使用知识库）---
+  const mainPainPoint = painPoints[0] || painPoints[1];
   let mainReason = '';
-  if (painPoints.includes('节奏不稳')) {
-    mainReason = '节奏不稳可能是因为换弦时手指准备不充分，或者没有使用节拍器练习。';
-  } else if (painPoints.includes('换弦慢') || painPoints.includes('换和弦慢')) {
-    mainReason = '换弦慢通常是因为手指抬得太高，或者没有提前准备下一个和弦的手型。';
-  } else if (painPoints.includes('拨弦力度不均')) {
-    mainReason = '拨弦力度不均可能是因为右手手腕不够放松，或者下拨和上拨的力度不一致。';
-  } else if (painPoints.includes('大横按切换慢')) {
-    mainReason = '大横按切换慢是初学者常见问题，需要单独练习大横按和弦，逐步提升稳定性。';
+  if (mainPainPoint && painPointKnowledgeMap[mainPainPoint]) {
+    const knowledge = painPointKnowledgeMap[mainPainPoint];
+    const severity = getSeverityFromRating(selfRating);
+    const reasons = knowledge.reasons[severity];
+    mainReason = pickByDate(reasons, painPoints.length);
   } else {
     mainReason = '继续保持练习，逐步提升速度和稳定性。';
   }
 
+  // --- 生成 nextSteps（使用知识库的建议）---
   const nextSteps: string[] = [];
-  if (painPoints.length > 0) {
-    nextSteps.push(`${cleanBPM} BPM 卡点专项练习 5 分钟`);
-    nextSteps.push(`${cleanBPM} BPM 完整段落练习`);
+  if (painPoints.length > 0 && painPointKnowledgeMap[painPoints[0]]) {
+    const knowledge = painPointKnowledgeMap[painPoints[0]];
+    const severity = getSeverityFromRating(selfRating);
+    const suggestions = knowledge.suggestions[severity];
+    nextSteps.push(...suggestions.slice(0, 2));
     nextSteps.push(`尝试 ${cleanBPM + 5} BPM`);
   } else {
     nextSteps.push(`${triedBPM} BPM 稳定练习`);
@@ -199,6 +202,7 @@ export function generateAIFeedback(
     nextSteps.push('加入新的练习内容');
   }
 
+  // --- 生成 avoid ---
   const avoidList: string[] = [];
   if (cleanBPM < triedBPM) {
     avoidList.push(`不要直接冲 ${triedBPM} BPM，先稳定 ${cleanBPM} BPM`);
@@ -210,6 +214,7 @@ export function generateAIFeedback(
     avoidList.push('不要追求速度，先保证质量');
   }
 
+  // --- 生成 coverUpdate ---
   let coverUpdate = '';
   if (project && lesson?.projectId && lesson?.sectionId) {
     const section = project.sections.find((s) => s.id === lesson.sectionId);
@@ -219,6 +224,22 @@ export function generateAIFeedback(
       coverUpdate = `${section.name} 进度从 ${section.progress}% 更新到 ${newProgress}%，最高干净 BPM 从 ${section.currentCleanBPM} 更新到 ${newCleanBPM}`;
     }
   }
+
+  // --- 生成 encouragement ---
+  let encouragement: string | undefined;
+  if (selfRating >= 4) {
+    encouragement = pickByDate(feedbackTemplates.highRating);
+  } else if (selfRating <= 2) {
+    encouragement = pickByDate(feedbackTemplates.lowRating);
+  }
+  if (!encouragement || Math.random() > 0.5) {
+    encouragement = pickByDate(encouragementTemplates);
+  }
+
+  // --- 生成 weeklyGoal ---
+  const userLevel = (session as { userLevel?: string }).userLevel || 'beginner';
+  const levelGoals = weeklyGoalTemplates[userLevel] || weeklyGoalTemplates.beginner;
+  const weeklyGoal = pickByDate(levelGoals);
 
   const nextPlanText = nextSteps.join(' → ');
 
@@ -231,7 +252,94 @@ export function generateAIFeedback(
     nextSteps,
     avoid: avoidList.filter(Boolean),
     coverUpdate: coverUpdate || undefined,
+    trend,
+    encouragement,
+    weeklyGoal,
   };
+}
+
+/** 分析练习进步趋势 */
+function analyzeProgressTrend(
+  currentSession: Session,
+  recentSessions: Session[],
+  currentCleanBPM: number
+): AIFeedback['trend'] {
+  if (!recentSessions || recentSessions.length < 2) {
+    return {
+      direction: 'stable',
+      bpmChange: 0,
+      durationChange: 0,
+      painPointChange: 0,
+      description: '练习数据还不足够，继续坚持记录，很快就能看到趋势。',
+    };
+  }
+
+  const thisWeekSessions = getThisWeekSessions(recentSessions);
+  const lastWeekSessions = getLastWeekSessions(recentSessions);
+
+  const thisWeekDuration = thisWeekSessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60;
+  const lastWeekDuration = lastWeekSessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60;
+
+  const thisWeekBPM = thisWeekSessions.length > 0
+    ? thisWeekSessions.reduce((acc, s) => acc + (s.bpm || 70), 0) / thisWeekSessions.length
+    : 70;
+  const lastWeekBPM = lastWeekSessions.length > 0
+    ? lastWeekSessions.reduce((acc, s) => acc + (s.bpm || 70), 0) / lastWeekSessions.length
+    : 70;
+
+  const thisWeekPainCount = thisWeekSessions.reduce((acc, s) => acc + (s.painPoints?.length || 0), 0);
+  const lastWeekPainCount = lastWeekSessions.reduce((acc, s) => acc + (s.painPoints?.length || 0), 0);
+
+  const bpmChange = Math.round(thisWeekBPM - lastWeekBPM);
+  const durationChange = Math.round(thisWeekDuration - lastWeekDuration);
+  const painPointChange = thisWeekPainCount - lastWeekPainCount;
+
+  let direction: 'improving' | 'stable' | 'declining' = 'stable';
+  let description = '';
+
+  const score = (bpmChange > 0 ? 1 : bpmChange < 0 ? -1 : 0)
+    + (durationChange > 5 ? 1 : durationChange < -5 ? -1 : 0)
+    + (painPointChange < 0 ? 1 : painPointChange > 0 ? -1 : 0);
+
+  if (score >= 2) {
+    direction = 'improving';
+    description = '你的练习趋势正在上升！';
+    if (bpmChange > 0) description += ` BPM提升了${bpmChange}，`;
+    if (durationChange > 0) description += `练习时长增加了${durationChange}分钟，`;
+    if (painPointChange < 0) description += '卡点数量减少了。';
+    description += '继续保持这个节奏！';
+  } else if (score <= -2) {
+    direction = 'declining';
+    description = '最近练习状态有所波动，';
+    if (bpmChange < 0) description += `BPM下降了${Math.abs(bpmChange)}，`;
+    if (durationChange < 0) description += `练习时长减少了${Math.abs(durationChange)}分钟，`;
+    if (painPointChange > 0) description += '卡点有所增加。';
+    description += '不要焦虑，调整节奏再来。';
+  } else {
+    direction = 'stable';
+    description = '练习状态保持稳定。';
+    if (bpmChange > 0) description += ` BPM小幅提升${bpmChange}，`;
+    else if (bpmChange < 0) description += ` BPM小幅波动${Math.abs(bpmChange)}，`;
+    description += '稳扎稳打，持续积累。';
+  }
+
+  return { direction, bpmChange, durationChange, painPointChange, description };
+}
+
+/** 获取反复出现的卡点 */
+function getRepeatedPains(recentSessions: Session[]): string[] {
+  const repeatedPains: string[] = [];
+  if (!recentSessions || recentSessions.length < 2) return repeatedPains;
+  const painCounts: Record<string, number> = {};
+  recentSessions.forEach((s) => {
+    (s.painPoints || []).forEach((p) => {
+      painCounts[p] = (painCounts[p] || 0) + 1;
+    });
+  });
+  Object.entries(painCounts).forEach(([p, c]) => {
+    if (c >= 3) repeatedPains.push(p);
+  });
+  return repeatedPains;
 }
 
 export function analyzeMaterial(

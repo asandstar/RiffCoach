@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, TrendingUp, AlertTriangle, Target, Calendar, Sparkles } from 'lucide-react';
+import { ArrowLeft, TrendingUp, AlertTriangle, Target, Calendar, Sparkles, Heart, Flame, Minus, Trophy } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { AILoading } from '@/components/AILoading';
 import { useAppStore } from '@/store/useAppStore';
@@ -181,6 +181,74 @@ export function AIFeedbackPage({ onPageChange }: AIFeedbackPageProps) {
         <GlassCard className="p-5">
           <h2 className="text-lg font-bold text-text-primary mb-3">Cover 进度更新</h2>
           <p className="text-text-secondary">{feedback.coverUpdate}</p>
+        </GlassCard>
+      )}
+
+      {feedback.trend && (
+        <GlassCard className="p-5 animate-fade-in" style={{ animationDelay: '800ms' }}>
+          <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+            {feedback.trend.direction === 'improving' && <TrendingUp size={20} className="text-mint" />}
+            {feedback.trend.direction === 'stable' && <Minus size={20} className="text-primary" />}
+            {feedback.trend.direction === 'declining' && <AlertTriangle size={20} className="text-amber-soft" />}
+            练习趋势
+          </h2>
+          <div className="flex items-center gap-2 mb-3">
+            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+              feedback.trend.direction === 'improving'
+                ? 'bg-mint/20 text-mint'
+                : feedback.trend.direction === 'stable'
+                  ? 'bg-primary/20 text-primary'
+                  : 'bg-amber-soft/20 text-amber-soft'
+            }`}>
+              {feedback.trend.direction === 'improving' ? '进步中' : feedback.trend.direction === 'stable' ? '保持中' : '需调整'}
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-3 mb-3">
+            <div className="text-center p-2 bg-primary-subtle rounded-lg">
+              <p className="text-xs text-text-tertiary mb-1">BPM</p>
+              <p className={`text-lg font-bold ${
+                feedback.trend.bpmChange > 0 ? 'text-mint' : feedback.trend.bpmChange < 0 ? 'text-amber-soft' : 'text-text-secondary'
+              }`}>
+                {feedback.trend.bpmChange > 0 ? '+' : ''}{feedback.trend.bpmChange}
+              </p>
+            </div>
+            <div className="text-center p-2 bg-primary-subtle rounded-lg">
+              <p className="text-xs text-text-tertiary mb-1">时长</p>
+              <p className={`text-lg font-bold ${
+                feedback.trend.durationChange > 0 ? 'text-mint' : feedback.trend.durationChange < 0 ? 'text-amber-soft' : 'text-text-secondary'
+              }`}>
+                {feedback.trend.durationChange > 0 ? '+' : ''}{feedback.trend.durationChange}min
+              </p>
+            </div>
+            <div className="text-center p-2 bg-primary-subtle rounded-lg">
+              <p className="text-xs text-text-tertiary mb-1">卡点</p>
+              <p className={`text-lg font-bold ${
+                feedback.trend.painPointChange < 0 ? 'text-mint' : feedback.trend.painPointChange > 0 ? 'text-amber-soft' : 'text-text-secondary'
+              }`}>
+                {feedback.trend.painPointChange > 0 ? '+' : ''}{feedback.trend.painPointChange}
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-text-secondary">{feedback.trend.description}</p>
+        </GlassCard>
+      )}
+
+      {feedback.encouragement && (
+        <GlassCard className="p-5 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+          <div className="flex items-start gap-3">
+            <Heart size={20} className="text-pink-400 flex-shrink-0 mt-0.5" />
+            <p className="text-text-secondary leading-relaxed italic">"{feedback.encouragement}"</p>
+          </div>
+        </GlassCard>
+      )}
+
+      {feedback.weeklyGoal && (
+        <GlassCard className="p-5 animate-fade-in" style={{ animationDelay: '1200ms' }}>
+          <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
+            <Trophy size={20} className="text-amber-soft" />
+            本周目标
+          </h2>
+          <p className="text-text-secondary leading-relaxed">{feedback.weeklyGoal}</p>
         </GlassCard>
       )}
 

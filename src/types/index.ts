@@ -95,6 +95,15 @@ export interface AIFeedback {
   nextSteps: string[]
   avoid: string[]
   coverUpdate?: string
+  trend?: {
+    direction: 'improving' | 'stable' | 'declining'
+    bpmChange: number
+    durationChange: number
+    painPointChange: number
+    description: string
+  }
+  encouragement?: string
+  weeklyGoal?: string
 }
 
 export interface MaterialInboxItem {
