@@ -94,7 +94,17 @@ npm run preview
 ```
 
 ### 部署说明
-项目使用 **GitHub Pages** 部署，构建产物输出到 `docs/` 目录。在 GitHub 仓库设置中配置 Pages 从 `main` 分支的 `/docs` 目录部署。
+项目支持两种部署方式：
+
+**GitHub Pages**：构建产物输出到 `docs/` 目录。在 GitHub 仓库设置中配置 Pages 从 `main` 分支的 `/docs` 目录部署。
+
+**Cloudflare Pages**：支持 Pages Functions（后端 API）、Workers AI、D1 数据库等服务端能力。详见 [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)。
+
+项目相关 Cloudflare 配置：
+- `functions/api/feedback.ts` — AI 反馈 API（当前 Mock，未来接入 Workers AI）
+- `wrangler.toml` — Pages 项目配置
+- `public/_redirects` — SPA 路由重定向
+- `npm run build:cloudflare` — Cloudflare 构建命令（base=/，输出到 dist/）
 
 ## 🛠️ 技术架构
 
