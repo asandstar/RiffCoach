@@ -26,8 +26,12 @@ export function usePractice(options: UsePracticeOptions = {}) {
   const [currentBeat, setCurrentBeat] = useState(0);
   const [metronomeTone, setMetronomeTone] = useState<MetronomeTone>('electronic');
   const [templates, setTemplates] = useState<PracticeTemplate[]>(() => {
-    const saved = localStorage.getItem('practiceTemplates');
-    return saved ? JSON.parse(saved) : defaultTemplates;
+    try {
+      const saved = localStorage.getItem('practiceTemplates');
+      return saved ? JSON.parse(saved) : defaultTemplates;
+    } catch {
+      return defaultTemplates;
+    }
   });
   const [showTemplates, setShowTemplates] = useState(false);
 
@@ -52,7 +56,11 @@ export function usePractice(options: UsePracticeOptions = {}) {
   }, [metronomeTone]);
 
   useEffect(() => {
-    localStorage.setItem('practiceTemplates', JSON.stringify(templates));
+    try {
+      localStorage.setItem('practiceTemplates', JSON.stringify(templates));
+    } catch {
+      // localStorage unavailable (e.g. private browsing)
+    }
   }, [templates]);
 
   const displayTime = timerMode === 'count-up'
@@ -103,6 +111,34 @@ export function usePractice(options: UsePracticeOptions = {}) {
   useEffect(() => {
     if (timerMode === 'count-down' && timeElapsed >= targetTime && isRunning) {
       setIsRunning(false);
+      // Play a notification sound when countdown ends
+      try {
+        const ctx = audioContextRef.current || new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+        audioContextRef.current = ctx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.value = 0.3;
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.stop(ctx.currentTime + 0.5);
+        // Play a second beep after a short pause
+        setTimeout(() => {
+          try {
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.frequency.value = 1100;
+            gain2.gain.value = 0.3;
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+            osc2.stop(ctx.currentTime + 0.5);
+          } catch {}
+        }, 300);
+      } catch {}
     }
   }, [timeElapsed, targetTime, timerMode, isRunning]);
 
@@ -266,6 +302,25 @@ export function usePractice(options: UsePracticeOptions = {}) {
     setTargetTime(validatedMinutes * 60);
   };
 
+  const cleanup = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (metronomeRef.current) {
+      clearTimeout(metronomeRef.current);
+      metronomeRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    setIsRunning(false);
+    setIsMetronomeOn(false);
+    beatCounterRef.current = 0;
+    setCurrentBeat(0);
+  }, []);
+
   return {
     isRunning,
     timeElapsed,
@@ -297,5 +352,6 @@ export function usePractice(options: UsePracticeOptions = {}) {
     loadTemplate,
     deleteTemplate,
     setCustomTargetTime,
+    cleanup,
   };
 }

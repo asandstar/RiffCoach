@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Play, BookOpen, TrendingUp, AlertTriangle, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Clock, Music, Save, X, FolderOpen, Trash2 } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, TrendingUp, AlertTriangle, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Clock, Save, X, FolderOpen, Trash2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { VideoPlayerCard } from '@/components/VideoPlayerCard';
 import { BpmKnob } from '@/components/BpmKnob';
@@ -84,6 +84,12 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [practice]);
+
+  useEffect(() => {
+    return () => {
+      practice.cleanup();
+    };
   }, [practice]);
 
   const recentVideo = recentResources
@@ -297,6 +303,20 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                 </div>
               </div>
 
+              {video.keyPoints && video.keyPoints.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-text-secondary mb-2">关键要点</h3>
+                  <div className="space-y-1.5">
+                    {video.keyPoints.map((point, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-sm">
+                        <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center bg-primary/10 text-primary text-xs rounded mt-0.5">•</span>
+                        <span className="text-text-primary">{point}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <h3 className="text-sm font-medium text-text-secondary mb-2">建议练习方式</h3>
                 <div className="space-y-2">
@@ -348,6 +368,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   onClick={() => practice.setShowTemplates(!practice.showTemplates)}
                   className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
                   title="练习模板"
+                  aria-label="练习模板"
                 >
                   <FolderOpen size={16} />
                 </button>
@@ -355,6 +376,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   onClick={() => setShowSaveTemplate(true)}
                   className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
                   title="保存模板"
+                  aria-label="保存模板"
                 >
                   <Save size={16} />
                 </button>
@@ -362,6 +384,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   onClick={practice.reset}
                   className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
                   title="重置"
+                  aria-label="重置"
                 >
                   <RotateCcw size={16} />
                 </button>
@@ -430,6 +453,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                     onClick={practice.skipBackward}
                     disabled={practice.timeElapsed === 0}
                     className="w-9 h-9 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50"
+                    aria-label="后退5秒"
                   >
                     <ChevronLeft size={18} />
                   </button>
@@ -438,12 +462,14 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                       practice.isRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
                     }`}
+                    aria-label={practice.isRunning ? '暂停' : '播放'}
                   >
                     {practice.isRunning ? <Pause size={22} /> : <Play size={22} />}
                   </button>
                   <button
                     onClick={practice.skipForward}
                     className="w-9 h-9 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                    aria-label="前进5秒"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -453,6 +479,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                       practice.isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                     }`}
                     title="节拍器"
+                    aria-label="节拍器开关"
                   >
                     <span className="text-lg">♪</span>
                     {practice.isMetronomeOn && (

@@ -66,7 +66,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleCustomPageSubmit();
     }
@@ -141,7 +141,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
                   type="number"
                   value={customPage}
                   onChange={(e) => setCustomPage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   min="1"
                   placeholder="输入 P 数"
                   className="flex-1 px-3 py-2 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30"
@@ -163,7 +163,7 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
                 type="number"
                 value={customPage}
                 onChange={(e) => setCustomPage(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyDown}
                 min="1"
                 className="w-16 px-2 py-1 text-xs bg-bg-input border border-border-default rounded-lg text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />

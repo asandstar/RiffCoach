@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Target, Trophy, Clock, Music, Save, X, FolderOpen, Trash2 } from 'lucide-react';
+import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Trophy, Clock, Save, X, FolderOpen, Trash2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { BpmKnob } from '@/components/BpmKnob';
 import { useAppStore } from '@/store/useAppStore';
@@ -83,6 +83,12 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [practice]);
+
+  useEffect(() => {
+    return () => {
+      practice.cleanup();
+    };
   }, [practice]);
 
   const currentProject = coverProjects[0];
@@ -223,6 +229,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               onClick={() => practice.setShowTemplates(!practice.showTemplates)}
               className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
               title="练习模板"
+              aria-label="练习模板"
             >
               <FolderOpen size={16} />
             </button>
@@ -230,6 +237,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               onClick={() => setShowSaveTemplate(true)}
               className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
               title="保存模板"
+              aria-label="保存模板"
             >
               <Save size={16} />
             </button>
@@ -237,6 +245,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               onClick={practice.reset}
               className="p-2 rounded-full hover:bg-primary-light text-text-secondary transition-all"
               title="重置"
+              aria-label="重置"
             >
               <RotateCcw size={16} />
             </button>
@@ -305,6 +314,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                 onClick={practice.skipBackward}
                 disabled={practice.timeElapsed === 0}
                 className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="后退5秒"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -313,12 +323,14 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                 className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
                   practice.isRunning ? 'bg-amber-soft text-white' : 'bg-primary text-white shadow-glow'
                 }`}
+                aria-label={practice.isRunning ? '暂停' : '播放'}
               >
                 {practice.isRunning ? <Pause size={28} /> : <Play size={28} />}
               </button>
               <button
                 onClick={practice.skipForward}
                 className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all"
+                aria-label="前进5秒"
               >
                 <ChevronRight size={20} />
               </button>
@@ -395,6 +407,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
                   practice.isMetronomeOn ? 'bg-mint text-white shadow-glow' : 'bg-primary-light text-text-secondary hover:bg-primary-subtle'
                 }`}
                 title="节拍器"
+                aria-label="节拍器开关"
               >
                 <span className="text-2xl">♪</span>
                 {practice.isMetronomeOn && (
@@ -448,16 +461,6 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
               <BpmKnob
                 value={practice.bpm}
                 onChange={practice.setBpm}
-                onChangeEnd={(finalBpm) => {
-                  if (practice.isMetronomeOn) {
-                    const audioContext = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
-                    if (audioContext.state === 'suspended') {
-                      audioContext.resume().catch(() => {});
-                    }
-                  }
-                }}
-                min={40}
-                max={200}
               />
             </div>
 
