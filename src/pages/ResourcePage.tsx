@@ -3,7 +3,7 @@ import { Search, Plus, Play, Sparkles, Clock, Tag, FileText, BookOpen, Music } f
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
 import { analyzeMaterial } from '@/utils/aiMock';
-import { fetchBiliCover } from '@/utils/bilibili';
+import { fetchBiliVideoInfo, type BiliVideoInfo } from '@/utils/bilibili';
 import type { PageType, Instrument } from '@/types';
 
 interface ResourcePageProps {
@@ -15,22 +15,22 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
   const { materialInbox, videoResources, sources, updateMaterialInbox, addLesson, recentResources, addRecentResource } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'videos' | 'recent' | 'inbox' | 'lessons'>('videos');
-  const [videoCoverUrls, setVideoCoverUrls] = useState<Record<string, string>>({});
+  const [videoInfoMap, setVideoInfoMap] = useState<Record<string, BiliVideoInfo>>({});
 
   useEffect(() => {
     const bvids = videoResources.map(v => v.bvid).filter(Boolean) as string[];
     bvids.forEach(bvid => {
-      if (videoCoverUrls[bvid]) return;
-      fetchBiliCover(bvid).then(url => {
-        if (url) {
-          setVideoCoverUrls(prev => ({ ...prev, [bvid]: url }));
+      if (videoInfoMap[bvid]) return;
+      fetchBiliVideoInfo(bvid).then(info => {
+        if (info) {
+          setVideoInfoMap(prev => ({ ...prev, [bvid]: info }));
         }
       }).catch(() => {});
     });
   }, [videoResources]);
 
   const handleCoverError = (bvid: string) => {
-    setVideoCoverUrls(prev => {
+    setVideoInfoMap(prev => {
       const next = { ...prev };
       delete next[bvid];
       return next;
@@ -299,10 +299,10 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
               >
                 <div className="flex items-start gap-4">
                   <div className="relative w-32 h-20 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {videoCoverUrls[video.bvid || ''] ? (
+                    {videoInfoMap[video.bvid || '']?.cover ? (
                       <img
-                        src={videoCoverUrls[video.bvid || '']}
-                        alt={video.title}
+                        src={videoInfoMap[video.bvid || ''].cover}
+                        alt={videoInfoMap[video.bvid || ''].title || video.title}
                         className="w-full h-full object-cover"
                         onError={() => handleCoverError(video.bvid || '')}
                       />
@@ -311,7 +311,9 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-text-primary line-clamp-2">{video.title}</h3>
+                    <h3 className="font-medium text-text-primary line-clamp-2">
+                      {videoInfoMap[video.bvid || '']?.title || video.title}
+                    </h3>
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="text-xs chip chip-primary">
                         {video.instrument === 'electric' ? '电吉他' : video.instrument === 'acoustic' ? '木吉他' : '尤克里里'}
