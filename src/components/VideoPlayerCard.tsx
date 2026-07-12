@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { fetchBiliEpisodes, buildBiliPlayerUrl, getBiliFallbackEpisodes, type BiliEpisode } from '@/utils/bilibili';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -9,6 +10,8 @@ interface VideoEpisodePickerProps {
   customEpisodes?: { page: number; title: string }[];
 }
 
+const EPISODES_PER_PAGE = 3;
+
 export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpisodes }: VideoEpisodePickerProps) {
   const [episodes, setEpisodes] = useState<BiliEpisode[]>([]);
   const [loading, setLoading] = useState(false);
@@ -16,6 +19,8 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
   const [customPage, setCustomPage] = useState(currentPage.toString());
   const [showManualInput, setShowManualInput] = useState(false);
   const [sourceType, setSourceType] = useState<'api' | 'custom' | 'fallback'>('fallback');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [currentListPage, setCurrentListPage] = useState(1);
 
   useEffect(() => {
     if (!bvid) return;
@@ -58,11 +63,20 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
     setCustomPage(currentPage.toString());
   }, [currentPage]);
 
+  const totalPages = Math.ceil(episodes.length / EPISODES_PER_PAGE);
+  const currentEpisode = episodes.find((e) => e.page === currentPage);
+
+  const paginatedEpisodes = episodes.slice(
+    (currentListPage - 1) * EPISODES_PER_PAGE,
+    currentListPage * EPISODES_PER_PAGE
+  );
+
   const handleCustomPageSubmit = () => {
     const page = parseInt(customPage, 10);
     if (page && page > 0) {
       onPageChange(page);
       setShowManualInput(false);
+      setShowDropdown(false);
     }
   };
 
@@ -70,6 +84,11 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
     if (e.key === 'Enter') {
       handleCustomPageSubmit();
     }
+  };
+
+  const goToPage = (page: number) => {
+    onPageChange(page);
+    setShowDropdown(false);
   };
 
   return (
@@ -93,90 +112,130 @@ export function VideoEpisodePicker({ bvid, currentPage, onPageChange, customEpis
             </span>
           )}
         </div>
-        {fetchFailed && (
-          <button
-            onClick={() => setShowManualInput(!showManualInput)}
-            className="text-xs text-primary hover:underline flex items-center gap-1"
-          >
-            {showManualInput ? '收起' : '手动输入 P 数'}
-          </button>
-        )}
+        <button
+          onClick={() => {
+            setShowDropdown(!showDropdown);
+            setCurrentListPage(1);
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-light rounded-lg text-sm text-text-secondary hover:bg-primary-subtle transition-all"
+        >
+          <span className="font-medium">
+            {currentEpisode ? `P${currentEpisode.page} · ${currentEpisode.title}` : `P${currentPage}`}
+          </span>
+          {showDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
       </div>
-      
-      {loading ? (
+
+      {loading && (
         <div className="flex items-center justify-center py-4">
-          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <Loader2 size={16} className="text-primary animate-spin" />
           <span className="ml-2 text-xs text-text-tertiary">正在获取选集...</span>
         </div>
-      ) : (
-        <div className="space-y-2">
-          {episodes.length > 0 ? (
-            <div className="max-h-72 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
-              {episodes.map((ep) => (
+      )}
+
+      {showDropdown && !loading && episodes.length > 0 && (
+        <div className="relative">
+          <div className="bg-white rounded-xl shadow-lg border border-border-subtle overflow-hidden">
+            <div className="max-h-64 overflow-y-auto">
+              {paginatedEpisodes.map((ep) => (
                 <button
                   key={ep.page}
-                  onClick={() => onPageChange(ep.page)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all text-left ${
+                  onClick={() => goToPage(ep.page)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-all text-left hover:bg-primary-light/50 ${
                     currentPage === ep.page
-                      ? 'bg-primary text-white font-semibold'
-                      : 'bg-primary-light/50 text-text-secondary hover:bg-primary-subtle'
+                      ? 'bg-primary/10 text-primary font-semibold'
+                      : 'text-text-secondary'
                   }`}
                 >
-                  <span className={`text-xs font-mono flex-shrink-0 ${
-                    currentPage === ep.page ? 'text-white/80' : 'text-text-tertiary'
+                  <span className={`text-xs font-mono flex-shrink-0 w-6 ${
+                    currentPage === ep.page ? 'text-primary' : 'text-text-tertiary'
                   }`}>
                     P{ep.page}
                   </span>
                   <span className="flex-1 truncate">{ep.title}</span>
+                  {currentPage === ep.page && (
+                    <span className="text-xs text-primary font-medium">当前</span>
+                  )}
                 </button>
               ))}
             </div>
-          ) : null}
-          
-          {fetchFailed && showManualInput && (
-            <div className="p-3 bg-amber-soft-light rounded-lg border border-amber-soft/30">
-              <p className="text-xs text-text-secondary mb-2">自动获取选集失败，请手动输入 P 数：</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={customPage}
-                  onChange={(e) => setCustomPage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  min="1"
-                  placeholder="输入 P 数"
-                  className="flex-1 px-3 py-2 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 py-3 border-t border-border-subtle">
                 <button
-                  onClick={handleCustomPageSubmit}
-                  className="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-subtle transition-colors"
+                  onClick={() => setCurrentListPage(Math.max(1, currentListPage - 1))}
+                  disabled={currentListPage === 1}
+                  className="w-7 h-7 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  跳转
+                  <ChevronLeft size={14} />
+                </button>
+                <span className="text-xs text-text-tertiary">
+                  {currentListPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentListPage(Math.min(totalPages, currentListPage + 1))}
+                  disabled={currentListPage === totalPages}
+                  className="w-7 h-7 rounded-full flex items-center justify-center bg-primary-light text-text-secondary hover:bg-primary-subtle transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={14} />
                 </button>
               </div>
-            </div>
-          )}
-          
-          <div className="flex items-center justify-between pt-2 border-t border-border-subtle">
-            <span className="text-xs text-text-tertiary">当前: P{currentPage} · 共 {episodes.length} 集</span>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={customPage}
-                onChange={(e) => setCustomPage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                min="1"
-                className="w-16 px-2 py-1 text-xs bg-bg-input border border-border-default rounded-lg text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <button
-                onClick={handleCustomPageSubmit}
-                className="px-3 py-1 text-xs bg-primary-light text-text-secondary rounded-lg hover:bg-primary-subtle transition-colors"
-              >
-                切换
-              </button>
-            </div>
+            )}
           </div>
         </div>
       )}
+
+      {fetchFailed && (
+        <button
+          onClick={() => setShowManualInput(!showManualInput)}
+          className="text-xs text-primary hover:underline flex items-center gap-1"
+        >
+          {showManualInput ? '收起' : '手动输入 P 数'}
+        </button>
+      )}
+
+      {fetchFailed && showManualInput && (
+        <div className="p-3 bg-amber-soft-light rounded-lg border border-amber-soft/30">
+          <p className="text-xs text-text-secondary mb-2">自动获取选集失败，请手动输入 P 数：</p>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={customPage}
+              onChange={(e) => setCustomPage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              min="1"
+              placeholder="输入 P 数"
+              className="flex-1 px-3 py-2 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+            <button
+              onClick={handleCustomPageSubmit}
+              className="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-subtle transition-colors"
+            >
+              跳转
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between pt-2 border-t border-border-subtle">
+        <span className="text-xs text-text-tertiary">当前: P{currentPage} · 共 {episodes.length} 集</span>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            value={customPage}
+            onChange={(e) => setCustomPage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            min="1"
+            className="w-14 px-2 py-1 text-xs bg-bg-input border border-border-default rounded-lg text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <button
+            onClick={handleCustomPageSubmit}
+            className="px-3 py-1 text-xs bg-primary-light text-text-secondary rounded-lg hover:bg-primary-subtle transition-colors"
+          >
+            切换
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

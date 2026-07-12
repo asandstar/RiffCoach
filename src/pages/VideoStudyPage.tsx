@@ -359,8 +359,8 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
           </GlassCard>
         </div>
 
-        <div className="lg:col-span-1 space-y-6">
-          <GlassCard elevated className="p-5 sticky top-20">
+        <div className="lg:col-span-1 space-y-4">
+          <GlassCard elevated className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-text-primary">练习工具</h3>
               <div className="flex gap-2">
@@ -553,6 +553,17 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                 )}
               </div>
 
+              <div className="flex items-center justify-center gap-4 py-2 border-t border-border-subtle">
+                <span className="text-sm text-text-secondary">重复次数</span>
+                <button onClick={() => setRepetitions((prev) => Math.max(0, prev - 1))} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-colors" aria-label="减少重复次数">
+                  <Minus size={14} />
+                </button>
+                <span className="text-xl font-bold text-text-primary font-mono w-10 text-center">{repetitions}</span>
+                <button onClick={() => setRepetitions((prev) => prev + 1)} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle transition-colors" aria-label="增加重复次数">
+                  <Plus size={14} />
+                </button>
+              </div>
+
               <hr className="border-border-subtle" />
 
               <div className="space-y-3">
@@ -620,19 +631,6 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
                   ))}
                 </div>
               </div>
-            </div>
-          </GlassCard>
-
-          <GlassCard className="p-4">
-            <div className="flex items-center justify-center gap-4">
-              <span className="text-sm text-text-secondary">重复次数</span>
-              <button onClick={() => setRepetitions((prev) => Math.max(0, prev - 1))} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle">
-                <Minus size={14} />
-              </button>
-              <span className="text-xl font-bold text-text-primary font-mono w-10 text-center">{repetitions}</span>
-              <button onClick={() => setRepetitions((prev) => prev + 1)} className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center hover:bg-primary-subtle">
-                <Plus size={14} />
-              </button>
             </div>
           </GlassCard>
 
