@@ -89,7 +89,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
     return () => {
       practice.cleanup();
     };
-  }, [practice]);
+  }, []); // 只在组件卸载时执行 cleanup，避免每次渲染停止计时器/节拍器
 
   const currentProject = coverProjects[0];
   const currentSection = currentProject?.sections.find((s) => s.progress < 100);
@@ -150,7 +150,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         }
       }, 0);
 
-      if (currentProject && currentLesson?.projectId && currentLesson?.sectionId) {
+      if (currentLesson?.projectId && currentLesson?.sectionId) {
         const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
           coverProjects,
           sessions: [...sessions, { ...sessionData, id: 'temp' }],
@@ -167,7 +167,8 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         });
 
         if (updatedProject) {
-          updateCoverProject(currentProject.id, updatedProject);
+          // 使用 currentLesson.projectId 作为 key，确保与 updatedProject 来源一致
+          updateCoverProject(currentLesson.projectId, updatedProject);
         }
       }
 

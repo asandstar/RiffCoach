@@ -37,6 +37,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const [newTemplateName, setNewTemplateName] = useState('');
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
+  const [isCompleting, setIsCompleting] = useState(false); // 防止重复点击
 
   const practice = usePractice({
     initialBpm: 70,
@@ -90,7 +91,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
     return () => {
       practice.cleanup();
     };
-  }, [practice]);
+  }, []); // 只在组件卸载时执行 cleanup，避免每次渲染停止计时器/节拍器
 
   const recentVideo = recentResources
     .filter((r) => r.type === 'video')
@@ -115,7 +116,6 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
     p.sourceLinks.some((link) => link.bvid === video.bvid)
   );
 
-  const currentEpisode = video.episodes?.find((e) => e.page === currentPage);
   const allLessons = sources.flatMap((s) => s.lessons);
   const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
@@ -134,10 +134,14 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   };
 
   const handleCompletePractice = () => {
+    if (isCompleting) return; // 防止重复点击
+    setIsCompleting(true);
+
     practice.stopTimer();
     practice.stopMetronome();
 
     if (practice.timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
+      setIsCompleting(false);
       return;
     }
 
@@ -170,7 +174,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
       }
     }, 0);
 
-    if (relatedProject && currentLesson?.projectId && currentLesson?.sectionId) {
+    if (currentLesson?.projectId && currentLesson?.sectionId) {
       const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
         coverProjects,
         sessions: [...sessions, { ...sessionData, id: 'temp' }],
@@ -187,10 +191,12 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
       });
 
       if (updatedProject) {
-        updateCoverProject(relatedProject.id, updatedProject);
+        // 使用 currentLesson.projectId 作为 key，确保与 updatedProject 来源一致
+        updateCoverProject(currentLesson.projectId, updatedProject);
       }
     }
 
+    // 跳转 AI Feedback 页面，VideoStudyPage 卸载，VideoPlayerCard cleanup 随之执行
     onPageChange('ai-feedback');
   };
 
@@ -210,11 +216,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs chip chip-primary">{video.source === 'bilibili' ? 'B站' : 'YouTube'}</span>
             <span className="text-xs text-text-tertiary">{video.stage}</span>
-            {currentEpisode && (
-              <span className="text-xs text-text-secondary font-medium">
-                P{currentEpisode.page} · {currentEpisode.title}
-              </span>
-            )}
+            <span className="text-xs text-text-secondary font-medium">P{currentPage}</span>
           </div>
         </div>
       </div>
@@ -226,7 +228,6 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             page={currentPage}
             onPageChange={setCurrentPage}
             title={video.title}
-            customEpisodes={video.episodes?.map((e) => ({ page: e.page, title: e.title }))}
             videoId={video.id}
           />
 
@@ -251,19 +252,17 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             </GlassCard>
           )}
 
-          {currentEpisode && (
-            <GlassCard className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center">
-                  <Play size={18} className="text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-text-tertiary">当前练习</p>
-                  <p className="font-semibold text-text-primary">P{currentEpisode.page} · {currentEpisode.title}</p>
-                </div>
+          <GlassCard className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center">
+                <Play size={18} className="text-primary" />
               </div>
-            </GlassCard>
-          )}
+              <div className="flex-1">
+                <p className="text-sm text-text-tertiary">当前练习</p>
+                <p className="font-semibold text-text-primary">P{currentPage}</p>
+              </div>
+            </div>
+          </GlassCard>
 
           <GlassCard className="p-5">
             <h2 className="text-lg font-bold text-text-primary mb-4">视频关键信息</h2>
@@ -724,7 +723,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             />
           </GlassCard>
 
-          <button onClick={handleCompletePractice} className="btn-primary w-full flex items-center justify-center gap-2">
+          <button onClick={handleCompletePractice} disabled={isCompleting} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Check size={18} />
             完成练习
           </button>

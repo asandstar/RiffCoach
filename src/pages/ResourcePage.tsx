@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Play, Sparkles, Clock, Tag, FileText, BookOpen, Music } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
 import { analyzeMaterial } from '@/utils/aiMock';
+import { fetchBiliCover } from '@/utils/bilibili';
 import type { PageType, Instrument } from '@/types';
 
 interface ResourcePageProps {
@@ -14,6 +15,27 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
   const { materialInbox, videoResources, sources, updateMaterialInbox, addLesson, recentResources, addRecentResource } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'videos' | 'recent' | 'inbox' | 'lessons'>('videos');
+  const [videoCoverUrls, setVideoCoverUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const bvids = videoResources.map(v => v.bvid).filter(Boolean) as string[];
+    bvids.forEach(bvid => {
+      if (videoCoverUrls[bvid]) return;
+      fetchBiliCover(bvid).then(url => {
+        if (url) {
+          setVideoCoverUrls(prev => ({ ...prev, [bvid]: url }));
+        }
+      }).catch(() => {});
+    });
+  }, [videoResources]);
+
+  const handleCoverError = (bvid: string) => {
+    setVideoCoverUrls(prev => {
+      const next = { ...prev };
+      delete next[bvid];
+      return next;
+    });
+  };
 
   const allLessons = sources.flatMap((s) => s.lessons);
 
@@ -277,11 +299,15 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
               >
                 <div className="flex items-start gap-4">
                   <div className="relative w-32 h-20 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    <Play size={28} className="text-white/70" />
-                    {video.episodes && video.episodes.length > 0 && (
-                      <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
-                        {video.episodes.length}集
-                      </div>
+                    {videoCoverUrls[video.bvid || ''] ? (
+                      <img
+                        src={videoCoverUrls[video.bvid || '']}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                        onError={() => handleCoverError(video.bvid || '')}
+                      />
+                    ) : (
+                      <Play size={28} className="text-white/70" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
