@@ -143,6 +143,14 @@ export interface VideoResource {
   source: VideoSource
   bvid?: string
   url?: string
+  cover?: string
+  owner?: string
+  pages?: Array<{
+    page: number
+    title: string
+    duration: number
+    cid: number | null
+  }>
   instrument: Instrument
   stage: Stage
   difficulty: 1 | 2 | 3 | 4 | 5

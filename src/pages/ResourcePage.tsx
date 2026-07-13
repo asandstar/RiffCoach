@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Search, Plus, Play, Sparkles, Clock, Tag, FileText, BookOpen, Music } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
 import { analyzeMaterial } from '@/utils/aiMock';
-import { fetchBiliVideoInfo, type BiliVideoInfo } from '@/utils/bilibili';
 import type { PageType, Instrument } from '@/types';
 
 interface ResourcePageProps {
@@ -15,28 +14,6 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
   const { materialInbox, videoResources, sources, updateMaterialInbox, addLesson, recentResources, addRecentResource } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'videos' | 'recent' | 'inbox' | 'lessons'>('videos');
-  const [videoInfoMap, setVideoInfoMap] = useState<Record<string, BiliVideoInfo>>({});
-
-  useEffect(() => {
-    const bvids = videoResources.map(v => v.bvid).filter(Boolean) as string[];
-    bvids.forEach(bvid => {
-      if (videoInfoMap[bvid]) return;
-      fetchBiliVideoInfo(bvid).then(info => {
-        if (info) {
-          setVideoInfoMap(prev => ({ ...prev, [bvid]: info }));
-        }
-      }).catch(() => {});
-    });
-  }, [videoResources]);
-
-  const handleCoverError = (bvid: string) => {
-    setVideoInfoMap(prev => {
-      const next = { ...prev };
-      delete next[bvid];
-      return next;
-    });
-  };
-
   const allLessons = sources.flatMap((s) => s.lessons);
 
   const filteredVideos = videoResources.filter((v) =>
@@ -164,11 +141,20 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                 return (
                   <GlassCard key={r.id} className="p-4 cursor-pointer hover:shadow-elevated transition-shadow" onClick={() => handleVideoClick(video)}>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-9 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0">
+                      <div className="relative w-16 h-9 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
                         <Play size={18} className="text-white/70" />
+                        {video.cover && (
+                          <img
+                            src={video.cover}
+                            alt={video.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                          />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-text-primary truncate">{video.title}</h3>
+                        {video.owner && <p className="text-xs text-text-tertiary truncate">UP 主：{video.owner}</p>}
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-text-tertiary">{video.stage}</span>
                           <div className="flex gap-1">
@@ -299,21 +285,19 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
               >
                 <div className="flex items-start gap-4">
                   <div className="relative w-32 h-20 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {videoInfoMap[video.bvid || '']?.cover ? (
+                    <Play size={28} className="text-white/70" />
+                    {video.cover && (
                       <img
-                        src={videoInfoMap[video.bvid || ''].cover}
-                        alt={videoInfoMap[video.bvid || ''].title || video.title}
-                        className="w-full h-full object-cover"
-                        onError={() => handleCoverError(video.bvid || '')}
+                        src={video.cover}
+                        alt={video.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        onError={(event) => { event.currentTarget.style.display = 'none'; }}
                       />
-                    ) : (
-                      <Play size={28} className="text-white/70" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-text-primary line-clamp-2">
-                      {videoInfoMap[video.bvid || '']?.title || video.title}
-                    </h3>
+                    <h3 className="font-medium text-text-primary line-clamp-2">{video.title}</h3>
+                    {video.owner && <p className="text-xs text-text-tertiary mt-1">UP 主：{video.owner}</p>}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="text-xs chip chip-primary">
                         {video.instrument === 'electric' ? '电吉他' : video.instrument === 'acoustic' ? '木吉他' : '尤克里里'}

@@ -9,16 +9,24 @@ interface VideoPlayerCardProps {
   onPageChange: (page: number) => void;
   title?: string;
   videoId?: string;
+  pages?: Array<{
+    page: number;
+    title: string;
+    duration: number;
+    cid: number | null;
+  }>;
 }
 
-export function VideoPlayerCard({ bvid, page, onPageChange, title, videoId }: VideoPlayerCardProps) {
+export function VideoPlayerCard({ bvid, page, onPageChange, title, videoId, pages }: VideoPlayerCardProps) {
   const { videoProgresses } = useAppStore();
   const [customPage, setCustomPage] = useState(page.toString());
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const playerUrl = buildBiliPlayerUrl(bvid, page);
-  const biliWatchUrl = `https://www.bilibili.com/video/${bvid}`;
+  const biliWatchUrl = `https://www.bilibili.com/video/${bvid}?p=${page}`;
+  const hasPages = Boolean(pages?.length);
+  const selectedPage = pages?.find((item) => item.page === page);
 
   const currentProgress = videoProgresses.find(
     (p) => p.videoId === videoId && p.page === page
@@ -98,7 +106,9 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, videoId }: Vi
       <div className="p-4 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-text-secondary">当前分集：P{page}</span>
+            <span className="text-sm font-medium text-text-secondary">
+              当前分集：P{page}{selectedPage ? ` · ${selectedPage.title}` : ''}
+            </span>
           </div>
           <a
             href={biliWatchUrl}
@@ -110,33 +120,52 @@ export function VideoPlayerCard({ bvid, page, onPageChange, title, videoId }: Vi
             在B站查看选集
           </a>
         </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            value={customPage}
-            onChange={(e) => setCustomPage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            min="1"
-            step="1"
-            placeholder="输入 P 数"
-            className="w-20 px-2 py-1.5 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          <button
-            onClick={handlePageSubmit}
-            className="px-3 py-1.5 text-sm bg-primary-light text-text-secondary rounded-lg hover:bg-primary-subtle transition-colors"
-          >
-            切换分集
-          </button>
-          {error && (
-            <span className="flex items-center gap-1 text-xs text-red-500">
-              <AlertCircle size={12} />
-              {error}
-            </span>
-          )}
-        </div>
-        <p className="text-xs text-text-tertiary">
-          不知道分集号？先在 B 站查看，再输入对应的 P 数。
-        </p>
+        {hasPages ? (
+          <label className="block space-y-1.5">
+            <span className="text-xs text-text-tertiary">选择分集</span>
+            <select
+              value={page}
+              onChange={(event) => onPageChange(Number(event.target.value))}
+              className="w-full px-3 py-2 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              {pages?.map((item) => (
+                <option key={`${item.page}-${item.cid ?? 'none'}`} value={item.page}>
+                  P{item.page} · {item.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={customPage}
+                onChange={(e) => setCustomPage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                min="1"
+                step="1"
+                placeholder="输入 P 数"
+                className="w-20 px-2 py-1.5 text-sm bg-bg-input border border-border-default rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <button
+                onClick={handlePageSubmit}
+                className="px-3 py-1.5 text-sm bg-primary-light text-text-secondary rounded-lg hover:bg-primary-subtle transition-colors"
+              >
+                切换分集
+              </button>
+              {error && (
+                <span className="flex items-center gap-1 text-xs text-red-500">
+                  <AlertCircle size={12} />
+                  {error}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-text-tertiary">
+              不知道分集号？先在 B 站查看，再输入对应的 P 数。
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

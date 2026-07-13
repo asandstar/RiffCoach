@@ -119,6 +119,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const allLessons = sources.flatMap((s) => s.lessons);
   const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
+  const selectedVideoPage = video.pages?.find((item) => item.page === currentPage);
 
   const togglePainPoint = (painPoint: PainPoint) => {
     setSelectedPainPoints((prev) =>
@@ -229,6 +230,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             onPageChange={setCurrentPage}
             title={video.title}
             videoId={video.id}
+            pages={video.pages}
           />
 
           {relatedProject && (
@@ -259,7 +261,9 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
               </div>
               <div className="flex-1">
                 <p className="text-sm text-text-tertiary">当前练习</p>
-                <p className="font-semibold text-text-primary">P{currentPage}</p>
+                <p className="font-semibold text-text-primary">
+                  P{currentPage}{selectedVideoPage ? ` · ${selectedVideoPage.title}` : ''}
+                </p>
               </div>
             </div>
           </GlassCard>
@@ -269,12 +273,16 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
             
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-text-secondary mb-2">AI 摘要</h3>
+                <h3 className="text-sm font-medium text-text-secondary mb-2">
+                  {video.owner ? '视频简介' : 'AI 摘要'}
+                </h3>
                 <p className="text-sm text-text-primary">{video.summary}</p>
-                <p className="text-xs text-text-tertiary mt-2 flex items-center gap-1">
-                  <AlertTriangle size={12} />
-                  以上信息由 AI 分析生成，仅供参考
-                </p>
+                {!video.owner && (
+                  <p className="text-xs text-text-tertiary mt-2 flex items-center gap-1">
+                    <AlertTriangle size={12} />
+                    以上信息由 AI 分析生成，仅供参考
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

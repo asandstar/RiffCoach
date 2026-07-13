@@ -103,7 +103,8 @@ npm run preview
 
 项目相关 Cloudflare 配置：
 - `functions/api/feedback.ts` — AI 反馈 API（当前 Mock，未来接入 Workers AI）
-- `functions/api/bili-video.ts` — B站视频信息代理 API（无 CORS 限制，带缓存）
+- `src/data/biliMetadata.generated.json` — 构建时使用的 B站静态元数据
+- `public/video-covers/` — 本地 B站视频封面
 - `wrangler.toml` — Pages 项目配置
 - `public/_redirects` — SPA 路由重定向
 - `npm run build:cloudflare` — Cloudflare 构建命令（base=/，输出到 dist/）
@@ -163,10 +164,10 @@ RiffCoach/
 │   └── types/index.ts       # TypeScript 类型定义
 ├── functions/               # Cloudflare Pages Functions（后端 API）
 │   └── api/
-│       ├── feedback.ts      # AI 反馈 API（当前 Mock，未来接入 Workers AI）
-│       └── bili-video.ts    # B站视频信息代理 API（标题、封面、分集）
+│       └── feedback.ts      # AI 反馈 API（当前 Mock，未来接入 Workers AI）
 ├── public/
 │   ├── _redirects           # SPA 路由重定向
+│   ├── video-covers/        # 本地 B站视频封面
 │   └── favicon.svg          # 品牌图标
 ├── CLOUDFLARE_DEPLOYMENT.md # Cloudflare Pages 部署指南
 ├── riff-coach-showcase.html # 创意展示页
@@ -200,7 +201,7 @@ RiffCoach/
 | ✓ | Mock AI 增强（卡点知识库+趋势分析+反馈模板） |
 | ✓ | Cloudflare Pages 迁移准备（Functions + 部署配置） |
 | ✓ | P0 Bug 修复（计时器停止、Cover 数据串改、重复提交） |
-| ✓ | B站视频信息代理 API（Cloudflare Functions） |
+| ✓ | B站静态元数据与本地封面 |
 | ✓ | 视频播放器生命周期管理（退出自动停止） |
 | ⏳ | 练习录音、波形可视化 |
 | ⏳ | 真实 AI API 接入（Workers AI + D1） |
@@ -224,11 +225,11 @@ RiffCoach/
 - ✅ 修复视频退出后声音残留问题（iframe 卸载时 src 置为 about:blank）
 - ✅ 修复 React StrictMode 下 cleanup 双执行导致视频无声音问题
 
-**B站视频信息代理**
-- ✅ 新增 Cloudflare Function `/api/bili-video`：服务端代理 B站 API，无 CORS 限制
-- ✅ 获取真实视频标题、封面、UP主、播放量等信息，带 1 小时缓存
-- ✅ 本地开发自动回退到第三方 CORS 代理
-- ✅ 资料中心视频卡片优先显示 B站 真实标题和封面
+**B站静态元数据**
+- ✅ 构建时读取生成的真实标题、简介、UP 主、封面和分集信息
+- ✅ 封面随应用本地部署，不再依赖运行时 B站 API 或第三方 CORS 代理
+- ✅ 资料中心、最近使用和视频学习页共享同一份合并后的资源数据
+- ℹ️ `vid_u1` 与 `vid_u5` 当前均为 `BV1Kx41147iq`；保留原始配置，不推测替换链接
 
 **其他**
 - ✅ 开源协议从 MIT 更改为 Apache 2.0

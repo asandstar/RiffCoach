@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation, KnowledgeReadHistory } from '@/types';
 import { defaultData } from '@/data/defaultData';
 import { generateDemoData } from '@/data/demoData';
+import { mergeVideoMetadata } from '@/data/mergeVideoMetadata';
 import { extractBvid } from '@/utils/bilibili';
 
 function uid(prefix: string): string {
@@ -61,6 +62,7 @@ function migrateData(data: Partial<AppState>): AppState {
   if (!result.videoResources || !Array.isArray(result.videoResources)) {
     result.videoResources = defaultData.videoResources;
   }
+  result.videoResources = mergeVideoMetadata(result.videoResources);
 
   if (!result.recentResources || !Array.isArray(result.recentResources)) {
     result.recentResources = [];
@@ -73,6 +75,7 @@ function migrateData(data: Partial<AppState>): AppState {
   if (!result.knowledgeBase) {
     result.knowledgeBase = { ...defaultData.knowledgeBase };
   }
+  result.knowledgeBase.videos = result.videoResources;
 
   if (!result.knowledgeBase.readHistory || !Array.isArray(result.knowledgeBase.readHistory)) {
     result.knowledgeBase.readHistory = [];
@@ -375,13 +378,8 @@ export const useAppStore = create<AppStore>()(
     {
       name: 'riffcoach-storage',
       storage: createJSONStorage(() => localStorage),
-      version: 2,
-      migrate: (persistedState, version) => {
-        if (version === 1) {
-          return migrateData(persistedState as Partial<AppState>);
-        }
-        return persistedState as AppState;
-      },
+      version: 3,
+      migrate: (persistedState) => migrateData(persistedState as Partial<AppState>),
     }
   )
 );

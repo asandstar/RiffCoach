@@ -1,0 +1,3178 @@
+{
+  "generatedAt": "2026-07-13T12:02:13.200Z",
+  "sourceFile": "src/data/defaultData.ts",
+  "recordCount": 13,
+  "uniqueBvidCount": 12,
+  "duplicateBvids": {
+    "BV1Kx41147iq": [
+      "vid_u1",
+      "vid_u5"
+    ]
+  },
+  "videos": {
+    "vid_e1": {
+      "bvid": "BV1NJVJzEEnn",
+      "url": "https://www.bilibili.com/video/BV1NJVJzEEnn",
+      "previousTitle": "电吉他入门系统教程",
+      "title": "【电吉他入门教学】全网最简单! 每天10分钟! 带你零基础学习电吉他! 自学保姆级教程 持续更新中…",
+      "description": "这个入门系列我们还在持续制作中~之后还有会有很多很多集，逐步更新和大家见面，大树老师这套保姆级全网最简单的零基础入门课对电吉他有一个全面的认识，初学电吉他看这套就对啦！如果感觉对你有帮助的话，欢迎点个关注收藏，不迷路! 木吉他攻略：BV1Sf4ueBEUt 电吉他攻略：BV1TKD6YfE8s 视频用琴 | 欧雷加电吉他 STpro/STpro+/ST max/Future 购琴直达 | 淘宝店【大树音乐屋】 吉他谱 | 【大树音乐屋】公众号回复1 / 2/ 3 获取",
+      "owner": "大树音乐屋",
+      "cover": "/video-covers/BV1NJVJzEEnn.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/ddd83b0fd8e3be3667c7eddd94f55610def88298.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "第1节 认识电吉他",
+          "duration": 499,
+          "cid": 30175661604
+        },
+        {
+          "page": 2,
+          "title": "第2节 调音·八度音",
+          "duration": 571,
+          "cid": 30175661460
+        },
+        {
+          "page": 3,
+          "title": "第3节 持琴·识谱·拨片·按弦·拨弦",
+          "duration": 631,
+          "cid": 30175661973
+        },
+        {
+          "page": 4,
+          "title": "第4节 节奏·节拍·爬格子入门进阶",
+          "duration": 605,
+          "cid": 30175723767
+        },
+        {
+          "page": 5,
+          "title": "第5节 强力和弦·护弦技巧",
+          "duration": 1040,
+          "cid": 30175723918
+        },
+        {
+          "page": 6,
+          "title": "第6节 《不再犹豫》强力和弦练习",
+          "duration": 437,
+          "cid": 30175724069
+        },
+        {
+          "page": 7,
+          "title": "第7节 击弦·勾弦·击勾弦《一路向北》solo",
+          "duration": 924,
+          "cid": 30301752921
+        },
+        {
+          "page": 8,
+          "title": "第8节 滑音技巧《雨爱》solo",
+          "duration": 1106,
+          "cid": 31779980421
+        },
+        {
+          "page": 9,
+          "title": "第9节 推弦·揉弦·刮弦《真的爱你》solo",
+          "duration": 1227,
+          "cid": 31732073202
+        },
+        {
+          "page": 10,
+          "title": "第10节 点弦技巧",
+          "duration": 580,
+          "cid": 31732270327
+        },
+        {
+          "page": 11,
+          "title": "第11节 分解和弦乐句练习",
+          "duration": 703,
+          "cid": 31732337800
+        },
+        {
+          "page": 12,
+          "title": "第12节 滑音+闷音练习《喜欢你》间奏solo",
+          "duration": 317,
+          "cid": 31732533561
+        },
+        {
+          "page": 13,
+          "title": "第13节 反拍节奏练习《男孩别哭》扫弦/Solo",
+          "duration": 593,
+          "cid": 31732598579
+        },
+        {
+          "page": 14,
+          "title": "第14节 Shuffle风格节奏练习",
+          "duration": 880,
+          "cid": 31978752126
+        },
+        {
+          "page": 15,
+          "title": "第15节 Funk风格律动节奏练习",
+          "duration": 718,
+          "cid": 32051233226
+        },
+        {
+          "page": 16,
+          "title": "第16节 火星哥《Treasure》Funk乐句",
+          "duration": 415,
+          "cid": 32072666124
+        },
+        {
+          "page": 17,
+          "title": "第17节 电吉他泛音技巧 拨片泛音·点弦泛音",
+          "duration": 695,
+          "cid": 32356434469
+        },
+        {
+          "page": 18,
+          "title": "第18节 AC/DC《Back In Black》乐句",
+          "duration": 365,
+          "cid": 32194825986
+        },
+        {
+          "page": 19,
+          "title": "第19节 迈克尔杰克逊《Bentit》乐句",
+          "duration": 383,
+          "cid": 32155239046
+        },
+        {
+          "page": 20,
+          "title": "第20节 涅槃乐队Nirvana《Smells Like Teen Spirit》 riff乐句",
+          "duration": 240,
+          "cid": 32175164725
+        },
+        {
+          "page": 21,
+          "title": "第21节《光辉岁月》前奏+间奏练习.Beyongd经典solo",
+          "duration": 811,
+          "cid": 35006317814
+        },
+        {
+          "page": 22,
+          "title": "第22节 《Mission lmpossible》 碟中谍.ps:需特调六弦为D",
+          "duration": 579,
+          "cid": 35006513921
+        },
+        {
+          "page": 23,
+          "title": "第23节《Layla》前奏练习.Eeic Clapton吉他之神经典曲目",
+          "duration": 583,
+          "cid": 35006645437
+        },
+        {
+          "page": 24,
+          "title": "第24节 Blue Shuffle律动乐句练习",
+          "duration": 397,
+          "cid": 35119303651
+        },
+        {
+          "page": 25,
+          "title": "第25节 摇把/颤音系统练习曲《若生命等候》前奏乐句",
+          "duration": 575,
+          "cid": 35119432649
+        },
+        {
+          "page": 26,
+          "title": "课程更新中~大家记得收藏练习哦！",
+          "duration": 16,
+          "cid": 30021322836
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_e2": {
+      "bvid": "BV1FT411Z7iu",
+      "url": "https://www.bilibili.com/video/BV1FT411Z7iu",
+      "previousTitle": "电吉他技巧进阶",
+      "title": "【2026全新改版】《零基础入门电吉他教学完整版》适合零基础自学入门",
+      "description": "免费的资源到处都是~系统的免费资源万里挑一 希望你专注练完一个入门再说，在电吉他教材里，这是为数不多(也许是唯一)，经过验证零基础每天1小时，三个月能练完的！下定决心，加油吧！",
+      "owner": "帅帅是把电吉他",
+      "cover": "/video-covers/BV1FT411Z7iu.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/3be20bdd7959669f7d1ea50dee6bc48e0f19c255.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "准备篇",
+          "duration": 120,
+          "cid": 36009740741
+        },
+        {
+          "page": 2,
+          "title": "W1-INTRO",
+          "duration": 33,
+          "cid": 35727607830
+        },
+        {
+          "page": 3,
+          "title": "W1-EX1 右手空弦下拨(含六线谱介绍)",
+          "duration": 896,
+          "cid": 36374643242
+        },
+        {
+          "page": 4,
+          "title": "W1-EX2 左手按弦练习(含乐理常识&调音)",
+          "duration": 784,
+          "cid": 36374710788
+        },
+        {
+          "page": 5,
+          "title": "W1-EX3 1&2指纵向爬格子",
+          "duration": 336,
+          "cid": 36374773897
+        },
+        {
+          "page": 6,
+          "title": "W1-EX4 1&3指纵向爬格子",
+          "duration": 194,
+          "cid": 36374775237
+        },
+        {
+          "page": 7,
+          "title": "W1-EX5 1&2指全指板爬格子",
+          "duration": 620,
+          "cid": 36374776025
+        },
+        {
+          "page": 8,
+          "title": "W1-EX6 1&3指全指板爬格子",
+          "duration": 479,
+          "cid": 36374777796
+        },
+        {
+          "page": 9,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 50",
+          "duration": 182,
+          "cid": 35965306083
+        },
+        {
+          "page": 10,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 60",
+          "duration": 182,
+          "cid": 35965306319
+        },
+        {
+          "page": 11,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 70",
+          "duration": 183,
+          "cid": 35965306500
+        },
+        {
+          "page": 12,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 80",
+          "duration": 185,
+          "cid": 35965306644
+        },
+        {
+          "page": 13,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 90",
+          "duration": 185,
+          "cid": 35965306851
+        },
+        {
+          "page": 14,
+          "title": "(伴奏)W1-EX5 &EX6 全指板爬格子 100",
+          "duration": 186,
+          "cid": 35965307095
+        },
+        {
+          "page": 15,
+          "title": "W1-EX7 第五把位C调音阶",
+          "duration": 538,
+          "cid": 36374841474
+        },
+        {
+          "page": 16,
+          "title": "W1-EX8 全&二分&四分音符节奏转换",
+          "duration": 228,
+          "cid": 36374842320
+        },
+        {
+          "page": 17,
+          "title": "W1-EX9 C调简谱视奏(含简谱介绍)",
+          "duration": 586,
+          "cid": 36374843007
+        },
+        {
+          "page": 18,
+          "title": "(伴奏)W1-EX9-No.4 小星星",
+          "duration": 38,
+          "cid": 35119172842
+        },
+        {
+          "page": 19,
+          "title": "(示范)W1-EX9-No.4 小星星",
+          "duration": 36,
+          "cid": 35119172807
+        },
+        {
+          "page": 20,
+          "title": "(伴奏)W1-EX9-No.5 森林之海 65",
+          "duration": 68,
+          "cid": 1420756479
+        },
+        {
+          "page": 21,
+          "title": "(伴奏)W1-EX9-No.5 森林之海 80",
+          "duration": 56,
+          "cid": 1420756994
+        },
+        {
+          "page": 22,
+          "title": "(示范)W1-EX9-No.5 森林之海 80",
+          "duration": 53,
+          "cid": 35112812906
+        },
+        {
+          "page": 23,
+          "title": "W1-OUTRO",
+          "duration": 12,
+          "cid": 35727343925
+        },
+        {
+          "page": 24,
+          "title": "W2-INTRO",
+          "duration": 7,
+          "cid": 35727412600
+        },
+        {
+          "page": 25,
+          "title": "W2-EX1 单弦交替拨弦",
+          "duration": 297,
+          "cid": 35754410769
+        },
+        {
+          "page": 26,
+          "title": "(跟练)W2-EX1 单弦交替拨弦",
+          "duration": 412,
+          "cid": 1402569287
+        },
+        {
+          "page": 27,
+          "title": "W2-EX2 多弦交替拨弦",
+          "duration": 165,
+          "cid": 35766863905
+        },
+        {
+          "page": 28,
+          "title": "(跟练)W2-EX2 多弦交替拨弦",
+          "duration": 344,
+          "cid": 28432336405
+        },
+        {
+          "page": 29,
+          "title": "W2-EX3 2&3指全指板爬格子",
+          "duration": 306,
+          "cid": 36375627364
+        },
+        {
+          "page": 30,
+          "title": "W2-EX4 4&1指双弦爬格子",
+          "duration": 221,
+          "cid": 35768895337
+        },
+        {
+          "page": 31,
+          "title": "W2-EX5 第二把位C调音阶",
+          "duration": 278,
+          "cid": 35773678164
+        },
+        {
+          "page": 32,
+          "title": "W2-EX6 大&小二度模唱",
+          "duration": 459,
+          "cid": 35915894409
+        },
+        {
+          "page": 33,
+          "title": "W2-EX7 二&四&八分音符节奏转换",
+          "duration": 243,
+          "cid": 35925003923
+        },
+        {
+          "page": 34,
+          "title": "W2-EX8 第二把位简谱视奏(含拍号介绍)",
+          "duration": 512,
+          "cid": 35935947302
+        },
+        {
+          "page": 35,
+          "title": "W2-EX9 周杰伦-青花瓷(含折指技巧)",
+          "duration": 506,
+          "cid": 35927689172
+        },
+        {
+          "page": 36,
+          "title": "(跟练)W2-EX9 周杰伦-青花瓷",
+          "duration": 414,
+          "cid": 1411136983
+        },
+        {
+          "page": 37,
+          "title": "(伴奏)W2-EX9 周杰伦-青花瓷 60",
+          "duration": 83,
+          "cid": 1404358751
+        },
+        {
+          "page": 38,
+          "title": "(伴奏)W2-EX9 周杰伦-青花瓷 80",
+          "duration": 63,
+          "cid": 1404367368
+        },
+        {
+          "page": 39,
+          "title": "(示范)W2-EX9 周杰伦-青花瓷 80",
+          "duration": 60,
+          "cid": 35112946937
+        },
+        {
+          "page": 40,
+          "title": "W2-OUTRO",
+          "duration": 14,
+          "cid": 35727543639
+        },
+        {
+          "page": 41,
+          "title": "W3-INTRO",
+          "duration": 25,
+          "cid": 35766667521
+        },
+        {
+          "page": 42,
+          "title": "W3-EX1 单弦含16分音符的交替拨弦(含音符时值)",
+          "duration": 308,
+          "cid": 35954494947
+        },
+        {
+          "page": 43,
+          "title": "(跟练)W3-EX1 单弦含16分音符的交替拨弦",
+          "duration": 414,
+          "cid": 28485486222
+        },
+        {
+          "page": 44,
+          "title": "W3-EX2 滑弦技巧练习",
+          "duration": 289,
+          "cid": 35124217171
+        },
+        {
+          "page": 45,
+          "title": "W3-EX3 4&1指全指板爬格子",
+          "duration": 471,
+          "cid": 35940010914
+        },
+        {
+          "page": 46,
+          "title": "W3-EX4 双弦保留指爬格子",
+          "duration": 232,
+          "cid": 35641164260
+        },
+        {
+          "page": 47,
+          "title": "W3-EX5 第一把位音阶及闷音练习",
+          "duration": 536,
+          "cid": 35985557871
+        },
+        {
+          "page": 48,
+          "title": "W3-EX6 三度模唱练习",
+          "duration": 176,
+          "cid": 35987328051
+        },
+        {
+          "page": 49,
+          "title": "W3-EX7 音阶串连及反拍练习(含休止符)",
+          "duration": 365,
+          "cid": 35991388833
+        },
+        {
+          "page": 50,
+          "title": "(跟练)W3-EX7 音阶串连及反拍练习",
+          "duration": 237,
+          "cid": 1412466716
+        },
+        {
+          "page": 51,
+          "title": "W3-EX8 1&2把位简谱视奏",
+          "duration": 1022,
+          "cid": 36612280319
+        },
+        {
+          "page": 52,
+          "title": "(伴奏)W3-EX8-No.3 都选C",
+          "duration": 65,
+          "cid": 36612738653
+        },
+        {
+          "page": 53,
+          "title": "(示范)W3-EX8-No.3 都选C",
+          "duration": 62,
+          "cid": 36641639905
+        },
+        {
+          "page": 54,
+          "title": "(伴奏)W3-EX8-No.5 虫儿飞",
+          "duration": 86,
+          "cid": 36612738728
+        },
+        {
+          "page": 55,
+          "title": "(示范)W3-EX8-No.5 虫儿飞",
+          "duration": 86,
+          "cid": 36641640429
+        },
+        {
+          "page": 56,
+          "title": "W3-EX9 许巍-蓝莲花Solo",
+          "duration": 305,
+          "cid": 36374056410
+        },
+        {
+          "page": 57,
+          "title": "(跟练)W3-EX9 许巍-蓝莲花Solo",
+          "duration": 210,
+          "cid": 28525199640
+        },
+        {
+          "page": 58,
+          "title": "(伴奏)W3-EX9 许巍-蓝莲花Solo",
+          "duration": 31,
+          "cid": 28551938165
+        },
+        {
+          "page": 59,
+          "title": "(示范)W3-EX9 许巍-蓝莲花Solo",
+          "duration": 31,
+          "cid": 35284844908
+        },
+        {
+          "page": 60,
+          "title": "W3-OUTRO",
+          "duration": 19,
+          "cid": 35773812395
+        },
+        {
+          "page": 61,
+          "title": "W4-INTRO",
+          "duration": 9,
+          "cid": 35742024181
+        },
+        {
+          "page": 62,
+          "title": "W4-EX1 单弦含三连音的交替拨弦",
+          "duration": 133,
+          "cid": 35645427377
+        },
+        {
+          "page": 63,
+          "title": "(跟练)W4-EX1 单弦含三连音的交替拨弦",
+          "duration": 270,
+          "cid": 28493811487
+        },
+        {
+          "page": 64,
+          "title": "W4-EX2 击弦技巧练习",
+          "duration": 292,
+          "cid": 35239366341
+        },
+        {
+          "page": 65,
+          "title": "W4-EX3 纵向保留指爬格子",
+          "duration": 131,
+          "cid": 25953244586
+        },
+        {
+          "page": 66,
+          "title": "W4-EX4 4&3指原地交替练习",
+          "duration": 94,
+          "cid": 35646671449
+        },
+        {
+          "page": 67,
+          "title": "W4-EX5 第四把位部分音阶及制音拨弦",
+          "duration": 277,
+          "cid": 35160195658
+        },
+        {
+          "page": 68,
+          "title": "W4-EX6 相对于do的音程模唱",
+          "duration": 181,
+          "cid": 35164196792
+        },
+        {
+          "page": 69,
+          "title": "W4-EX7 八分音符含休止和延音的节奏视奏",
+          "duration": 547,
+          "cid": 35868577298
+        },
+        {
+          "page": 70,
+          "title": "W4-EX8 非C调简谱视奏",
+          "duration": 851,
+          "cid": 35868051606
+        },
+        {
+          "page": 71,
+          "title": "W4-EX9 火影忍者-剪影solo",
+          "duration": 287,
+          "cid": 35224489557
+        },
+        {
+          "page": 72,
+          "title": "(伴奏)W4-EX9 火影忍者-剪影solo",
+          "duration": 33,
+          "cid": 35285239611
+        },
+        {
+          "page": 73,
+          "title": "(示范)W4-EX9 火影忍者-剪影solo",
+          "duration": 32,
+          "cid": 35285042898
+        },
+        {
+          "page": 74,
+          "title": "W4-OUTRO",
+          "duration": 27,
+          "cid": 35742024260
+        },
+        {
+          "page": 75,
+          "title": "W5-INTRO",
+          "duration": 9,
+          "cid": 35742024614
+        },
+        {
+          "page": 76,
+          "title": "W5-EX1 单弦含重音的节奏转换拨弦",
+          "duration": 183,
+          "cid": 35258240947
+        },
+        {
+          "page": 77,
+          "title": "(跟练)W5-EX1 单弦含重音的节奏转换拨弦",
+          "duration": 270,
+          "cid": 35260268933
+        },
+        {
+          "page": 78,
+          "title": "W5-EX2 勾弦技巧练习",
+          "duration": 315,
+          "cid": 35240544496
+        },
+        {
+          "page": 79,
+          "title": "W5-EX3 单弦横向爬格子",
+          "duration": 247,
+          "cid": 35259220913
+        },
+        {
+          "page": 80,
+          "title": "W5-EX4 纵向1434保留指爬格子",
+          "duration": 157,
+          "cid": 35260073728
+        },
+        {
+          "page": 81,
+          "title": "W5-EX5 十六分音符少1个音的节奏视奏",
+          "duration": 520,
+          "cid": 35876506785
+        },
+        {
+          "page": 82,
+          "title": "W5-EX6 AIR-鸟之诗",
+          "duration": 578,
+          "cid": 35378040456
+        },
+        {
+          "page": 83,
+          "title": "W5-EX7 扫弦技巧练习",
+          "duration": 311,
+          "cid": 35635398418
+        },
+        {
+          "page": 84,
+          "title": "W5-EX8 根音在5&6弦上的五和弦",
+          "duration": 593,
+          "cid": 35337538838
+        },
+        {
+          "page": 85,
+          "title": "W5-EX9 5&6弦指板音横向记忆练习",
+          "duration": 85,
+          "cid": 35340420911
+        },
+        {
+          "page": 86,
+          "title": "W5-EX10 周杰伦-爱的飞行日记",
+          "duration": 183,
+          "cid": 35341731236
+        },
+        {
+          "page": 87,
+          "title": "(伴奏)W5-EX10 周杰伦-爱的飞行日记",
+          "duration": 52,
+          "cid": 35626027747
+        },
+        {
+          "page": 88,
+          "title": "(示范)W5-EX10 周杰伦-爱的飞行日记",
+          "duration": 50,
+          "cid": 35646999945
+        },
+        {
+          "page": 89,
+          "title": "W5-OUTRO",
+          "duration": 16,
+          "cid": 35742024760
+        },
+        {
+          "page": 90,
+          "title": "W6-INTRO",
+          "duration": 11,
+          "cid": 35742024923
+        },
+        {
+          "page": 91,
+          "title": "W6-EX1 先上拨的单弦节奏转换拨弦",
+          "duration": 98,
+          "cid": 35357261911
+        },
+        {
+          "page": 92,
+          "title": "(跟练)W6-EX1 先上拨的单弦节奏转换拨弦",
+          "duration": 288,
+          "cid": 35358247076
+        },
+        {
+          "page": 93,
+          "title": "W6-EX2 揉弦技巧练习",
+          "duration": 799,
+          "cid": 35402220938
+        },
+        {
+          "page": 94,
+          "title": "W6-EX3 单弦手指协调性练习",
+          "duration": 131,
+          "cid": 35402876806
+        },
+        {
+          "page": 95,
+          "title": "W6-EX4 单指连续击勾弦练习",
+          "duration": 198,
+          "cid": 35417165011
+        },
+        {
+          "page": 96,
+          "title": "W6-EX5 16分音符少2个音的节奏视奏(含五线谱介绍)",
+          "duration": 844,
+          "cid": 35868248627
+        },
+        {
+          "page": 97,
+          "title": "W6-EX6 Beyond-光辉岁月solo",
+          "duration": 556,
+          "cid": 35505898513
+        },
+        {
+          "page": 98,
+          "title": "(伴奏)W6-EX6 Beyond-光辉岁月solo",
+          "duration": 44,
+          "cid": 35964584545
+        },
+        {
+          "page": 99,
+          "title": "(示范)W6-EX6 Beyond-光辉岁月solo",
+          "duration": 44,
+          "cid": 36641702347
+        },
+        {
+          "page": 100,
+          "title": "W6-EX7 根音在三弦的C调原位三和弦(含和弦乐理)",
+          "duration": 810,
+          "cid": 35485322399
+        },
+        {
+          "page": 101,
+          "title": "W6-EX8 1&2&3弦指板音横向记忆练习",
+          "duration": 53,
+          "cid": 35485714822
+        },
+        {
+          "page": 102,
+          "title": "W6-EX9 制音移位扫弦(含斜线记谱法)",
+          "duration": 220,
+          "cid": 35506751265
+        },
+        {
+          "page": 103,
+          "title": "W6-EX10轻音少女-Don't say lazy",
+          "duration": 186,
+          "cid": 35507603753
+        },
+        {
+          "page": 104,
+          "title": "(伴奏)W6-EX10轻音少女-Don't say lazy",
+          "duration": 51,
+          "cid": 35787968053
+        },
+        {
+          "page": 105,
+          "title": "(示范)W6-EX10轻音少女-Don't say lazy",
+          "duration": 50,
+          "cid": 35890663132
+        },
+        {
+          "page": 106,
+          "title": "W6-OUTRO",
+          "duration": 12,
+          "cid": 35742025076
+        },
+        {
+          "page": 107,
+          "title": "W7-INTRO",
+          "duration": 12,
+          "cid": 35742024995
+        },
+        {
+          "page": 108,
+          "title": "W7-EX1 单弦含六连音的节奏转换拨弦",
+          "duration": 158,
+          "cid": 35357787770
+        },
+        {
+          "page": 109,
+          "title": "(跟练)W7-EX1 单弦含六连音的节奏转换拨弦",
+          "duration": 312,
+          "cid": 35358314062
+        },
+        {
+          "page": 110,
+          "title": "W7-EX2 推弦技巧练习",
+          "duration": 313,
+          "cid": 35521433344
+        },
+        {
+          "page": 111,
+          "title": "W7-EX3 多弦手指协调性练习",
+          "duration": 113,
+          "cid": 35525560219
+        },
+        {
+          "page": 112,
+          "title": "W7-EX4 双指连续击勾弦练习",
+          "duration": 115,
+          "cid": 35538077168
+        },
+        {
+          "page": 113,
+          "title": "W7-EX5 夜鹿-花上亡灵solo",
+          "duration": 458,
+          "cid": 35546072667
+        },
+        {
+          "page": 114,
+          "title": "(伴奏)W7-EX5 夜鹿-花上亡灵solo",
+          "duration": 26,
+          "cid": 35787968448
+        },
+        {
+          "page": 115,
+          "title": "(示范)W7-EX5 夜鹿-花上亡灵solo",
+          "duration": 27,
+          "cid": 35890725161
+        },
+        {
+          "page": 116,
+          "title": "W7-EX6 布鲁斯shuffle节奏扫弦",
+          "duration": 148,
+          "cid": 25950756073
+        },
+        {
+          "page": 117,
+          "title": "W7-EX7 ZZ Top-Tush",
+          "duration": 507,
+          "cid": 35566127014
+        },
+        {
+          "page": 118,
+          "title": "W7-EX8 1&2&3弦指板音强化记忆练习",
+          "duration": 178,
+          "cid": 35567698461
+        },
+        {
+          "page": 119,
+          "title": "W7-EX9 三个音的转位大&小三和弦",
+          "duration": 658,
+          "cid": 35589260821
+        },
+        {
+          "page": 120,
+          "title": "W7-EX10 五月天-温柔",
+          "duration": 987,
+          "cid": 35625765829
+        },
+        {
+          "page": 121,
+          "title": "(伴奏)W7-EX10 五月天-温柔",
+          "duration": 52,
+          "cid": 35964584588
+        },
+        {
+          "page": 122,
+          "title": "(示范)W7-EX10 五月天-温柔",
+          "duration": 52,
+          "cid": 36641702676
+        },
+        {
+          "page": 123,
+          "title": "W7-OUTRO",
+          "duration": 21,
+          "cid": 35742025271
+        },
+        {
+          "page": 124,
+          "title": "展望篇",
+          "duration": 117,
+          "cid": 1230732308
+        },
+        {
+          "page": 125,
+          "title": "(旧)W4-EX9 Master of puppet(含六线谱节奏符号)",
+          "duration": 272,
+          "cid": 1416879604
+        },
+        {
+          "page": 126,
+          "title": "(旧)(伴奏)W4-EX9 Master of puppet 120",
+          "duration": 44,
+          "cid": 1616945976
+        },
+        {
+          "page": 127,
+          "title": "(旧)(示范)W4-EX9 Master of puppet 120",
+          "duration": 44,
+          "cid": 1616980068
+        },
+        {
+          "page": 128,
+          "title": "(旧)W5-EX9 夏霞Solo(含调性乐理)",
+          "duration": 381,
+          "cid": 28541193021
+        },
+        {
+          "page": 129,
+          "title": "(旧)(伴奏)W5-EX9 夏霞Solo G调 80",
+          "duration": 34,
+          "cid": 1406898618
+        },
+        {
+          "page": 130,
+          "title": "(旧)(示范)W5-EX9 夏霞Solo G调 80",
+          "duration": 34,
+          "cid": 1617022621
+        },
+        {
+          "page": 131,
+          "title": "(旧)W5-EX11 魔兽世界-亡灵序曲",
+          "duration": 286,
+          "cid": 28553842478
+        },
+        {
+          "page": 132,
+          "title": "(旧)(伴奏)W5-EX11 魔兽世界-亡灵序曲 60",
+          "duration": 45,
+          "cid": 1423175202
+        },
+        {
+          "page": 133,
+          "title": "(旧)(示范)W5-EX11 魔兽世界-亡灵序曲 60",
+          "duration": 43,
+          "cid": 1617959178
+        },
+        {
+          "page": 134,
+          "title": "(旧)W6-EX10 你的名字-梦灯笼",
+          "duration": 457,
+          "cid": 28540207124
+        },
+        {
+          "page": 135,
+          "title": "(旧)(伴奏)W6-EX10 你的名字-梦灯笼 bE调 60",
+          "duration": 50,
+          "cid": 28552070583
+        },
+        {
+          "page": 136,
+          "title": "(旧)(示范)W6-EX10 你的名字-梦灯笼 bE调 60",
+          "duration": 46,
+          "cid": 28552007039
+        },
+        {
+          "page": 137,
+          "title": "(旧)W7-EX10 孤独摇滚-你没事吧",
+          "duration": 94,
+          "cid": 28554365836
+        },
+        {
+          "page": 138,
+          "title": "(旧)W7-EX12 放克歌曲-Get lucky",
+          "duration": 236,
+          "cid": 28556854592
+        },
+        {
+          "page": 139,
+          "title": "(旧)(伴奏) W7-EX12 放克歌曲-Get lucky A调 70",
+          "duration": 62,
+          "cid": 1421751526
+        },
+        {
+          "page": 140,
+          "title": "(旧)(示范) W7-EX12 放克歌曲-Get lucky A调 70",
+          "duration": 61,
+          "cid": 1618027113
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_e3": {
+      "bvid": "BV1bx411H768",
+      "url": "https://www.bilibili.com/video/BV1bx411H768",
+      "previousTitle": "摇滚吉他练习曲",
+      "title": "【高清】乔伊重金属节奏电吉他教程（第一册1—6章）",
+      "description": "http://v.youku.com/v_show/id_XMTU2NTUyNDY4NA==.html?spm=a2hzp.8253876.0.0&amp;f=2722 转载自优酷八零摇滚课堂，优酷在线播放质量不高就转载到b站，本版本为高清教程，更方便大家学习。请大家配合《乔伊重金属节奏吉他教材》学习。本视频详细的给大家讲解了乔伊节奏吉他的第一册内容，希望大家在电吉他的学习中能有所收获！",
+      "owner": "狄亚波Vision",
+      "cover": "/video-covers/BV1bx411H768.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/84cd3f59ecee41e27965e5c4047c5e71dd63fa4e.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "重金属节奏电吉他教学介绍",
+          "duration": 295,
+          "cid": 21878009
+        },
+        {
+          "page": 2,
+          "title": "No.1《强力和弦》",
+          "duration": 775,
+          "cid": 21877988
+        },
+        {
+          "page": 3,
+          "title": "No.2《三种常用音符》",
+          "duration": 1613,
+          "cid": 21877989
+        },
+        {
+          "page": 4,
+          "title": "No.3《五弦上的强力和弦》",
+          "duration": 1042,
+          "cid": 21878010
+        },
+        {
+          "page": 5,
+          "title": "No.4《跨弦技巧》",
+          "duration": 616,
+          "cid": 21877990
+        },
+        {
+          "page": 6,
+          "title": "No.5《八分音符》",
+          "duration": 537,
+          "cid": 21878022
+        },
+        {
+          "page": 7,
+          "title": "No.6 《休止符与制音技巧》",
+          "duration": 598,
+          "cid": 21877980
+        },
+        {
+          "page": 8,
+          "title": "No.7《滑奏技巧》",
+          "duration": 428,
+          "cid": 21877981
+        },
+        {
+          "page": 9,
+          "title": "No.8《练习曲#1示范》",
+          "duration": 152,
+          "cid": 21877982
+        },
+        {
+          "page": 10,
+          "title": "No.9《练习曲#1讲解》",
+          "duration": 1384,
+          "cid": 21878023
+        },
+        {
+          "page": 11,
+          "title": "No.10《第一章总结》",
+          "duration": 206,
+          "cid": 21877991
+        },
+        {
+          "page": 12,
+          "title": "No.11《扩展强力和弦》",
+          "duration": 499,
+          "cid": 21877997
+        },
+        {
+          "page": 13,
+          "title": "No.12《经济指法》",
+          "duration": 696,
+          "cid": 21877998
+        },
+        {
+          "page": 14,
+          "title": "No.13《升号和降号》",
+          "duration": 335,
+          "cid": 21878002
+        },
+        {
+          "page": 15,
+          "title": "No.14《右手闷音技巧》",
+          "duration": 792,
+          "cid": 21878024
+        },
+        {
+          "page": 16,
+          "title": "No.15《持续音》",
+          "duration": 870,
+          "cid": 21878025
+        },
+        {
+          "page": 17,
+          "title": "No.16《练习曲#2示范》",
+          "duration": 156,
+          "cid": 21878018
+        },
+        {
+          "page": 18,
+          "title": "No.17《练习曲#2讲解》",
+          "duration": 1359,
+          "cid": 21877992
+        },
+        {
+          "page": 19,
+          "title": "No.18《第二章总结》",
+          "duration": 70,
+          "cid": 21877983
+        },
+        {
+          "page": 20,
+          "title": "No.19《左手制音》",
+          "duration": 589,
+          "cid": 21877999
+        },
+        {
+          "page": 21,
+          "title": "No.20《开放强力和弦》",
+          "duration": 781,
+          "cid": 21878003
+        },
+        {
+          "page": 22,
+          "title": "No.21《上拍重音》",
+          "duration": 1240,
+          "cid": 21878026
+        },
+        {
+          "page": 23,
+          "title": "No.22《节奏的变化》",
+          "duration": 916,
+          "cid": 21878004
+        },
+        {
+          "page": 24,
+          "title": "No.23《颤音技巧》",
+          "duration": 1067,
+          "cid": 21877984
+        },
+        {
+          "page": 25,
+          "title": "No.24《练习曲#3示范》",
+          "duration": 165,
+          "cid": 21878016
+        },
+        {
+          "page": 26,
+          "title": "No.25《练习曲#3讲解》",
+          "duration": 791,
+          "cid": 21878017
+        },
+        {
+          "page": 27,
+          "title": "No.26《第三章总结》",
+          "duration": 86,
+          "cid": 21878000
+        },
+        {
+          "page": 28,
+          "title": "No.27《四度双音和弦》",
+          "duration": 583,
+          "cid": 21878011
+        },
+        {
+          "page": 29,
+          "title": "No.28《切分音节奏》",
+          "duration": 1775,
+          "cid": 21878019
+        },
+        {
+          "page": 30,
+          "title": "No.29《摇滚点缀》",
+          "duration": 684,
+          "cid": 21877993
+        },
+        {
+          "page": 31,
+          "title": "No.30《十二小节变奏》",
+          "duration": 1387,
+          "cid": 21878005
+        },
+        {
+          "page": 32,
+          "title": "No.31《练习曲#4示范》",
+          "duration": 145,
+          "cid": 21878027
+        },
+        {
+          "page": 33,
+          "title": "No.32《练习曲#4讲解》",
+          "duration": 1648,
+          "cid": 21878012
+        },
+        {
+          "page": 34,
+          "title": "No.33《第四章总结》",
+          "duration": 112,
+          "cid": 21877994
+        },
+        {
+          "page": 35,
+          "title": "No.34《击勾弦技巧》",
+          "duration": 910,
+          "cid": 21878013
+        },
+        {
+          "page": 36,
+          "title": "No.35《推弦技巧》",
+          "duration": 568,
+          "cid": 21877987
+        },
+        {
+          "page": 37,
+          "title": "No.36《双上拍重音》",
+          "duration": 1044,
+          "cid": 21877995
+        },
+        {
+          "page": 38,
+          "title": "No.37《大、小三和弦》",
+          "duration": 731,
+          "cid": 21877985
+        },
+        {
+          "page": 39,
+          "title": "No.38《分解和弦》",
+          "duration": 703,
+          "cid": 21878014
+        },
+        {
+          "page": 40,
+          "title": "No.39《练习曲#5示范》",
+          "duration": 217,
+          "cid": 21877996
+        },
+        {
+          "page": 41,
+          "title": "No.40《练习曲#5讲解》",
+          "duration": 1851,
+          "cid": 21877986
+        },
+        {
+          "page": 42,
+          "title": "No.41《第五章总结》",
+          "duration": 95,
+          "cid": 21878001
+        },
+        {
+          "page": 43,
+          "title": "No.42《布鲁斯音阶》",
+          "duration": 490,
+          "cid": 21878028
+        },
+        {
+          "page": 44,
+          "title": "No.43《布鲁斯连复段》",
+          "duration": 608,
+          "cid": 21878021
+        },
+        {
+          "page": 45,
+          "title": "No.44《复合上拍重音》",
+          "duration": 497,
+          "cid": 21878006
+        },
+        {
+          "page": 46,
+          "title": "No.45《节奏模式》",
+          "duration": 707,
+          "cid": 21878007
+        },
+        {
+          "page": 47,
+          "title": "No.46《练习曲#6示范》",
+          "duration": 201,
+          "cid": 21878015
+        },
+        {
+          "page": 48,
+          "title": "No.47《练习曲#6讲解》",
+          "duration": 920,
+          "cid": 21878020
+        },
+        {
+          "page": 49,
+          "title": "No.48《第六章总结》",
+          "duration": 163,
+          "cid": 21878008
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_e4": {
+      "bvid": "BV1uq4y1m7QN",
+      "url": "https://www.bilibili.com/video/BV1uq4y1m7QN",
+      "previousTitle": "电吉他Solo教学",
+      "title": "电吉他教学 乔伊重金属主奏吉他",
+      "description": "https://v.youku.com/v_show/id_XMTc2MTUzMDgzNg.html 转载自优酷八零摇滚课堂 转载自优酷八零摇滚课堂",
+      "owner": "Jason-86",
+      "cover": "/video-covers/BV1uq4y1m7QN.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/e4f5302be4740020c39b9b3ad1e3ac99acd1fbf8.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "电吉他教学 乔伊重金属主奏吉他前言《教程介绍》",
+          "duration": 168,
+          "cid": 468679763
+        },
+        {
+          "page": 2,
+          "title": "电吉他教学 乔伊重金属主奏吉他第一节《小调五声音阶》",
+          "duration": 873,
+          "cid": 468681093
+        },
+        {
+          "page": 3,
+          "title": "电吉他教学 乔伊重金属主奏吉他第二节《击勾弦技巧》",
+          "duration": 779,
+          "cid": 468680714
+        },
+        {
+          "page": 4,
+          "title": "电吉他教学 乔伊重金属主奏吉他第三节《推弦技巧",
+          "duration": 1462,
+          "cid": 468681858
+        },
+        {
+          "page": 5,
+          "title": "电吉他教学 乔伊重金属主奏吉他第四节《摇滚套路》",
+          "duration": 920,
+          "cid": 468680684
+        },
+        {
+          "page": 6,
+          "title": "电吉他教学 乔伊重金属主奏吉他第五节《颤音技巧》",
+          "duration": 760,
+          "cid": 468677540
+        },
+        {
+          "page": 7,
+          "title": "乔伊重金属主奏吉他第六节《节奏模式》",
+          "duration": 617,
+          "cid": 468677816
+        },
+        {
+          "page": 8,
+          "title": "乔伊重金属主奏吉他第七节《小调五声音阶连复段》",
+          "duration": 687,
+          "cid": 470521217
+        },
+        {
+          "page": 9,
+          "title": "乔伊重金属主奏吉他第八节《拨片泛音》",
+          "duration": 1979,
+          "cid": 468679287
+        },
+        {
+          "page": 10,
+          "title": "乔伊重金属主奏吉他第九节《使用特殊技巧的连复段》",
+          "duration": 484,
+          "cid": 470527401
+        },
+        {
+          "page": 11,
+          "title": "乔伊重金属主奏吉他第十节《练习曲#1示范》",
+          "duration": 273,
+          "cid": 468678590
+        },
+        {
+          "page": 12,
+          "title": "乔伊重金属主奏吉他第十一节《练习曲#1讲解》",
+          "duration": 1492,
+          "cid": 468679865
+        },
+        {
+          "page": 13,
+          "title": "乔伊重金属主奏吉他第十二节《指型转调》",
+          "duration": 537,
+          "cid": 470530017
+        },
+        {
+          "page": 14,
+          "title": "乔伊重金属主奏吉他第十三节《高八度把位》",
+          "duration": 396,
+          "cid": 468679283
+        },
+        {
+          "page": 15,
+          "title": "乔伊重金属主奏吉他第十四节《斜向音阶模式》",
+          "duration": 626,
+          "cid": 468681126
+        },
+        {
+          "page": 16,
+          "title": "乔伊重金属主奏吉他第十五集<交替拨弦>",
+          "duration": 1353,
+          "cid": 482379540
+        },
+        {
+          "page": 17,
+          "title": "乔伊重金属主奏吉他第十六节《速度练习》",
+          "duration": 967,
+          "cid": 468681932
+        },
+        {
+          "page": 18,
+          "title": "乔伊重金属主奏吉他第十七节《练习曲#2示范",
+          "duration": 345,
+          "cid": 470726997
+        },
+        {
+          "page": 19,
+          "title": "乔伊重金属主奏吉他第十八节《练习曲#2讲解》",
+          "duration": 1851,
+          "cid": 468682360
+        },
+        {
+          "page": 20,
+          "title": "乔伊重金属主奏吉他第十九节《布鲁斯音阶》",
+          "duration": 634,
+          "cid": 482385112
+        },
+        {
+          "page": 21,
+          "title": "重金属主奏电吉他教学No.20《半音推弦》",
+          "duration": 450,
+          "cid": 468682873
+        },
+        {
+          "page": 22,
+          "title": "重金属主奏电吉他教学No.21《三连音节奏》",
+          "duration": 514,
+          "cid": 468683490
+        },
+        {
+          "page": 23,
+          "title": "重金属主奏电吉他教学No.22《摇摆节奏》",
+          "duration": 342,
+          "cid": 480743838
+        },
+        {
+          "page": 24,
+          "title": "重金属主奏电吉他教学No.23《摇摆节奏乐句》",
+          "duration": 624,
+          "cid": 480744269
+        },
+        {
+          "page": 25,
+          "title": "重金属主奏电吉他教学No.24《预先推弦技巧》",
+          "duration": 467,
+          "cid": 468683516
+        },
+        {
+          "page": 26,
+          "title": "重金属主奏电吉他教学No.25《慢速推弦技巧》",
+          "duration": 373,
+          "cid": 480744138
+        },
+        {
+          "page": 27,
+          "title": "重金属主奏电吉他教学No.26《哑音扫弦技巧》",
+          "duration": 493,
+          "cid": 468684429
+        },
+        {
+          "page": 28,
+          "title": "重金属主奏电吉他教学No.27《 断奏技巧》",
+          "duration": 564,
+          "cid": 480744458
+        },
+        {
+          "page": 29,
+          "title": "重金属主奏电吉他教学No.28《四分音符三连音》",
+          "duration": 331,
+          "cid": 468684137
+        },
+        {
+          "page": 30,
+          "title": "重金属主奏吉他教学No29《创造一小节乐句》",
+          "duration": 582,
+          "cid": 482391315
+        },
+        {
+          "page": 31,
+          "title": "重金属主奏电吉他教学No.30《创作两小节乐句》",
+          "duration": 382,
+          "cid": 480796230
+        },
+        {
+          "page": 32,
+          "title": "重金属主奏电吉他教学No.31《三连音节奏模式》",
+          "duration": 271,
+          "cid": 480864382
+        },
+        {
+          "page": 33,
+          "title": "重金属主奏电吉他教学No.32《练习曲#3示范》",
+          "duration": 128,
+          "cid": 468684378
+        },
+        {
+          "page": 34,
+          "title": "重金属主奏电吉他教学No.33《练习曲#3讲解》RIFF15",
+          "duration": 718,
+          "cid": 480935552
+        },
+        {
+          "page": 35,
+          "title": "重金属主奏电吉他教学No.35《练习曲#3讲解》2",
+          "duration": 629,
+          "cid": 480924068
+        },
+        {
+          "page": 36,
+          "title": "《练习曲#4示范》",
+          "duration": 110,
+          "cid": 480946657
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_a1": {
+      "bvid": "BV1HG411V7wA",
+      "url": "https://www.bilibili.com/video/BV1HG411V7wA",
+      "previousTitle": "木吉他入门教程",
+      "title": "【吉他入门教学】超简单！每天15分钟！老板娘带你零基础自学吉他！坚持就是胜利！",
+      "description": "这个入门系列我们还在持续制作中~之后还有会有很多很多集，逐步更新和大家见面，如果感觉对你有帮助的话，欢迎点个关注收藏，不迷路！",
+      "owner": "迷野吉他商店",
+      "cover": "/video-covers/BV1HG411V7wA.png",
+      "sourceCoverUrl": "https://i0.hdslb.com/bfs/archive/fc1674f09ab71b00f26fa1b473e1810788531199.png",
+      "pages": [
+        {
+          "page": 1,
+          "title": "如何学习本次课程",
+          "duration": 41,
+          "cid": 827442712
+        },
+        {
+          "page": 2,
+          "title": "【第一天】先来练右手！",
+          "duration": 1159,
+          "cid": 853078680
+        },
+        {
+          "page": 3,
+          "title": "【第二天】再来练左手！",
+          "duration": 686,
+          "cid": 853078476
+        },
+        {
+          "page": 4,
+          "title": "【第三天】节拍很重要！",
+          "duration": 627,
+          "cid": 853071365
+        },
+        {
+          "page": 5,
+          "title": "【第四天】左手相邻手指怎么扩？",
+          "duration": 713,
+          "cid": 853075878
+        },
+        {
+          "page": 6,
+          "title": "【第五天】左手间隔手指怎么练？",
+          "duration": 587,
+          "cid": 853079626
+        },
+        {
+          "page": 7,
+          "title": "【第六天】来认识半拍！",
+          "duration": 959,
+          "cid": 853110506
+        },
+        {
+          "page": 8,
+          "title": "【第七天】继续折磨左手扩指！",
+          "duration": 707,
+          "cid": 853110815
+        },
+        {
+          "page": 9,
+          "title": "【第八天】右手交替指练习~",
+          "duration": 776,
+          "cid": 853112238
+        },
+        {
+          "page": 10,
+          "title": "【第九天】右手灵活度练习！",
+          "duration": 569,
+          "cid": 853109628
+        },
+        {
+          "page": 11,
+          "title": "【第十天】左手协调性练习~",
+          "duration": 909,
+          "cid": 853159319
+        },
+        {
+          "page": 12,
+          "title": "【第十一天】配合大拇指的双音练习！",
+          "duration": 929,
+          "cid": 853162728
+        },
+        {
+          "page": 13,
+          "title": "【第十二天】相邻手指双音练习",
+          "duration": 1399,
+          "cid": 853163678
+        },
+        {
+          "page": 14,
+          "title": "【第十三天】来认识吉他谱~",
+          "duration": 1213,
+          "cid": 853157769
+        },
+        {
+          "page": 15,
+          "title": "【第十四天】看谱练习第二弹！加入八分音符和休止符",
+          "duration": 995,
+          "cid": 31931764197
+        },
+        {
+          "page": 16,
+          "title": "【第十五天】看谱练习第三弹！认识前八后十六音符~",
+          "duration": 652,
+          "cid": 977358604
+        },
+        {
+          "page": 17,
+          "title": "【第十六天】认识常用的四个和声（Part1）",
+          "duration": 639,
+          "cid": 977366474
+        },
+        {
+          "page": 18,
+          "title": "【第十七天】认识常用的四个和声（Part2）",
+          "duration": 487,
+          "cid": 977363601
+        },
+        {
+          "page": 19,
+          "title": "【第十八天】和弦转换练起来！",
+          "duration": 1060,
+          "cid": 977392133
+        },
+        {
+          "page": 20,
+          "title": "【第十九天】小横按练习（Part1）",
+          "duration": 1329,
+          "cid": 1072612160
+        },
+        {
+          "page": 21,
+          "title": "【第二十天】小横按练习（Part2）",
+          "duration": 917,
+          "cid": 1072661104
+        },
+        {
+          "page": 22,
+          "title": "【第二十一天】来学些新节奏~",
+          "duration": 875,
+          "cid": 1072587503
+        },
+        {
+          "page": 23,
+          "title": "【第二十二天】和弦积累（Part1）",
+          "duration": 1248,
+          "cid": 1072597419
+        },
+        {
+          "page": 24,
+          "title": "【第二十三天】和弦积累（Part2）",
+          "duration": 1355,
+          "cid": 1072598352
+        },
+        {
+          "page": 25,
+          "title": "【第二十四天】和弦积累（Part3）",
+          "duration": 1361,
+          "cid": 1072610114
+        },
+        {
+          "page": 26,
+          "title": "【第二十五天】左手练习升级版！（Part1）",
+          "duration": 1433,
+          "cid": 1072614236
+        },
+        {
+          "page": 27,
+          "title": "【第二十六天】左手练习升级版！（Part2）",
+          "duration": 1189,
+          "cid": 1232752315
+        },
+        {
+          "page": 28,
+          "title": "【第二十七天】怎么才能弹的更丰富（Part1）击弦练习",
+          "duration": 764,
+          "cid": 1232748094
+        },
+        {
+          "page": 29,
+          "title": "【第二十八天】怎么才能弹的更丰富（Part2）击弦应用",
+          "duration": 564,
+          "cid": 1232745119
+        },
+        {
+          "page": 30,
+          "title": "【第二十九天】怎么才能弹的更富丰富？（part3）勾弦练习",
+          "duration": 999,
+          "cid": 27098219713
+        },
+        {
+          "page": 31,
+          "title": "【第三十天】怎么才能弹的更富丰富？（part4）击勾弦结合练习！",
+          "duration": 1284,
+          "cid": 27098287306
+        },
+        {
+          "page": 32,
+          "title": "【第三十一天】怎么才能弹的更富丰富？（part5）滑音练习！",
+          "duration": 1258,
+          "cid": 27098417715
+        },
+        {
+          "page": 33,
+          "title": "【第三十二天】技巧检验的小段练习~（part1）",
+          "duration": 822,
+          "cid": 27098547299
+        },
+        {
+          "page": 34,
+          "title": "【第三十三天】技巧检验的小段练习（part2）",
+          "duration": 798,
+          "cid": 27098612818
+        },
+        {
+          "page": 35,
+          "title": "【第三十四天】和弦积累（part4）是时候直面大横按了！-F和弦手型",
+          "duration": 703,
+          "cid": 27098679345
+        },
+        {
+          "page": 36,
+          "title": "【第三十五天】和弦积累（part5）是时候直面大横按了！-Bm和弦手型",
+          "duration": 539,
+          "cid": 27098744908
+        },
+        {
+          "page": 37,
+          "title": "【第三十六天】和弦转换练起来！（F和弦专题）",
+          "duration": 1246,
+          "cid": 27098809191
+        },
+        {
+          "page": 38,
+          "title": "【第三十七天】和弦转换练起来！（Bm和弦专题）",
+          "duration": 1281,
+          "cid": 27098877020
+        },
+        {
+          "page": 39,
+          "title": "【第三十八天】学习新节奏（part2）",
+          "duration": 648,
+          "cid": 27099006837
+        },
+        {
+          "page": 40,
+          "title": "【第三十九天】学习新节奏（part3）",
+          "duration": 717,
+          "cid": 27099071247
+        },
+        {
+          "page": 41,
+          "title": "【第四十天】手指扩指操（part1）",
+          "duration": 1169,
+          "cid": 27099137165
+        },
+        {
+          "page": 42,
+          "title": "【第四十一天】手指扩指操！（part2）",
+          "duration": 792,
+          "cid": 31911772779
+        },
+        {
+          "page": 43,
+          "title": "【第四十二天】我们来练习扫弦吧！-先从认识拨片开始~",
+          "duration": 621,
+          "cid": 31911841560
+        },
+        {
+          "page": 44,
+          "title": "【第四十三天】练习拨片拨弦的手感",
+          "duration": 1030,
+          "cid": 31911970025
+        },
+        {
+          "page": 45,
+          "title": "【第四十四天】简单的拨片分解练习(1)",
+          "duration": 1178,
+          "cid": 31912100791
+        },
+        {
+          "page": 46,
+          "title": "未完待续...",
+          "duration": 13,
+          "cid": 827442833
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_a2": {
+      "bvid": "BV1c7411t7dR",
+      "url": "https://www.bilibili.com/video/BV1c7411t7dR",
+      "previousTitle": "指弹吉他入门",
+      "title": "「保姆级吉他零基础教学」入门吉他只需两周！32集全（吉他弹唱/吉他教程/吉他自学/吉他基础/吉他练习/吉他演奏）4K",
+      "description": "「保姆级吉他零基础教学」入门吉他只需两周！32集全（吉他弹唱/吉他教程/吉他自学/吉他基础/吉他练习/吉他演奏）4K共计31条视频，包括：「吉他教学」第一期：了解吉他构造，才能懂吉他！、「吉他教学」第二期：9分钟学完十二平均律和基本音调法、「吉他教学」第三期：秒懂谱子、和弦、爬格子！等，UP主更多精彩视频，请关注UP账号。",
+      "owner": "吉他情报局",
+      "cover": "/video-covers/BV1c7411t7dR.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/2a902ef875d976ba6b2ecfe1dbe82fbc08ac9f4b.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "「吉他教学」第一期：了解吉他构造，才能懂吉他！",
+          "duration": 524,
+          "cid": 857582472
+        },
+        {
+          "page": 2,
+          "title": "「吉他教学」第二期：9分钟学完十二平均律和基本音调法",
+          "duration": 575,
+          "cid": 857755923
+        },
+        {
+          "page": 3,
+          "title": "「吉他教学」第三期：秒懂谱子、和弦、爬格子！",
+          "duration": 566,
+          "cid": 857755687
+        },
+        {
+          "page": 4,
+          "title": "「吉他教学」第四期：C调爬格子，这样爬！",
+          "duration": 576,
+          "cid": 857756294
+        },
+        {
+          "page": 5,
+          "title": "「吉他教学」第五期：节拍是重中之重！",
+          "duration": 319,
+          "cid": 857755334
+        },
+        {
+          "page": 6,
+          "title": "「吉他教学」第六期：和弦里有小三和大三！",
+          "duration": 665,
+          "cid": 857755566
+        },
+        {
+          "page": 7,
+          "title": "「吉他教学」第七期：常用的和弦该怎样练！",
+          "duration": 588,
+          "cid": 857755567
+        },
+        {
+          "page": 8,
+          "title": "「吉他教学」第八期：大横按练习",
+          "duration": 497,
+          "cid": 857756478
+        },
+        {
+          "page": 9,
+          "title": "「吉他教学」第九期：扫弦要这样扫！",
+          "duration": 424,
+          "cid": 857755335
+        },
+        {
+          "page": 10,
+          "title": "「吉他教学」第十期：拨片的运用、强力和弦",
+          "duration": 599,
+          "cid": 857755250
+        },
+        {
+          "page": 11,
+          "title": "「吉他教学」第十一期：吉他击弦、勾弦、滑弦",
+          "duration": 394,
+          "cid": 857756623
+        },
+        {
+          "page": 12,
+          "title": "「吉他教学」第十二期：吉他拍弦、闷音、切音",
+          "duration": 509,
+          "cid": 857756712
+        },
+        {
+          "page": 13,
+          "title": "《海芋恋》 教程",
+          "duration": 871,
+          "cid": 857900208
+        },
+        {
+          "page": 14,
+          "title": "《黑色幽默》 教程",
+          "duration": 766,
+          "cid": 857900045
+        },
+        {
+          "page": 15,
+          "title": "《晚安晚安》 教程",
+          "duration": 725,
+          "cid": 857899794
+        },
+        {
+          "page": 16,
+          "title": "《Shape of you》 教程",
+          "duration": 514,
+          "cid": 857900176
+        },
+        {
+          "page": 17,
+          "title": "《Love yourself》 教程",
+          "duration": 711,
+          "cid": 857900046
+        },
+        {
+          "page": 18,
+          "title": "《Loving stranger》 教程",
+          "duration": 566,
+          "cid": 857899795
+        },
+        {
+          "page": 19,
+          "title": "《Lost star》 教程",
+          "duration": 718,
+          "cid": 857899700
+        },
+        {
+          "page": 20,
+          "title": "《Give me one reason》 教程",
+          "duration": 438,
+          "cid": 857900209
+        },
+        {
+          "page": 21,
+          "title": "《Tiktok》 教程",
+          "duration": 528,
+          "cid": 857900177
+        },
+        {
+          "page": 22,
+          "title": "《海芋恋》MV",
+          "duration": 274,
+          "cid": 858412989
+        },
+        {
+          "page": 23,
+          "title": "《黑色幽默》 MV",
+          "duration": 303,
+          "cid": 858413646
+        },
+        {
+          "page": 24,
+          "title": "《晚安晚安》 MV",
+          "duration": 250,
+          "cid": 858413525
+        },
+        {
+          "page": 25,
+          "title": "《Love Yourself》 MV",
+          "duration": 268,
+          "cid": 858413089
+        },
+        {
+          "page": 26,
+          "title": "《Share of you》 MV",
+          "duration": 248,
+          "cid": 866790365
+        },
+        {
+          "page": 27,
+          "title": "《Loving Strangers》 MV",
+          "duration": 237,
+          "cid": 858413202
+        },
+        {
+          "page": 28,
+          "title": "《Lost star》 MV",
+          "duration": 263,
+          "cid": 858412988
+        },
+        {
+          "page": 29,
+          "title": "《Give me one reason》MV",
+          "duration": 271,
+          "cid": 858413052
+        },
+        {
+          "page": 30,
+          "title": "《Tik Tok》 MV",
+          "duration": 213,
+          "cid": 858413203
+        },
+        {
+          "page": 31,
+          "title": "《You Are Beautiful》 MV",
+          "duration": 246,
+          "cid": 858414148
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_a3": {
+      "bvid": "BV1oy421B76E",
+      "url": "https://www.bilibili.com/video/BV1oy421B76E",
+      "previousTitle": "吉他弹唱教程",
+      "title": "【吉他零基础入门】全网最简单！新手30天养成记！快速成为弹唱高手！自学教程！",
+      "description": "时隔5年，大树音乐屋零基础课程2.0终于出炉啦，这套课程将由椰子老师带大家30天入门，画风也比当年穿polo正经的我更清新生动哈哈~希望这套课程带给大家满满的收获，记得点赞+收藏哦，课程将不断更新哟！",
+      "owner": "大树音乐屋",
+      "cover": "/video-covers/BV1oy421B76E.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/46d96623f4f196ead742fefb0fc367ce5d025638.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "开场",
+          "duration": 100,
+          "cid": 1444222415
+        },
+        {
+          "page": 2,
+          "title": "教学前言",
+          "duration": 161,
+          "cid": 1444072217
+        },
+        {
+          "page": 3,
+          "title": "第1课：认识吉他",
+          "duration": 499,
+          "cid": 1444072908
+        },
+        {
+          "page": 4,
+          "title": "第2课：持琴姿势",
+          "duration": 222,
+          "cid": 1444073422
+        },
+        {
+          "page": 5,
+          "title": "第3课：乐理知识与调音",
+          "duration": 863,
+          "cid": 1444073709
+        },
+        {
+          "page": 6,
+          "title": "第4课：基本弹琴手型",
+          "duration": 847,
+          "cid": 1444074115
+        },
+        {
+          "page": 7,
+          "title": "第5课：认识音符",
+          "duration": 1119,
+          "cid": 1444224336
+        },
+        {
+          "page": 8,
+          "title": "第6课：左手按弦及C大调音阶",
+          "duration": 1241,
+          "cid": 1463120825
+        },
+        {
+          "page": 9,
+          "title": "第7课：左右手配合练习《我记得》",
+          "duration": 574,
+          "cid": 1449579400
+        },
+        {
+          "page": 10,
+          "title": "第8课：和弦&弹唱《两只老虎》",
+          "duration": 994,
+          "cid": 1454434916
+        },
+        {
+          "page": 11,
+          "title": "第9课：爬格子",
+          "duration": 924,
+          "cid": 1454434967
+        },
+        {
+          "page": 12,
+          "title": "第10课：正式弹唱之琵音《好久不见》",
+          "duration": 966,
+          "cid": 1454435141
+        },
+        {
+          "page": 13,
+          "title": "第11课：双音与延音演奏《安静》",
+          "duration": 1021,
+          "cid": 1470861382
+        },
+        {
+          "page": 14,
+          "title": "第12课：绝美前奏《旅行的意义》",
+          "duration": 771,
+          "cid": 1470861617
+        },
+        {
+          "page": 15,
+          "title": "第13课：扫弦怎样好听之《光辉岁月》",
+          "duration": 1119,
+          "cid": 1470861560
+        },
+        {
+          "page": 16,
+          "title": "第14课：炫酷打板技巧《温柔》",
+          "duration": 857,
+          "cid": 1470868384
+        },
+        {
+          "page": 17,
+          "title": "第15课：超帅过渡闷音扫弦《七里香》",
+          "duration": 606,
+          "cid": 1470888508
+        },
+        {
+          "page": 18,
+          "title": "第16课：攻破大横按之《杀死那个石家庄人》",
+          "duration": 688,
+          "cid": 1488282791
+        },
+        {
+          "page": 19,
+          "title": "第17课：琵音与打板的配合《爱人错过》",
+          "duration": 583,
+          "cid": 1488282940
+        },
+        {
+          "page": 20,
+          "title": "第18课：攻破三品战士之《红色高跟鞋》",
+          "duration": 517,
+          "cid": 1488282968
+        },
+        {
+          "page": 21,
+          "title": "第19课：切音《爱要坦荡荡》",
+          "duration": 507,
+          "cid": 1488283610
+        },
+        {
+          "page": 22,
+          "title": "第20课：渐强下扫《李白》",
+          "duration": 405,
+          "cid": 1488283663
+        },
+        {
+          "page": 23,
+          "title": "第21课：经典歌曲切音《情非得已》",
+          "duration": 459,
+          "cid": 1525565511
+        },
+        {
+          "page": 24,
+          "title": "第22课：拍弦技巧Ⅰ《好想你》",
+          "duration": 656,
+          "cid": 1544573050
+        },
+        {
+          "page": 25,
+          "title": "第23课：附点节奏之拍弦技巧Ⅱ《女孩》",
+          "duration": 553,
+          "cid": 1562971576
+        },
+        {
+          "page": 26,
+          "title": "第24课：十六分音符拍弦《Letting go》",
+          "duration": 739,
+          "cid": 1565279309
+        },
+        {
+          "page": 27,
+          "title": "第25课：击弦技巧《平凡之路》",
+          "duration": 620,
+          "cid": 1565279727
+        },
+        {
+          "page": 28,
+          "title": "第26：附点与十六分音符扫弦《晴天》",
+          "duration": 994,
+          "cid": 1565279845
+        },
+        {
+          "page": 29,
+          "title": "第27课：无敌前奏之滑音与勾弦技巧《花海》",
+          "duration": 1528,
+          "cid": 1565279882
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_a4": {
+      "bvid": "BV1hb411G7Pf",
+      "url": "https://www.bilibili.com/video/BV1hb411G7Pf",
+      "previousTitle": "木吉他技巧进阶",
+      "title": "史上最详细！指弹吉他入门系列课程 指弹技巧讲解 自学指弹教程",
+      "description": "本套课程给大家系统的讲解指弹的入门知识和必学的指弹技巧。 配套谱例戳这里☞https://www.bilibili.com/read/cv2579731 有任何疑问欢迎直接评论或留言哟( ╯▽╰)你会在第一时间收到回复~ 淘宝店铺：元子吉他教室 | 微信公众号：元子弹吉他",
+      "owner": "元子弹吉他",
+      "cover": "/video-covers/BV1hb411G7Pf.jpg",
+      "sourceCoverUrl": "https://i2.hdslb.com/bfs/archive/af4bee0bd012df008c45138137fb7343c1b42c11.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "01 | 特殊调弦",
+          "duration": 1880,
+          "cid": 88163431
+        },
+        {
+          "page": 2,
+          "title": "02 | 我现在的水平适合学指弹么？",
+          "duration": 3419,
+          "cid": 88164381
+        },
+        {
+          "page": 3,
+          "title": "03 | 指弹技巧与标记【上】",
+          "duration": 3290,
+          "cid": 88165771
+        },
+        {
+          "page": 4,
+          "title": "04 | 指弹技巧与标记【中】",
+          "duration": 2764,
+          "cid": 88167118
+        },
+        {
+          "page": 5,
+          "title": "05 | 指弹技巧与标记【下】",
+          "duration": 1897,
+          "cid": 88168129
+        },
+        {
+          "page": 6,
+          "title": "06 | 击弦-技巧讲解",
+          "duration": 596,
+          "cid": 88168941
+        },
+        {
+          "page": 7,
+          "title": "07 | 勾弦-技巧讲解",
+          "duration": 934,
+          "cid": 88169106
+        },
+        {
+          "page": 8,
+          "title": "08 | 击勾弦-技巧讲解",
+          "duration": 813,
+          "cid": 88169547
+        },
+        {
+          "page": 9,
+          "title": "09 | 滑音-技巧讲解",
+          "duration": 1589,
+          "cid": 88170067
+        },
+        {
+          "page": 10,
+          "title": "10 | 无头:尾滑音-技巧讲解",
+          "duration": 747,
+          "cid": 88171198
+        },
+        {
+          "page": 11,
+          "title": "11 | 装饰音-技巧讲解",
+          "duration": 836,
+          "cid": 88171477
+        },
+        {
+          "page": 12,
+          "title": "12 | 左手敲弦+抹弦-技巧讲解",
+          "duration": 751,
+          "cid": 88171932
+        },
+        {
+          "page": 13,
+          "title": "13 | 左手点弦-技巧讲解",
+          "duration": 772,
+          "cid": 88172257
+        },
+        {
+          "page": 14,
+          "title": "14 | 左手制音-技巧讲解",
+          "duration": 509,
+          "cid": 88172819
+        },
+        {
+          "page": 15,
+          "title": "15 | 推弦-技巧讲解",
+          "duration": 870,
+          "cid": 88173307
+        },
+        {
+          "page": 16,
+          "title": "16 | 颤音-技巧讲解",
+          "duration": 496,
+          "cid": 88173948
+        },
+        {
+          "page": 17,
+          "title": "17 | 幽灵音-技巧讲解",
+          "duration": 749,
+          "cid": 88174603
+        },
+        {
+          "page": 18,
+          "title": "18 | 扫弦-技巧讲解",
+          "duration": 1884,
+          "cid": 88175111
+        },
+        {
+          "page": 19,
+          "title": "19 | 弗拉门戈轮扫-技巧讲解",
+          "duration": 1737,
+          "cid": 88176642
+        },
+        {
+          "page": 20,
+          "title": "20 | 琶音-技巧讲解",
+          "duration": 918,
+          "cid": 88177379
+        },
+        {
+          "page": 21,
+          "title": "21 | 右手制音-技巧讲解",
+          "duration": 1525,
+          "cid": 88177672
+        },
+        {
+          "page": 22,
+          "title": "22 | 闷音-技巧讲解",
+          "duration": 568,
+          "cid": 88178003
+        },
+        {
+          "page": 23,
+          "title": "23 | Slam-技巧讲解",
+          "duration": 984,
+          "cid": 88178135
+        },
+        {
+          "page": 24,
+          "title": "24 | RHT-技巧讲解",
+          "duration": 543,
+          "cid": 88178580
+        },
+        {
+          "page": 25,
+          "title": "25 | 右手点弦-技巧讲解",
+          "duration": 1057,
+          "cid": 88178706
+        },
+        {
+          "page": 26,
+          "title": "26 | Slap-技巧讲解",
+          "duration": 862,
+          "cid": 88178953
+        },
+        {
+          "page": 27,
+          "title": "27 | 打板-技巧讲解",
+          "duration": 656,
+          "cid": 88179327
+        },
+        {
+          "page": 28,
+          "title": "28 | 自然泛音-技巧讲解",
+          "duration": 2257,
+          "cid": 88179477
+        },
+        {
+          "page": 29,
+          "title": "29 | 人工泛音-技巧讲解",
+          "duration": 919,
+          "cid": 88180478
+        },
+        {
+          "page": 30,
+          "title": "30 | 拍泛音-技巧讲解",
+          "duration": 1174,
+          "cid": 88180688
+        },
+        {
+          "page": 31,
+          "title": "31 | 点泛音-技巧讲解",
+          "duration": 546,
+          "cid": 88180925
+        },
+        {
+          "page": 32,
+          "title": "32 | AM技巧-讲解",
+          "duration": 3105,
+          "cid": 88181067
+        },
+        {
+          "page": 33,
+          "title": "33 | PM技巧-讲解",
+          "duration": 3317,
+          "cid": 88182544
+        },
+        {
+          "page": 34,
+          "title": "34 | 反复和跳房子",
+          "duration": 720,
+          "cid": 88183181
+        },
+        {
+          "page": 35,
+          "title": "35 | 跳转-coda:segno",
+          "duration": 773,
+          "cid": 88183352
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_u1": {
+      "bvid": "BV1Kx41147iq",
+      "url": "https://www.bilibili.com/video/BV1Kx41147iq",
+      "previousTitle": "尤克里里入门教程",
+      "title": "（免费）【尤克里里教学1~10课】尤克里里自学入门弹唱教学集 趣弹音乐",
+      "description": "教你弹尤克里里装X， 学不学？！ 更多视频&amp;曲谱获取：私我~",
+      "owner": "趣弹音乐尤克里里",
+      "cover": "/video-covers/BV1Kx41147iq.jpg",
+      "sourceCoverUrl": "https://i2.hdslb.com/bfs/archive/f163aee12471bac55554d190e361aa651d34a0d0.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "第1课丨前言&什么是尤克里里",
+          "duration": 495,
+          "cid": 23311833
+        },
+        {
+          "page": 2,
+          "title": "第2课丨如何给尤克里里调音",
+          "duration": 915,
+          "cid": 23311834
+        },
+        {
+          "page": 3,
+          "title": "第3课丨尤克里里弹唱快速入门",
+          "duration": 1104,
+          "cid": 23336962
+        },
+        {
+          "page": 4,
+          "title": "第3课丨无BGM（重置版）",
+          "duration": 1130,
+          "cid": 140549374
+        },
+        {
+          "page": 5,
+          "title": "第3课丨拓展教学《七里香》",
+          "duration": 652,
+          "cid": 23336960
+        },
+        {
+          "page": 6,
+          "title": "第4课丨如何深情弹唱之琶音分解",
+          "duration": 1351,
+          "cid": 23343017
+        },
+        {
+          "page": 7,
+          "title": "第4课丨无BGM（重置版）",
+          "duration": 1015,
+          "cid": 140550396
+        },
+        {
+          "page": 8,
+          "title": "第4课丨拓展教学《旅行的意义》",
+          "duration": 786,
+          "cid": 23343018
+        },
+        {
+          "page": 9,
+          "title": "第4.5课丨认识四线弹唱谱",
+          "duration": 552,
+          "cid": 23348616
+        },
+        {
+          "page": 10,
+          "title": "第5课丨教你弹唱民谣歌曲&《七月上》",
+          "duration": 1570,
+          "cid": 23348612
+        },
+        {
+          "page": 11,
+          "title": "第5课丨拓展教学《斑马斑马》",
+          "duration": 639,
+          "cid": 23348613
+        },
+        {
+          "page": 12,
+          "title": "第6课丨如何扫弦&《今天你要嫁给我》",
+          "duration": 1140,
+          "cid": 23351685
+        },
+        {
+          "page": 13,
+          "title": "第6课丨拓展教学《小手拉大手》",
+          "duration": 528,
+          "cid": 23351686
+        },
+        {
+          "page": 14,
+          "title": "第6.5课丨学习和弦前置",
+          "duration": 225,
+          "cid": 23454765
+        },
+        {
+          "page": 15,
+          "title": "第6.5课丨实战演练<告白气球>",
+          "duration": 707,
+          "cid": 23454764
+        },
+        {
+          "page": 16,
+          "title": "第7课丨学习民谣切音节奏&《恋爱ing》》",
+          "duration": 2309,
+          "cid": 23456665
+        },
+        {
+          "page": 17,
+          "title": "第8课丨学习慢摇节奏型&《七里香》",
+          "duration": 1163,
+          "cid": 23456666
+        },
+        {
+          "page": 18,
+          "title": "第8.5课丨学习慢摇分解节奏型",
+          "duration": 459,
+          "cid": 23457135
+        },
+        {
+          "page": 19,
+          "title": "第8.5课丨演练歌曲《我要你》",
+          "duration": 670,
+          "cid": 23457134
+        },
+        {
+          "page": 20,
+          "title": "第9课丨学习前奏&《小情歌》",
+          "duration": 1475,
+          "cid": 23459564
+        },
+        {
+          "page": 21,
+          "title": "第9课丨拓展教学&《默》",
+          "duration": 902,
+          "cid": 23459562
+        },
+        {
+          "page": 22,
+          "title": "第9.5课丨学习二指法",
+          "duration": 625,
+          "cid": 23459561
+        },
+        {
+          "page": 23,
+          "title": "第9.5课丨实战演练歌曲《小幸运》",
+          "duration": 790,
+          "cid": 23459563
+        },
+        {
+          "page": 24,
+          "title": "第10课丨学习民谣分解&《青花瓷》",
+          "duration": 1355,
+          "cid": 23461635
+        },
+        {
+          "page": 25,
+          "title": "第10课丨拓展演练歌曲《她说》",
+          "duration": 1691,
+          "cid": 23461636
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_u2": {
+      "bvid": "BV1Dx41147rA",
+      "url": "https://www.bilibili.com/video/BV1Dx41147rA",
+      "previousTitle": "尤克里里弹唱教学",
+      "title": "（免费）【尤克里里教学1~12课】尤克里里自学入门指弹教学集 趣弹音乐",
+      "description": "教你弹尤克里里装X， 学不学？！ 更多视频&amp;曲谱获取 ：私我~ 你的温暖支持，是我们前进的动力(〃&#39;▽&#39;〃)",
+      "owner": "趣弹音乐尤克里里",
+      "cover": "/video-covers/BV1Dx41147rA.jpg",
+      "sourceCoverUrl": "https://i0.hdslb.com/bfs/archive/097157ae26374bc947da4a551ae8cfba0b5ed054.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "第1课 丨前言&什么是指弹",
+          "duration": 462,
+          "cid": 23495314
+        },
+        {
+          "page": 2,
+          "title": "第2课丨基础识谱&《旅行的意义》",
+          "duration": 1759,
+          "cid": 37181308
+        },
+        {
+          "page": 3,
+          "title": "第2课丨拓展《抬头望望天》演示",
+          "duration": 110,
+          "cid": 23495313
+        },
+        {
+          "page": 4,
+          "title": "第2课丨拓展《抬头望望天》教学",
+          "duration": 593,
+          "cid": 23495316
+        },
+        {
+          "page": 5,
+          "title": "第3课丨高级识谱法&《菊花台》",
+          "duration": 1458,
+          "cid": 23496436
+        },
+        {
+          "page": 6,
+          "title": "第3课丨拓展《阿婆说》",
+          "duration": 137,
+          "cid": 23496437
+        },
+        {
+          "page": 7,
+          "title": "第4课丨学习琶音技巧&《Always With Me》",
+          "duration": 1198,
+          "cid": 23497510
+        },
+        {
+          "page": 8,
+          "title": "第4课丨拓展歌曲《逍遥叹》",
+          "duration": 139,
+          "cid": 23501103
+        },
+        {
+          "page": 9,
+          "title": "第4课丨拓展歌曲《彩虹》",
+          "duration": 137,
+          "cid": 23501104
+        },
+        {
+          "page": 10,
+          "title": "第4课丨拓展歌曲《白映》",
+          "duration": 119,
+          "cid": 23501102
+        },
+        {
+          "page": 11,
+          "title": "第5课丨学习附点音符&《天空之城》",
+          "duration": 1520,
+          "cid": 23502690
+        },
+        {
+          "page": 12,
+          "title": "第5课丨拓展歌曲《我心永恒》",
+          "duration": 146,
+          "cid": 23502691
+        },
+        {
+          "page": 13,
+          "title": "第5课丨拓展歌曲《雪绒花》",
+          "duration": 106,
+          "cid": 23502692
+        },
+        {
+          "page": 14,
+          "title": "第5课丨拓展歌曲《女儿情》",
+          "duration": 131,
+          "cid": 23502693
+        },
+        {
+          "page": 15,
+          "title": "第6课丨学习延音线&《小幸运》",
+          "duration": 2054,
+          "cid": 23539296
+        },
+        {
+          "page": 16,
+          "title": "第6课丨《小幸运演示》",
+          "duration": 193,
+          "cid": 23539294
+        },
+        {
+          "page": 17,
+          "title": "第6课丨拓展歌曲《如果我爱你》",
+          "duration": 133,
+          "cid": 23539290
+        },
+        {
+          "page": 18,
+          "title": "第6课丨拓展歌曲《蝶恋》",
+          "duration": 160,
+          "cid": 23539292
+        },
+        {
+          "page": 19,
+          "title": "第6课丨拓展歌曲《愛してる》",
+          "duration": 111,
+          "cid": 23539287
+        },
+        {
+          "page": 20,
+          "title": "第7课丨学习横按",
+          "duration": 988,
+          "cid": 23580535
+        },
+        {
+          "page": 21,
+          "title": "第8课丨把横按运用到歌曲中",
+          "duration": 456,
+          "cid": 23581528
+        },
+        {
+          "page": 22,
+          "title": "第8课丨拓展歌曲《刚好遇见你》演示",
+          "duration": 107,
+          "cid": 23584950
+        },
+        {
+          "page": 23,
+          "title": "第8课丨拓展歌曲《刚好遇见你》教学",
+          "duration": 1341,
+          "cid": 23584951
+        },
+        {
+          "page": 24,
+          "title": "第8课丨拓展歌曲《故梦》",
+          "duration": 155,
+          "cid": 23617049
+        },
+        {
+          "page": 25,
+          "title": "第8课丨拓展歌曲《孤独》",
+          "duration": 144,
+          "cid": 23617047
+        },
+        {
+          "page": 26,
+          "title": "第8课丨拓展歌曲《烟花易冷》",
+          "duration": 114,
+          "cid": 23617048
+        },
+        {
+          "page": 27,
+          "title": "第9课丨学习三指法",
+          "duration": 313,
+          "cid": 23621069
+        },
+        {
+          "page": 28,
+          "title": "第9课丨拓展歌曲《卡农》",
+          "duration": 101,
+          "cid": 23621071
+        },
+        {
+          "page": 29,
+          "title": "第9课丨拓展歌曲《卡农》教学",
+          "duration": 1791,
+          "cid": 23621070
+        },
+        {
+          "page": 30,
+          "title": "第9课丨拓展歌曲《星晴》",
+          "duration": 139,
+          "cid": 23675160
+        },
+        {
+          "page": 31,
+          "title": "第9课丨拓展歌曲《爱情转移》",
+          "duration": 117,
+          "cid": 23846502
+        },
+        {
+          "page": 32,
+          "title": "第9课丨拓展歌曲《理想三旬》",
+          "duration": 122,
+          "cid": 23846503
+        },
+        {
+          "page": 33,
+          "title": "第10课丨扫弦知识点",
+          "duration": 503,
+          "cid": 23897157
+        },
+        {
+          "page": 34,
+          "title": "第10课丨《Summer》演示",
+          "duration": 110,
+          "cid": 23897159
+        },
+        {
+          "page": 35,
+          "title": "第10课丨拓展《Summer》教学",
+          "duration": 1870,
+          "cid": 23897158
+        },
+        {
+          "page": 36,
+          "title": "第10课丨拓展 《夜空中最亮的星》",
+          "duration": 130,
+          "cid": 24806821
+        },
+        {
+          "page": 37,
+          "title": "第10课丨拓展《枫》",
+          "duration": 121,
+          "cid": 24806822
+        },
+        {
+          "page": 38,
+          "title": "第10课丨拓展《你不是真正的快乐》",
+          "duration": 133,
+          "cid": 24806823
+        },
+        {
+          "page": 39,
+          "title": "第十一课丨学习十六分音符知识点教学",
+          "duration": 569,
+          "cid": 24806824
+        },
+        {
+          "page": 40,
+          "title": "第十一课丨《see you again》演示",
+          "duration": 85,
+          "cid": 24806825
+        },
+        {
+          "page": 41,
+          "title": "第十一课丨《see you again》指弹教学",
+          "duration": 1556,
+          "cid": 24806826
+        },
+        {
+          "page": 42,
+          "title": "第十一课丨拓展《斑马斑马》",
+          "duration": 133,
+          "cid": 24806827
+        },
+        {
+          "page": 43,
+          "title": "第十一课丨拓展《突然好想你》",
+          "duration": 128,
+          "cid": 24806828
+        },
+        {
+          "page": 44,
+          "title": "第十一课丨拓展《我要你》",
+          "duration": 101,
+          "cid": 24806829
+        },
+        {
+          "page": 45,
+          "title": "第十一课丨拓展《搁浅》",
+          "duration": 103,
+          "cid": 26378555
+        },
+        {
+          "page": 46,
+          "title": "第十二课丨学习切音技巧",
+          "duration": 419,
+          "cid": 26378836
+        },
+        {
+          "page": 47,
+          "title": "第十二课丨《情非得已》指弹",
+          "duration": 85,
+          "cid": 26378556
+        },
+        {
+          "page": 48,
+          "title": "第十二课丨《情非得已》指弹教学",
+          "duration": 2109,
+          "cid": 26378557
+        },
+        {
+          "page": 49,
+          "title": "第十二课丨拓展歌曲《yellow》",
+          "duration": 148,
+          "cid": 26383252
+        },
+        {
+          "page": 50,
+          "title": "第十二课丨拓展歌曲《爱要坦荡荡》",
+          "duration": 100,
+          "cid": 26383253
+        },
+        {
+          "page": 51,
+          "title": "第十二课丨拓展歌曲《恋爱ING》",
+          "duration": 156,
+          "cid": 26383254
+        },
+        {
+          "page": 52,
+          "title": "第十二课丨拓展歌曲《南山南》",
+          "duration": 175,
+          "cid": 26383255
+        },
+        {
+          "page": 53,
+          "title": "第十二课丨拓展歌曲《情非得已》",
+          "duration": 85,
+          "cid": 26383256
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_u3": {
+      "bvid": "BV1Kx411S7vN",
+      "url": "https://www.bilibili.com/video/BV1Kx411S7vN",
+      "previousTitle": "尤克里里指弹教程",
+      "title": "【ukulele教程】大神们练到鬼畜的那些基本功（一）（尤克里里教学ukulele教程）",
+      "description": "教你弹尤克里里装X， 学不学？！ 更多视频&amp;曲谱获取 微信公众号／微博：趣弹音乐 QQ交流群：683217894 淘宝店：趣弹乐器（5537504） 你的温暖支持，是我们前进的动力(〃&#39;▽&#39;〃)",
+      "owner": "趣弹音乐尤克里里",
+      "cover": "/video-covers/BV1Kx411S7vN.jpg",
+      "sourceCoverUrl": "https://i1.hdslb.com/bfs/archive/5625ef87f4a6bd70f3d24bd00862e9f449f1bbfb.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "P1",
+          "duration": 346,
+          "cid": 16829636
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_u4": {
+      "bvid": "BV1Rx411C7Nw",
+      "url": "https://www.bilibili.com/video/BV1Rx411C7Nw",
+      "previousTitle": "尤克里里技巧进阶",
+      "title": "尤克里里指弹零基础教学系列 第1课 丨认识四线谱【桃子鱼仔ukulele教室】",
+      "description": "Aloha~我们是「桃子鱼仔Ukulele教室」,埋头专注Ukulele推广，教学和谱子都在微信公众号：「桃子鱼仔Ukulele教室」 网络直播课进行中（基础班/进阶班/高阶班/指弹班）欢迎添加微信（ukuleleYZ）咨询报名~由水果一家 毫无保留地 教给你们Ukulele弹唱技能 广州实体教室每周日下午两点半免费公开课教学，从零基础到教会你自弹自唱N首歌，欢迎添加微信（ukuleleXJ）报名参加~ 努力练琴！一起加油吧！",
+      "owner": "桃子鱼仔尤克里里",
+      "cover": "/video-covers/BV1Rx411C7Nw.jpg",
+      "sourceCoverUrl": "https://i2.hdslb.com/bfs/archive/82f3f00d53a0e26704edffba57e13385a0d4fd83.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "",
+          "duration": 1199,
+          "cid": 15110085
+        }
+      ],
+      "status": "ok",
+      "error": null
+    },
+    "vid_u5": {
+      "bvid": "BV1Kx41147iq",
+      "url": "https://www.bilibili.com/video/BV1Kx41147iq",
+      "previousTitle": "尤克里里经典曲目合集",
+      "title": "（免费）【尤克里里教学1~10课】尤克里里自学入门弹唱教学集 趣弹音乐",
+      "description": "教你弹尤克里里装X， 学不学？！ 更多视频&amp;曲谱获取：私我~",
+      "owner": "趣弹音乐尤克里里",
+      "cover": "/video-covers/BV1Kx41147iq.jpg",
+      "sourceCoverUrl": "https://i2.hdslb.com/bfs/archive/f163aee12471bac55554d190e361aa651d34a0d0.jpg",
+      "pages": [
+        {
+          "page": 1,
+          "title": "第1课丨前言&什么是尤克里里",
+          "duration": 495,
+          "cid": 23311833
+        },
+        {
+          "page": 2,
+          "title": "第2课丨如何给尤克里里调音",
+          "duration": 915,
+          "cid": 23311834
+        },
+        {
+          "page": 3,
+          "title": "第3课丨尤克里里弹唱快速入门",
+          "duration": 1104,
+          "cid": 23336962
+        },
+        {
+          "page": 4,
+          "title": "第3课丨无BGM（重置版）",
+          "duration": 1130,
+          "cid": 140549374
+        },
+        {
+          "page": 5,
+          "title": "第3课丨拓展教学《七里香》",
+          "duration": 652,
+          "cid": 23336960
+        },
+        {
+          "page": 6,
+          "title": "第4课丨如何深情弹唱之琶音分解",
+          "duration": 1351,
+          "cid": 23343017
+        },
+        {
+          "page": 7,
+          "title": "第4课丨无BGM（重置版）",
+          "duration": 1015,
+          "cid": 140550396
+        },
+        {
+          "page": 8,
+          "title": "第4课丨拓展教学《旅行的意义》",
+          "duration": 786,
+          "cid": 23343018
+        },
+        {
+          "page": 9,
+          "title": "第4.5课丨认识四线弹唱谱",
+          "duration": 552,
+          "cid": 23348616
+        },
+        {
+          "page": 10,
+          "title": "第5课丨教你弹唱民谣歌曲&《七月上》",
+          "duration": 1570,
+          "cid": 23348612
+        },
+        {
+          "page": 11,
+          "title": "第5课丨拓展教学《斑马斑马》",
+          "duration": 639,
+          "cid": 23348613
+        },
+        {
+          "page": 12,
+          "title": "第6课丨如何扫弦&《今天你要嫁给我》",
+          "duration": 1140,
+          "cid": 23351685
+        },
+        {
+          "page": 13,
+          "title": "第6课丨拓展教学《小手拉大手》",
+          "duration": 528,
+          "cid": 23351686
+        },
+        {
+          "page": 14,
+          "title": "第6.5课丨学习和弦前置",
+          "duration": 225,
+          "cid": 23454765
+        },
+        {
+          "page": 15,
+          "title": "第6.5课丨实战演练<告白气球>",
+          "duration": 707,
+          "cid": 23454764
+        },
+        {
+          "page": 16,
+          "title": "第7课丨学习民谣切音节奏&《恋爱ing》》",
+          "duration": 2309,
+          "cid": 23456665
+        },
+        {
+          "page": 17,
+          "title": "第8课丨学习慢摇节奏型&《七里香》",
+          "duration": 1163,
+          "cid": 23456666
+        },
+        {
+          "page": 18,
+          "title": "第8.5课丨学习慢摇分解节奏型",
+          "duration": 459,
+          "cid": 23457135
+        },
+        {
+          "page": 19,
+          "title": "第8.5课丨演练歌曲《我要你》",
+          "duration": 670,
+          "cid": 23457134
+        },
+        {
+          "page": 20,
+          "title": "第9课丨学习前奏&《小情歌》",
+          "duration": 1475,
+          "cid": 23459564
+        },
+        {
+          "page": 21,
+          "title": "第9课丨拓展教学&《默》",
+          "duration": 902,
+          "cid": 23459562
+        },
+        {
+          "page": 22,
+          "title": "第9.5课丨学习二指法",
+          "duration": 625,
+          "cid": 23459561
+        },
+        {
+          "page": 23,
+          "title": "第9.5课丨实战演练歌曲《小幸运》",
+          "duration": 790,
+          "cid": 23459563
+        },
+        {
+          "page": 24,
+          "title": "第10课丨学习民谣分解&《青花瓷》",
+          "duration": 1355,
+          "cid": 23461635
+        },
+        {
+          "page": 25,
+          "title": "第10课丨拓展演练歌曲《她说》",
+          "duration": 1691,
+          "cid": 23461636
+        }
+      ],
+      "status": "ok",
+      "error": null
+    }
+  }
+}

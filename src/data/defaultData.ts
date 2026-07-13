@@ -1,4 +1,5 @@
-
+import type { VideoResource } from '@/types'
+import { mergeVideoMetadata } from '@/data/mergeVideoMetadata'
 
 export const defaultInstruments = [
   { id: 'electric' as const, name: '电吉他', gradient: 'electric' },
@@ -1445,7 +1446,7 @@ export const defaultKnowledgeBaseItems = [
   },
 ]
 
-export const defaultVideoResources = [
+const baseVideoResources: VideoResource[] = [
   {
     id: 'vid_e1',
     title: '电吉他入门系统教程',
@@ -1788,6 +1789,8 @@ export const defaultVideoResources = [
     ],
   },
 ]
+
+export const defaultVideoResources = mergeVideoMetadata(baseVideoResources)
 
 export const defaultData = {
   instruments: defaultInstruments,
