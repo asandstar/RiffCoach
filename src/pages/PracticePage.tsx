@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Trophy, Clock, Save, X, FolderOpen, Trash2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Play, Pause, ArrowLeft, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Trophy, Clock, Save, X, FolderOpen, Trash2, AlertCircle } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { BpmKnob } from '@/components/BpmKnob';
+import { PracticePreparation } from '@/components/PracticePreparation';
 import { useAppStore } from '@/store/useAppStore';
 import { generateAIFeedback, updateCoverProgressFromSession } from '@/utils/aiMock';
 import { formatTime } from '@/utils/date';
@@ -24,7 +25,7 @@ const painPointDetails: Record<string, string[]> = {
 };
 
 export function PracticePage({ onPageChange }: PracticePageProps) {
-  const { coverProjects, sessions, sources, addSession, updateCoverProject, setSessionFeedback, currentEfficientPlan } = useAppStore();
+  const { coverProjects, sessions, sources, videoResources, selectedInstrument, practiceContext, setPracticeContext, addSession, updateCoverProject, setSessionFeedback, currentEfficientPlan } = useAppStore();
   
   const [repetitions, setRepetitions] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
@@ -36,12 +37,42 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   const [newTemplateName, setNewTemplateName] = useState('');
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
+  const [isPrepared, setIsPrepared] = useState(false);
+  const [tuningCompleted, setTuningCompleted] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const submissionLockRef = useRef(false);
+
+  const allLessons = sources.flatMap((source) => source.lessons);
+  const currentLesson = practiceContext?.lessonId
+    ? allLessons.find((lesson) => lesson.id === practiceContext.lessonId)
+    : undefined;
+  const contextVideo = practiceContext?.videoId
+    ? videoResources.find((video) => video.id === practiceContext.videoId)
+    : undefined;
+  const currentProject = practiceContext?.projectId
+    ? coverProjects.find((project) => project.id === practiceContext.projectId)
+    : undefined;
+  const currentSection = practiceContext?.sectionId
+    ? currentProject?.sections.find((section) => section.id === practiceContext.sectionId)
+    : undefined;
+  const hasInvalidContext = !practiceContext
+    || (!practiceContext.lessonId && !practiceContext.videoId && !practiceContext.projectId)
+    || Boolean(practiceContext.lessonId && !currentLesson)
+    || Boolean(practiceContext.videoId && !contextVideo)
+    || Boolean(practiceContext.projectId && !currentProject)
+    || Boolean(practiceContext.sectionId && !currentSection);
+  const instrument = currentLesson?.instrument || contextVideo?.instrument || currentProject?.instrument || selectedInstrument;
+  const suggestedBpm = currentSection?.currentCleanBPM
+    || currentLesson?.targetBPM
+    || contextVideo?.suggestedPractice.startBPM
+    || 70;
 
   const practice = usePractice({
-    initialBpm: 70,
+    initialBpm: suggestedBpm,
   });
 
   useEffect(() => {
+    if (!isPrepared) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -83,7 +114,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [practice]);
+  }, [practice, isPrepared]);
 
   useEffect(() => {
     return () => {
@@ -91,10 +122,6 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
     };
   }, []); // 只在组件卸载时执行 cleanup，避免每次渲染停止计时器/节拍器
 
-  const currentProject = coverProjects[0];
-  const currentSection = currentProject?.sections.find((s) => s.progress < 100);
-  const allLessons = sources.flatMap((s) => s.lessons);
-  const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
 
   const togglePainPoint = (painPoint: PainPoint) => {
@@ -111,10 +138,15 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
   };
 
   const handleCompletePractice = () => {
+    if (submissionLockRef.current) return;
+    submissionLockRef.current = true;
+    setIsCompleting(true);
     practice.stopTimer();
     practice.stopMetronome();
 
     if (practice.timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
+      submissionLockRef.current = false;
+      setIsCompleting(false);
       return;
     }
 
@@ -125,7 +157,7 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
 
       const sessionData = {
         lessonId: currentLesson?.id || null,
-        instrument: 'electric' as const,
+        instrument,
         date: Date.now(),
         durationSeconds: practice.timeElapsed,
         bpm: practice.bpm,
@@ -136,24 +168,20 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         painPointDetails: Object.entries(painPointDetailsMap).map(([painPoint, detail]) => ({ painPoint, detail })),
         notes: notes,
         cleanBPM: Math.max(40, cleanBPM),
+        tuningCompleted,
+        metronomeUsedSeconds: practice.metronomeUsedSeconds,
       };
 
-      addSession(sessionData);
+      const sessionId = addSession(sessionData);
+      const completedSession = { ...sessionData, id: sessionId };
 
-      const feedback = generateAIFeedback({ ...sessionData, id: 'temp' }, currentLesson, recentSessions, currentProject);
+      const feedback = generateAIFeedback(completedSession, currentLesson, recentSessions, currentProject);
+      setSessionFeedback(sessionId, feedback);
 
-      setTimeout(() => {
-        const { sessions: updatedSessions } = useAppStore.getState();
-        const newSession = [...updatedSessions].sort((a, b) => b.date - a.date)[0];
-        if (newSession) {
-          setSessionFeedback(newSession.id, feedback);
-        }
-      }, 0);
-
-      if (currentLesson?.projectId && currentLesson?.sectionId) {
-        const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
+      if (currentLesson?.projectId && currentLesson?.sectionId && currentProject) {
+        const updatedProject = updateCoverProgressFromSession(completedSession, currentLesson, {
           coverProjects,
-          sessions: [...sessions, { ...sessionData, id: 'temp' }],
+          sessions: [...sessions, completedSession],
           sources,
           knowledgeBase: { categories: [], items: [], videos: [], favorites: [], readHistory: [] },
           materialInbox: [],
@@ -167,8 +195,8 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
         });
 
         if (updatedProject) {
-          // 使用 currentLesson.projectId 作为 key，确保与 updatedProject 来源一致
-          updateCoverProject(currentLesson.projectId, updatedProject);
+          const { id: _id, createdAt: _createdAt, ...projectUpdates } = updatedProject;
+          updateCoverProject(currentLesson.projectId, projectUpdates);
         }
       }
 
@@ -179,10 +207,53 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
     }, 500);
   };
 
+  const handlePreparationReady = (options: { tuningCompleted: boolean; startWithMetronome: boolean }) => {
+    setTuningCompleted(options.tuningCompleted);
+    practice.setBpm(suggestedBpm);
+    if (options.startWithMetronome && !practice.isMetronomeOn) {
+      practice.toggleMetronome();
+    }
+    setIsPrepared(true);
+  };
+
   const beatConfig = timeSignatureConfigs[practice.timeSignature];
+  const contextTestAttributes = {
+    'data-testid': 'practice-context',
+    'data-lesson-id': practiceContext?.lessonId || '',
+    'data-video-id': practiceContext?.videoId || '',
+    'data-project-id': practiceContext?.projectId || '',
+    'data-section-id': practiceContext?.sectionId || '',
+  };
+
+  if (hasInvalidContext) {
+    return (
+      <div {...contextTestAttributes} data-context-status="invalid">
+        <GlassCard elevated className="p-8 text-center">
+          <AlertCircle size={36} className="text-amber-soft mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-text-primary mb-2">找不到本次练习目标</h1>
+          <p className="text-text-secondary mb-5">练习入口可能已失效，请重新选择 Cover 段落、视频或练习任务。</p>
+          <div className="flex gap-3 justify-center">
+            <button onClick={() => { setPracticeContext(null); onPageChange('today'); }} className="btn-secondary">返回今日</button>
+            <button onClick={() => { setPracticeContext(null); onPageChange('resource'); }} className="btn-primary">重新选择</button>
+          </div>
+        </GlassCard>
+      </div>
+    );
+  }
+
+  if (!isPrepared) {
+    return (
+      <div {...contextTestAttributes} data-context-status="ready" className="space-y-4">
+        <button onClick={() => onPageChange('today')} className="flex items-center gap-2 text-text-secondary hover:text-text-primary">
+          <ArrowLeft size={18} />返回
+        </button>
+        <PracticePreparation instrument={instrument} suggestedBpm={suggestedBpm} onReady={handlePreparationReady} />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div {...contextTestAttributes} data-context-status="active" className="space-y-6">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => {
@@ -596,10 +667,11 @@ export function PracticePage({ onPageChange }: PracticePageProps) {
 
       <button
         onClick={handleCompletePractice}
-        className="btn-primary w-full flex items-center justify-center gap-2"
+        disabled={isCompleting}
+        className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <Check size={18} />
-        完成练习
+        {isCompleting ? '正在保存...' : '完成练习'}
       </button>
 
       {showCelebration && (

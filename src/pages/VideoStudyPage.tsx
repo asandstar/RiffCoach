@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Play, BookOpen, TrendingUp, AlertTriangle, Pause, RotateCcw, Check, Plus, Minus, Tag, MessageSquare, ChevronLeft, ChevronRight, Clock, Save, X, FolderOpen, Trash2 } from 'lucide-react';
 import { GlassCard } from '@/components/GlassCard';
 import { VideoPlayerCard } from '@/components/VideoPlayerCard';
 import { BpmKnob } from '@/components/BpmKnob';
+import { PracticePreparation } from '@/components/PracticePreparation';
 import { useAppStore } from '@/store/useAppStore';
 import { generateAIFeedback, updateCoverProgressFromSession } from '@/utils/aiMock';
 import { formatTime } from '@/utils/date';
@@ -25,8 +26,33 @@ const painPointDetails: Record<string, string[]> = {
 };
 
 export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
-  const { videoResources, recentResources, coverProjects, sessions, sources, addSession, updateCoverProject, setSessionFeedback, currentEfficientPlan } = useAppStore();
-  const [currentPage, setCurrentPage] = useState(1);
+  const { videoResources, coverProjects, sessions, sources, selectedInstrument, practiceContext, setPracticeContext, addSession, updateCoverProject, setSessionFeedback, currentEfficientPlan } = useAppStore();
+  const allLessons = sources.flatMap((source) => source.lessons);
+  const currentLesson = practiceContext?.lessonId
+    ? allLessons.find((lesson) => lesson.id === practiceContext.lessonId)
+    : undefined;
+  const contextVideo = practiceContext?.videoId
+    ? videoResources.find((item) => item.id === practiceContext.videoId)
+    : undefined;
+  const video = contextVideo || (currentLesson?.bvid
+    ? videoResources.find((item) => item.bvid === currentLesson.bvid)
+    : undefined);
+  const relatedProject = practiceContext?.projectId
+    ? coverProjects.find((project) => project.id === practiceContext.projectId)
+    : undefined;
+  const relatedSection = practiceContext?.sectionId
+    ? relatedProject?.sections.find((section) => section.id === practiceContext.sectionId)
+    : undefined;
+  const hasInvalidContext = !practiceContext
+    || (!practiceContext.videoId && !practiceContext.lessonId)
+    || Boolean(practiceContext.lessonId && !currentLesson)
+    || Boolean(practiceContext.videoId && !contextVideo)
+    || Boolean(practiceContext.projectId && !relatedProject)
+    || Boolean(practiceContext.sectionId && !relatedSection)
+    || !video;
+  const suggestedBpm = currentLesson?.targetBPM || video?.suggestedPractice.startBPM || 70;
+  const instrument = currentLesson?.instrument || video?.instrument || selectedInstrument;
+  const [currentPage, setCurrentPage] = useState(currentLesson?.page || video?.pages?.[0]?.page || 1);
   
   const [repetitions, setRepetitions] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
@@ -38,12 +64,16 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
   const [isCompleting, setIsCompleting] = useState(false); // 防止重复点击
+  const [isPrepared, setIsPrepared] = useState(false);
+  const [tuningCompleted, setTuningCompleted] = useState(false);
+  const submissionLockRef = useRef(false);
 
   const practice = usePractice({
-    initialBpm: 70,
+    initialBpm: suggestedBpm,
   });
 
   useEffect(() => {
+    if (!isPrepared) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -85,7 +115,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [practice]);
+  }, [practice, isPrepared]);
 
   useEffect(() => {
     return () => {
@@ -93,31 +123,26 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
     };
   }, []); // 只在组件卸载时执行 cleanup，避免每次渲染停止计时器/节拍器
 
-  const recentVideo = recentResources
-    .filter((r) => r.type === 'video')
-    .map((r) => videoResources.find((v) => v.id === r.id))
-    .filter(Boolean)[0];
-
-  const video = recentVideo || videoResources[0];
-
-  if (!video) {
+  if (hasInvalidContext || !video) {
     return (
-      <div className="glass-card p-8 text-center">
+      <div
+        data-testid="practice-context"
+        data-lesson-id={practiceContext?.lessonId || ''}
+        data-video-id={practiceContext?.videoId || ''}
+        data-project-id={practiceContext?.projectId || ''}
+        data-section-id={practiceContext?.sectionId || ''}
+        data-context-status="invalid"
+        className="glass-card p-8 text-center"
+      >
         <BookOpen size={32} className="text-text-tertiary mx-auto mb-4" />
-        <p className="text-text-secondary">没有找到视频资源</p>
-        <button onClick={() => onPageChange('resource')} className="btn-secondary mt-4">
+        <p className="font-semibold text-text-primary mb-1">找不到本次视频练习目标</p>
+        <p className="text-text-secondary">视频或关联对象可能已被删除，请重新选择。</p>
+        <button onClick={() => { setPracticeContext(null); onPageChange('resource'); }} className="btn-secondary mt-4">
           返回资料中心
         </button>
       </div>
     );
   }
-
-  const relatedProject = coverProjects.find((p) =>
-    p.sourceLinks.some((link) => link.bvid === video.bvid)
-  );
-
-  const allLessons = sources.flatMap((s) => s.lessons);
-  const currentLesson = allLessons[0];
   const recentSessions = [...sessions].sort((a, b) => b.date - a.date).slice(0, 7);
   const selectedVideoPage = video.pages?.find((item) => item.page === currentPage);
 
@@ -135,13 +160,15 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
   };
 
   const handleCompletePractice = () => {
-    if (isCompleting) return; // 防止重复点击
+    if (submissionLockRef.current) return;
+    submissionLockRef.current = true;
     setIsCompleting(true);
 
     practice.stopTimer();
     practice.stopMetronome();
 
     if (practice.timeElapsed < 10 && !confirm('练习时间很短，确定要保存吗？')) {
+      submissionLockRef.current = false;
       setIsCompleting(false);
       return;
     }
@@ -161,24 +188,19 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
       painPointDetails: Object.entries(painPointDetailsMap).map(([painPoint, detail]) => ({ painPoint, detail })),
       notes: notes,
       cleanBPM: Math.max(40, cleanBPM),
+      tuningCompleted,
+      metronomeUsedSeconds: practice.metronomeUsedSeconds,
     };
 
-    addSession(sessionData);
+    const sessionId = addSession(sessionData);
+    const completedSession = { ...sessionData, id: sessionId };
+    const feedback = generateAIFeedback(completedSession, currentLesson, recentSessions, relatedProject);
+    setSessionFeedback(sessionId, feedback);
 
-    const feedback = generateAIFeedback({ ...sessionData, id: 'temp' }, currentLesson, recentSessions, relatedProject || undefined);
-
-    setTimeout(() => {
-      const { sessions: updatedSessions } = useAppStore.getState();
-      const newSession = [...updatedSessions].sort((a, b) => b.date - a.date)[0];
-      if (newSession) {
-        setSessionFeedback(newSession.id, feedback);
-      }
-    }, 0);
-
-    if (currentLesson?.projectId && currentLesson?.sectionId) {
-      const updatedProject = updateCoverProgressFromSession({ ...sessionData, id: 'temp' }, currentLesson, {
+    if (currentLesson?.projectId && currentLesson?.sectionId && relatedProject) {
+      const updatedProject = updateCoverProgressFromSession(completedSession, currentLesson, {
         coverProjects,
-        sessions: [...sessions, { ...sessionData, id: 'temp' }],
+        sessions: [...sessions, completedSession],
         sources,
         knowledgeBase: { categories: [], items: [], videos: [], favorites: [], readHistory: [] },
         materialInbox: [],
@@ -192,8 +214,8 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
       });
 
       if (updatedProject) {
-        // 使用 currentLesson.projectId 作为 key，确保与 updatedProject 来源一致
-        updateCoverProject(currentLesson.projectId, updatedProject);
+        const { id: _id, createdAt: _createdAt, ...projectUpdates } = updatedProject;
+        updateCoverProject(currentLesson.projectId, projectUpdates);
       }
     }
 
@@ -201,10 +223,37 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
     onPageChange('ai-feedback');
   };
 
+  const handlePreparationReady = (options: { tuningCompleted: boolean; startWithMetronome: boolean }) => {
+    setTuningCompleted(options.tuningCompleted);
+    practice.setBpm(suggestedBpm);
+    if (options.startWithMetronome && !practice.isMetronomeOn) {
+      practice.toggleMetronome();
+    }
+    setIsPrepared(true);
+  };
+
   const beatConfig = timeSignatureConfigs[practice.timeSignature];
+  const contextTestAttributes = {
+    'data-testid': 'practice-context',
+    'data-lesson-id': practiceContext?.lessonId || '',
+    'data-video-id': practiceContext?.videoId || '',
+    'data-project-id': practiceContext?.projectId || '',
+    'data-section-id': practiceContext?.sectionId || '',
+  };
+
+  if (!isPrepared) {
+    return (
+      <div {...contextTestAttributes} data-context-status="ready" className="space-y-4">
+        <button onClick={() => onPageChange('resource')} className="flex items-center gap-2 text-text-secondary hover:text-text-primary">
+          <ArrowLeft size={18} />返回资料中心
+        </button>
+        <PracticePreparation instrument={instrument} suggestedBpm={suggestedBpm} onReady={handlePreparationReady} />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div {...contextTestAttributes} data-context-status="active" className="space-y-6">
       <div className="flex items-center gap-4 mb-4">
         <button
           onClick={() => onPageChange('resource')}
@@ -217,6 +266,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs chip chip-primary">{video.source === 'bilibili' ? 'B站' : 'YouTube'}</span>
             <span className="text-xs text-text-tertiary">{video.stage}</span>
+            {video.owner && <span className="text-xs text-text-tertiary">UP 主：{video.owner}</span>}
             <span className="text-xs text-text-secondary font-medium">P{currentPage}</span>
           </div>
         </div>
@@ -733,7 +783,7 @@ export function VideoStudyPage({ onPageChange }: VideoStudyPageProps) {
 
           <button onClick={handleCompletePractice} disabled={isCompleting} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Check size={18} />
-            完成练习
+            {isCompleting ? '正在保存...' : '完成练习'}
           </button>
         </div>
       </div>

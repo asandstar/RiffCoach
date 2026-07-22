@@ -20,6 +20,7 @@ export function usePractice(options: UsePracticeOptions = {}) {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [bpm, setBpm] = useState(initialBpm);
   const [isMetronomeOn, setIsMetronomeOn] = useState(false);
+  const [metronomeUsedSeconds, setMetronomeUsedSeconds] = useState(0);
   const [timerMode, setTimerMode] = useState<TimerMode>(initialTimerMode);
   const [targetTime, setTargetTime] = useState(initialTargetTime);
   const [timeSignature, setTimeSignature] = useState<TimeSignature>(initialTimeSignature);
@@ -207,6 +208,15 @@ export function usePractice(options: UsePracticeOptions = {}) {
     };
   }, [isMetronomeOn]);
 
+  // 只统计真正的练习时间：准备页试听或暂停计时时不累计。
+  useEffect(() => {
+    if (!isMetronomeOn || !isRunning) return;
+    const usageTimer = window.setInterval(() => {
+      setMetronomeUsedSeconds((seconds) => seconds + 1);
+    }, 1000);
+    return () => clearInterval(usageTimer);
+  }, [isMetronomeOn, isRunning]);
+
   const toggleTimer = () => {
     setIsRunning((prev) => !prev);
   };
@@ -239,6 +249,7 @@ export function usePractice(options: UsePracticeOptions = {}) {
     stopTimer();
     stopMetronome();
     setTimeElapsed(0);
+    setMetronomeUsedSeconds(0);
   };
 
   const skipBackward = () => {
@@ -329,6 +340,7 @@ export function usePractice(options: UsePracticeOptions = {}) {
     bpm,
     setBpm,
     isMetronomeOn,
+    metronomeUsedSeconds,
     timerMode,
     targetTime,
     timeSignature,

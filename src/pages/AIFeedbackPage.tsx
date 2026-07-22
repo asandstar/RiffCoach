@@ -16,7 +16,7 @@ export function AIFeedbackPage({ onPageChange }: AIFeedbackPageProps) {
   const [displayReason, setDisplayReason] = useState('');
   const [visibleSteps, setVisibleSteps] = useState(0);
   
-  const recentSession = sessions.sort((a, b) => b.date - a.date)[0];
+  const recentSession = [...sessions].sort((a, b) => b.date - a.date)[0];
   const feedback = recentSession?.aiFeedback;
 
   useEffect(() => {
@@ -135,6 +135,20 @@ export function AIFeedbackPage({ onPageChange }: AIFeedbackPageProps) {
           <p className="text-3xl font-bold text-primary">{feedback.cleanBPM}</p>
         </GlassCard>
       </div>
+
+      <GlassCard className="p-5 animate-fade-in" style={{ animationDelay: '300ms' }}>
+        <h2 className="text-lg font-bold text-text-primary mb-3">练习前准备</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-primary-subtle rounded-xl">
+            <p className="text-xs text-text-tertiary mb-1">调音确认</p>
+            <p className="font-semibold text-text-primary">{recentSession.tuningCompleted ? '已调音' : '本次跳过'}</p>
+          </div>
+          <div className="p-3 bg-primary-subtle rounded-xl">
+            <p className="text-xs text-text-tertiary mb-1">节拍器使用</p>
+            <p className="font-semibold text-text-primary">{Math.floor(recentSession.metronomeUsedSeconds / 60)}分 {recentSession.metronomeUsedSeconds % 60}秒</p>
+          </div>
+        </div>
+      </GlassCard>
 
       <GlassCard className="p-5 animate-fade-in" style={{ animationDelay: '400ms' }}>
         <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
