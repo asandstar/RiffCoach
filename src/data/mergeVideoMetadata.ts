@@ -2,6 +2,7 @@ import biliMetadata from '@/data/biliMetadata.generated.json';
 import type { VideoResource } from '@/types';
 
 interface GeneratedVideoMetadata {
+  bvid: string;
   title: string;
   description: string;
   owner: string;
@@ -23,6 +24,7 @@ export function mergeVideoMetadata(resources: VideoResource[]): VideoResource[] 
 
     return {
       ...resource,
+      bvid: metadata.bvid || resource.bvid,
       title: metadata.title || resource.title,
       summary: metadata.description || resource.summary,
       cover: metadata.cover || undefined,

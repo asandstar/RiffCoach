@@ -20,7 +20,7 @@
  *   npx playwright install chromium
  *
  * 运行：
- *   node riffcoach-bili-sync/sync-bili-metadata.mjs
+ *   npm run sync:bili-metadata
  *
  * 可选环境变量：
  *   HEADLESS=1       无界面模式。默认 0。

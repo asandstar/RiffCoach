@@ -27,8 +27,9 @@ yarn-error.log*
 # Build
 dist/
 
-# Bilibili metadata sync browser profile
-.cache/bili-sync-profile/
+# Local caches and generated browser profiles
+.cache/
+*.bak
 
 # Cloudflare
 .wrangler/

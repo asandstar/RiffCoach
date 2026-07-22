@@ -50,11 +50,11 @@ export const defaultSources = [
 ]
 
 export const defaultSessions = [
-  { id: 'sess_1', lessonId: 'les_2', instrument: 'acoustic' as const, date: Date.now() - 4 * 24 * 3600 * 1000, durationSeconds: 40 * 60, bpm: 85, repetitions: 8, selfRating: 4, painPoints: ['换和弦慢', '节奏不稳'], notes: '和弦转换还需要多练', painPointDetails: [], cleanBPM: 80 },
-  { id: 'sess_2', lessonId: 'les_5', instrument: 'electric' as const, date: Date.now() - 3 * 24 * 3600 * 1000, durationSeconds: 28 * 60, bpm: 95, repetitions: 6, selfRating: 3, painPoints: ['拨弦力度不均'], notes: '', painPointDetails: [], cleanBPM: 90 },
-  { id: 'sess_3', lessonId: 'les_4', instrument: 'electric' as const, date: Date.now() - 2 * 24 * 3600 * 1000, durationSeconds: 30 * 60, bpm: 90, repetitions: 10, selfRating: 4, painPoints: ['节奏不稳'], notes: '节奏还需要加强', painPointDetails: [], cleanBPM: 85 },
-  { id: 'sess_4', lessonId: 'les_3', instrument: 'acoustic' as const, date: Date.now() - 1 * 24 * 3600 * 1000, durationSeconds: 32 * 60, bpm: 55, repetitions: 5, selfRating: 2, painPoints: ['大横按切换慢', '手指僵硬'], notes: '大横按好难', painPointDetails: [], cleanBPM: 45 },
-  { id: 'sess_5', lessonId: 'les_1', instrument: 'acoustic' as const, date: Date.now(), durationSeconds: 25 * 60, bpm: 80, repetitions: 7, selfRating: 4, painPoints: ['大横按切换慢', '节奏不稳'], notes: '今天感觉不错', painPointDetails: [], cleanBPM: 75 },
+  { id: 'sess_1', lessonId: 'les_2', instrument: 'acoustic' as const, date: Date.now() - 4 * 24 * 3600 * 1000, durationSeconds: 40 * 60, bpm: 85, repetitions: 8, selfRating: 4, painPoints: ['换和弦慢', '节奏不稳'], notes: '和弦转换还需要多练', painPointDetails: [], cleanBPM: 80, tuningCompleted: true, metronomeUsedSeconds: 30 * 60 },
+  { id: 'sess_2', lessonId: 'les_5', instrument: 'electric' as const, date: Date.now() - 3 * 24 * 3600 * 1000, durationSeconds: 28 * 60, bpm: 95, repetitions: 6, selfRating: 3, painPoints: ['拨弦力度不均'], notes: '', painPointDetails: [], cleanBPM: 90, tuningCompleted: true, metronomeUsedSeconds: 20 * 60 },
+  { id: 'sess_3', lessonId: 'les_4', instrument: 'electric' as const, date: Date.now() - 2 * 24 * 3600 * 1000, durationSeconds: 30 * 60, bpm: 90, repetitions: 10, selfRating: 4, painPoints: ['节奏不稳'], notes: '节奏还需要加强', painPointDetails: [], cleanBPM: 85, tuningCompleted: true, metronomeUsedSeconds: 25 * 60 },
+  { id: 'sess_4', lessonId: 'les_3', instrument: 'acoustic' as const, date: Date.now() - 1 * 24 * 3600 * 1000, durationSeconds: 32 * 60, bpm: 55, repetitions: 5, selfRating: 2, painPoints: ['大横按切换慢', '手指僵硬'], notes: '大横按好难', painPointDetails: [], cleanBPM: 45, tuningCompleted: false, metronomeUsedSeconds: 10 * 60 },
+  { id: 'sess_5', lessonId: 'les_1', instrument: 'acoustic' as const, date: Date.now(), durationSeconds: 25 * 60, bpm: 80, repetitions: 7, selfRating: 4, painPoints: ['大横按切换慢', '节奏不稳'], notes: '今天感觉不错', painPointDetails: [], cleanBPM: 75, tuningCompleted: true, metronomeUsedSeconds: 18 * 60 },
 ]
 
 export const defaultKnowledgeBaseCategories = [
@@ -1806,6 +1806,7 @@ export const defaultData = {
   },
   coverProjects: [],
   currentEfficientPlan: null,
+  practiceContext: null,
   materialInbox: [],
   videoResources: defaultVideoResources,
   recentResources: [],
