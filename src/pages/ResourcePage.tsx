@@ -3,7 +3,7 @@ import { Search, Plus, Play, Sparkles, Clock, Tag, FileText, BookOpen, Music } f
 import { GlassCard } from '@/components/GlassCard';
 import { useAppStore } from '@/store/useAppStore';
 import { analyzeMaterial } from '@/utils/aiMock';
-import type { PageType, Instrument } from '@/types';
+import type { PageType, Instrument, Lesson } from '@/types';
 
 interface ResourcePageProps {
   onPageChange: (page: PageType) => void;
@@ -11,7 +11,7 @@ interface ResourcePageProps {
 }
 
 export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
-  const { materialInbox, videoResources, sources, updateMaterialInbox, addLesson, recentResources, addRecentResource } = useAppStore();
+  const { materialInbox, videoResources, sources, coverProjects, updateMaterialInbox, addLesson, recentResources, addRecentResource, setPracticeContext } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'videos' | 'recent' | 'inbox' | 'lessons'>('videos');
   const allLessons = sources.flatMap((s) => s.lessons);
@@ -71,8 +71,27 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
   };
 
   const handleVideoClick = (video: typeof videoResources[0]) => {
+    const lesson = allLessons.find((item) => item.bvid === video.bvid);
+    const project = coverProjects.find((item) => item.sourceLinks.some((link) => link.bvid === video.bvid));
     addRecentResource('video', video.id);
+    setPracticeContext({
+      lessonId: lesson?.id || null,
+      videoId: video.id,
+      projectId: lesson?.projectId || project?.id || null,
+      sectionId: lesson?.sectionId || null,
+    });
     onPageChange('video-study');
+  };
+
+  const handleLessonPractice = (lesson: Lesson) => {
+    const video = lesson.bvid ? videoResources.find((item) => item.bvid === lesson.bvid) : undefined;
+    setPracticeContext({
+      lessonId: lesson.id,
+      videoId: video?.id || null,
+      projectId: lesson.projectId || null,
+      sectionId: lesson.sectionId || null,
+    });
+    onPageChange('practice');
   };
 
   return (
@@ -251,11 +270,12 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                     onClick={() => {
                       const matchedVideo = material.bvid
                         ? videoResources.find((v) => v.bvid === material.bvid)
-                        : videoResources[0];
+                        : undefined;
                       if (matchedVideo) {
-                        addRecentResource('video', matchedVideo.id);
+                        handleVideoClick(matchedVideo);
+                      } else {
+                        alert('没有找到与该素材匹配的视频资源');
                       }
-                      onPageChange('video-study');
                     }}
                     className="flex-1 btn-secondary flex items-center justify-center gap-2 text-sm"
                   >
@@ -350,7 +370,7 @@ export function ResourcePage({ onPageChange, onQuickAdd }: ResourcePageProps) {
                     </div>
                   </div>
                   <button
-                    onClick={() => onPageChange('practice')}
+                    onClick={() => handleLessonPractice(lesson)}
                     className="flex items-center gap-1 text-primary font-medium text-sm hover:underline"
                   >
                     <Play size={14} />

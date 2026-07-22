@@ -25,7 +25,7 @@ const subCategories: { id: string; name: string; icon: string }[] = [
 ];
 
 export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
-  const { knowledgeBase, toggleKnowledgeFavorite, markKnowledgeRead, videoResources } = useAppStore();
+  const { knowledgeBase, toggleKnowledgeFavorite, markKnowledgeRead, videoResources, sources, coverProjects, setPracticeContext, addRecentResource } = useAppStore();
   const [selectedInstrument, setSelectedInstrument] = useState('all');
   const [selectedSubCategory, setSelectedSubCategory] = useState('basics');
   const [selectedItem, setSelectedItem] = useState<KnowledgeBaseItem | null>(null);
@@ -78,6 +78,51 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
 
   const toggleNav = () => {
     setIsNavCollapsed((prev) => !prev);
+  };
+
+  const openVideo = (videoId: string) => {
+    const video = videoResources.find((item) => item.id === videoId);
+    if (!video) return;
+    const lesson = sources.flatMap((source) => source.lessons).find((item) => item.bvid === video.bvid);
+    const project = coverProjects.find((item) => item.sourceLinks.some((link) => link.bvid === video.bvid));
+    setPracticeContext({
+      lessonId: lesson?.id || null,
+      videoId,
+      projectId: lesson?.projectId || project?.id || null,
+      sectionId: lesson?.sectionId || null,
+    });
+    addRecentResource('video', videoId);
+    onPageChange('video-study');
+  };
+
+  const startKnowledgePractice = () => {
+    if (!selectedItem) return;
+    const knowledgeTerms = [...selectedItem.tags, ...selectedItem.relatedSkills];
+    const matchesKnowledgeTerm = (value: string) => knowledgeTerms.some((term) =>
+      value.includes(term) || term.includes(value)
+    );
+    const videoId = selectedItem.relatedVideoIds?.find((id) => videoResources.some((video) => video.id === id))
+      || videoResources.find((video) =>
+        (selectedItem.instrument === 'all' || video.instrument === selectedItem.instrument)
+        && video.skills.some(matchesKnowledgeTerm)
+      )?.id
+      || null;
+    const allLessons = sources.flatMap((source) => source.lessons);
+    const selectedVideo = videoResources.find((video) => video.id === videoId);
+    const lesson = allLessons.find((item) =>
+      item.instrument === selectedItem.instrument
+      && item.tags.some(matchesKnowledgeTerm)
+    ) || (selectedVideo
+      ? allLessons.find((item) => item.bvid === selectedVideo.bvid)
+      : undefined)
+      || allLessons.find((item) => item.instrument === selectedItem.instrument);
+    setPracticeContext({
+      lessonId: lesson?.id || null,
+      videoId,
+      projectId: lesson?.projectId || null,
+      sectionId: lesson?.sectionId || null,
+    });
+    onPageChange('practice');
   };
 
   const filteredItems = searchFilteredItems.filter((item) => {
@@ -407,7 +452,7 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
                       <GlassCard
                         key={id}
                         className="p-3 cursor-pointer hover:shadow-elevated transition-shadow"
-                        onClick={() => onPageChange('video-study')}
+                        onClick={() => openVideo(video.id)}
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center">
@@ -426,7 +471,7 @@ export function KnowledgePage({ onPageChange }: KnowledgePageProps) {
             )}
 
             <div className="flex gap-3">
-              <button onClick={() => onPageChange('practice')} className="flex-1 btn-primary flex items-center justify-center gap-2">
+              <button onClick={startKnowledgePractice} className="flex-1 btn-primary flex items-center justify-center gap-2">
                 <Play size={18} />
                 去练习
               </button>

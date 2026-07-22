@@ -47,6 +47,8 @@ export function generateDemoData(): AppState {
         coverUpdate: 'Intro Riff 进度从 65% 更新到 70%',
       } : null,
       cleanBPM: Math.max(40, bpm - (selfRating <= 2 ? 10 : 5)),
+      tuningCompleted: true,
+      metronomeUsedSeconds: Math.round(duration * 0.75),
     });
   }
 
@@ -87,7 +89,7 @@ export function generateDemoData(): AppState {
     instrument: 'electric',
     goal: '先练会 intro riff，并完成一版 30 秒 cover',
     targetDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    sourceLinks: [{ type: 'bilibili', title: 'B站教程', url: 'https://www.bilibili.com/video/BV1Nb411i7gK', bvid: 'BV1Nb411i7gK', page: 1 }],
+    sourceLinks: [{ type: 'bilibili', title: 'B站教程', url: 'https://www.bilibili.com/video/BV1NJVJzEEnn', bvid: 'BV1NJVJzEEnn', page: 1 }],
     sections: coverSections,
     aiPlan: {
       summary: '先集中完成 Intro Riff，再进入 Verse Rhythm，最后做 30 秒完整串联。',
@@ -110,7 +112,7 @@ export function generateDemoData(): AppState {
       tags: ['Riff', 'Cover'],
       instrument: 'electric' as const,
       targetDuration: 900,
-      bvid: 'BV1Nb411i7gK',
+      bvid: 'BV1NJVJzEEnn',
       page: 1,
       projectId: 'cover_demo_1',
       sectionId: 'sec_intro',
@@ -139,6 +141,12 @@ export function generateDemoData(): AppState {
     sessions,
     coverProjects: [coverProject],
     currentEfficientPlan: efficientPlan,
+    practiceContext: {
+      lessonId: 'les_demo_1',
+      videoId: null,
+      projectId: 'cover_demo_1',
+      sectionId: 'sec_intro',
+    },
     materialInbox: [],
     videoResources: defaultData.videoResources,
     recentResources: [],

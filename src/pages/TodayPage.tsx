@@ -15,7 +15,7 @@ const timeOptions = [10, 20, 30, 45];
 const energyOptions = ['精力很好', '一般', '很累', '手指酸', '只想轻松复习'];
 
 export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
-  const { coverProjects, sessions, currentEfficientPlan, setCurrentEfficientPlan, videoResources, recentResources, loadDemoData, knowledgeBase, videoProgresses, userLevel } = useAppStore();
+  const { coverProjects, sessions, sources, currentEfficientPlan, setCurrentEfficientPlan, setPracticeContext, videoResources, recentResources, loadDemoData, knowledgeBase, videoProgresses, userLevel } = useAppStore();
   
   const [selectedTime, setSelectedTime] = useState(20);
   const [selectedEnergy, setSelectedEnergy] = useState('一般');
@@ -26,7 +26,8 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
   const [typedStep, setTypedStep] = useState(0);
 
   const currentProject = coverProjects[0];
-  const recentSession = sessions.sort((a, b) => b.date - a.date)[0];
+  const recentSession = [...sessions].sort((a, b) => b.date - a.date)[0];
+  const allLessons = sources.flatMap((source) => source.lessons);
 
   const recentVideo = recentResources
     .filter((r) => r.type === 'video')
@@ -87,7 +88,38 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
   };
 
   const handleStartPractice = () => {
+    setPracticeContext({
+      lessonId: currentEfficientPlan?.lessonId || null,
+      videoId: null,
+      projectId: currentEfficientPlan?.projectId || null,
+      sectionId: currentEfficientPlan?.sectionId || null,
+    });
     onPageChange('practice');
+  };
+
+  const handleContinueCover = () => {
+    if (!currentProject) return;
+    const section = currentProject.sections.find((item) => item.progress < 100) || currentProject.sections[0];
+    setPracticeContext({
+      lessonId: section?.lessonIds[0] || null,
+      videoId: null,
+      projectId: currentProject.id,
+      sectionId: section?.id || null,
+    });
+    onPageChange('practice');
+  };
+
+  const handleContinueVideo = () => {
+    if (!recentVideo) return;
+    const lesson = allLessons.find((item) => item.bvid === recentVideo.bvid);
+    const project = coverProjects.find((item) => item.sourceLinks.some((link) => link.bvid === recentVideo.bvid));
+    setPracticeContext({
+      lessonId: lesson?.id || null,
+      videoId: recentVideo.id,
+      projectId: lesson?.projectId || project?.id || null,
+      sectionId: lesson?.sectionId || null,
+    });
+    onPageChange('video-study');
   };
 
   useEffect(() => {
@@ -311,7 +343,7 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
           </div>
           
           <button
-            onClick={() => onPageChange('practice')}
+            onClick={handleContinueCover}
             className="btn-secondary w-full mt-4"
           >
             继续练习
@@ -339,8 +371,9 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
         <GlassCard className="p-5">
           <h2 className="text-lg font-bold text-text-primary mb-3">继续看上次的视频</h2>
           <div className="flex items-center gap-4">
-            <div className="w-20 h-12 rounded-lg bg-gray-800 flex items-center justify-center">
+            <div className="relative w-20 h-12 rounded-lg bg-gray-800 flex items-center justify-center overflow-hidden">
               <Play size={24} className="text-white/70" />
+              {recentVideo.cover && <img src={recentVideo.cover} alt="" className="absolute inset-0 w-full h-full object-cover" />}
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-text-primary truncate">{recentVideo.title}</h3>
@@ -353,7 +386,7 @@ export function TodayPage({ onPageChange, onQuickAdd }: TodayPageProps) {
             </div>
           </div>
           <div className="flex gap-2 mt-4">
-            <button onClick={() => onPageChange('video-study')} className="flex-1 btn-secondary">继续观看</button>
+            <button onClick={handleContinueVideo} className="flex-1 btn-secondary">继续观看</button>
             <button onClick={() => onPageChange('resource')} className="flex-1 btn-primary">浏览更多视频</button>
           </div>
         </GlassCard>

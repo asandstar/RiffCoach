@@ -9,7 +9,7 @@ interface CoverPageProps {
 }
 
 export function CoverPage({ onPageChange }: CoverPageProps) {
-  const { coverProjects, addCoverProject, deleteCoverProject, sources, addLesson } = useAppStore();
+  const { coverProjects, addCoverProject, deleteCoverProject, sources, addLesson, updateCoverSection, setPracticeContext } = useAppStore();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -71,6 +71,12 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
           sectionId: section.id,
         };
         addLesson(demoSource.id, newLesson);
+        const createdLesson = useAppStore.getState().sources
+          .flatMap((source) => source.lessons)
+          .find((lesson) => lesson.projectId === projectId && lesson.sectionId === section.id);
+        if (createdLesson) {
+          updateCoverSection(projectId, section.id, { lessonIds: [createdLesson.id] });
+        }
       }
     });
 
@@ -82,10 +88,28 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
     const section = project?.sections.find((s) => s.id === sectionId);
     
     if (section && section.lessonIds.length > 0) {
+      setPracticeContext({
+        lessonId: section.lessonIds[0],
+        videoId: null,
+        projectId,
+        sectionId,
+      });
       onPageChange('practice');
     } else {
       alert('该段落还没有练习任务，请先点击 AI 拆解');
     }
+  };
+
+  const handleContinueProject = (projectId: string) => {
+    const project = coverProjects.find((item) => item.id === projectId);
+    const section = project?.sections.find((item) => item.progress < 100 && item.lessonIds.length > 0)
+      || project?.sections.find((item) => item.lessonIds.length > 0);
+    if (!project || !section) {
+      alert('该 Cover 还没有可练习任务，请先点击 AI 拆解');
+      return;
+    }
+    setPracticeContext({ lessonId: section.lessonIds[0], videoId: null, projectId, sectionId: section.id });
+    onPageChange('practice');
   };
 
   const selectedProjectData = coverProjects.find((p) => p.id === selectedProject);
@@ -262,6 +286,7 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
               <h2 className="text-xl font-bold text-text-primary">{selectedProjectData.title}</h2>
               <div className="flex items-center gap-2">
                 <button
+                  aria-label="删除 Cover"
                   onClick={() => {
                     deleteCoverProject(selectedProjectData.id);
                     setSelectedProject(null);
@@ -391,7 +416,7 @@ export function CoverPage({ onPageChange }: CoverPageProps) {
             </button>
 
             <button
-              onClick={() => onPageChange('practice')}
+              onClick={() => handleContinueProject(selectedProjectData.id)}
               className="btn-secondary w-full"
             >
               继续练习

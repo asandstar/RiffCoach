@@ -19,7 +19,14 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('today');
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const { hasCompletedOnboarding, loadDemoData, setSelectedInstrument, setUserLevel, completeOnboarding } = useAppStore();
+  const {
+    hasCompletedOnboarding,
+    loadDemoData,
+    setSelectedInstrument,
+    setUserLevel,
+    completeOnboarding,
+    practiceContext,
+  } = useAppStore();
 
   useEffect(() => {
     if (!hasCompletedOnboarding) {
@@ -91,7 +98,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-base">
+    <div
+      className="min-h-screen bg-bg-base"
+      data-testid="app-practice-context"
+      data-lesson-id={practiceContext?.lessonId ?? ''}
+      data-video-id={practiceContext?.videoId ?? ''}
+      data-project-id={practiceContext?.projectId ?? ''}
+      data-section-id={practiceContext?.sectionId ?? ''}
+    >
       <PageShell title={getPageTitle()} showBottomNav={showBottomNav}>
         <div key={currentPage} className="page-enter">
           {renderPage()}

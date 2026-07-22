@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation, KnowledgeReadHistory } from '@/types';
+import type { AppState, Session, Lesson, CoverProject, MaterialInboxItem, EfficientPracticePlan, AIFeedback, VideoResource, VideoProgress, AIRecommendation, KnowledgeReadHistory, PracticeContext } from '@/types';
 import { defaultData } from '@/data/defaultData';
 import { generateDemoData } from '@/data/demoData';
 import { mergeVideoMetadata } from '@/data/mergeVideoMetadata';
@@ -39,6 +39,8 @@ function migrateData(data: Partial<AppState>): AppState {
         cleanBPM: Math.max(0, cleanBPM),
         selfRating: selfRating,
         lessonId: s.lessonId || null,
+        tuningCompleted: s.tuningCompleted ?? false,
+        metronomeUsedSeconds: s.metronomeUsedSeconds ?? 0,
       };
     });
   }
@@ -49,6 +51,10 @@ function migrateData(data: Partial<AppState>): AppState {
 
   if (result.currentEfficientPlan === undefined) {
     result.currentEfficientPlan = null;
+  }
+
+  if (result.practiceContext === undefined) {
+    result.practiceContext = null;
   }
 
   if (result.videoSize === undefined) {
@@ -109,19 +115,20 @@ function migrateData(data: Partial<AppState>): AppState {
 }
 
 interface AppStore extends AppState {
-  addSession: (session: Omit<Session, 'id'>) => void;
+  addSession: (session: Omit<Session, 'id'>) => string;
   updateSession: (id: string, updates: Partial<Session>) => void;
   addLesson: (sourceId: string, lesson: Omit<Lesson, 'id' | 'sourceId'>) => void;
   updateLesson: (id: string, updates: Partial<Lesson>) => void;
   deleteLesson: (id: string) => void;
   addCoverProject: (project: Omit<CoverProject, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  updateCoverProject: (id: string, updates: Partial<CoverProject>) => void;
+  updateCoverProject: (id: string, updates: Partial<Omit<CoverProject, 'id' | 'createdAt'>>) => void;
   deleteCoverProject: (id: string) => void;
   updateCoverSection: (projectId: string, sectionId: string, updates: Partial<AppState['coverProjects'][0]['sections'][0]>) => void;
   addMaterialToInbox: (material: Omit<MaterialInboxItem, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateMaterialInbox: (id: string, updates: Partial<MaterialInboxItem>) => void;
   deleteMaterialInbox: (id: string) => void;
   setCurrentEfficientPlan: (plan: EfficientPracticePlan | null) => void;
+  setPracticeContext: (context: PracticeContext | null) => void;
   setSessionFeedback: (sessionId: string, feedback: AIFeedback) => void;
   addRecentResource: (type: string, id: string) => void;
   toggleFavoriteResource: (resourceId: string) => void;
@@ -143,9 +150,13 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       ...migrateData({}),
 
-      addSession: (session) => set((state) => ({
-        sessions: [...state.sessions, { ...session, id: uid('sess') }],
-      })),
+      addSession: (session) => {
+        const id = uid('sess');
+        set((state) => ({
+          sessions: [...state.sessions, { ...session, id }],
+        }));
+        return id;
+      },
 
       updateSession: (id, updates) => set((state) => ({
         sessions: state.sessions.map((s) => (s.id === id ? { ...s, ...updates } : s)),
@@ -185,7 +196,9 @@ export const useAppStore = create<AppStore>()(
 
       updateCoverProject: (id, updates) => set((state) => ({
         coverProjects: state.coverProjects.map((p) =>
-          p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
+          p.id === id
+            ? { ...p, ...updates, id: p.id, createdAt: p.createdAt, updatedAt: Date.now() }
+            : p
         ),
       })),
 
@@ -227,6 +240,8 @@ export const useAppStore = create<AppStore>()(
       })),
 
       setCurrentEfficientPlan: (plan) => set({ currentEfficientPlan: plan }),
+
+      setPracticeContext: (practiceContext) => set({ practiceContext }),
 
       setSessionFeedback: (sessionId, feedback) => set((state) => ({
         sessions: state.sessions.map((s) =>
@@ -378,7 +393,7 @@ export const useAppStore = create<AppStore>()(
     {
       name: 'riffcoach-storage',
       storage: createJSONStorage(() => localStorage),
-      version: 3,
+      version: 4,
       migrate: (persistedState) => migrateData(persistedState as Partial<AppState>),
     }
   )

@@ -56,6 +56,15 @@ export interface Session {
   notes: string
   aiFeedback?: AIFeedback | null
   cleanBPM: number
+  tuningCompleted: boolean
+  metronomeUsedSeconds: number
+}
+
+export interface PracticeContext {
+  lessonId: string | null
+  videoId: string | null
+  projectId: string | null
+  sectionId: string | null
 }
 
 export interface CoverSection {
@@ -247,6 +256,7 @@ export interface AppState {
   }
   coverProjects: CoverProject[]
   currentEfficientPlan: EfficientPracticePlan | null
+  practiceContext: PracticeContext | null
   materialInbox: MaterialInboxItem[]
   videoResources: VideoResource[]
   recentResources: { type: string; id: string; timestamp: number }[]
